@@ -1,0 +1,6 @@
+@itb2203_2024_predictiongame_HostAddress = http://localhost:5160
+
+GET {{itb2203_2024_predictiongame_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
