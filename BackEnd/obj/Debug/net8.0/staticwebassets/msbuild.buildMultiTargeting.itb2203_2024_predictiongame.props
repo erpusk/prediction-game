@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\itb2203_2024_predictiongame.props" />
+</Project>

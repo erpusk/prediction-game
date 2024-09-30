@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("itb2203_2024_predictiongame")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5e439a445f5d8fbd8e3a912ed91d2feb4394cd09")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ccd8d376f9dd41b0c4f7496c7fa34bd085fa070b")]
 [assembly: System.Reflection.AssemblyProductAttribute("itb2203_2024_predictiongame")]
 [assembly: System.Reflection.AssemblyTitleAttribute("itb2203_2024_predictiongame")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
