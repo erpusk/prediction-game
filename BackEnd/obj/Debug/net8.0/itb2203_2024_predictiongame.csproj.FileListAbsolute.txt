@@ -31,3 +31,6 @@ C:\Users\Laptop\Documents\ISA III\itb2203_2024_predictiongame\BackEnd\obj\Debug\
 C:\Users\Laptop\Documents\ISA III\itb2203_2024_predictiongame\BackEnd\obj\Debug\net8.0\itb2203_2024_predictiongame.pdb
 C:\Users\Laptop\Documents\ISA III\itb2203_2024_predictiongame\BackEnd\obj\Debug\net8.0\itb2203_2024_predictiongame.genruntimeconfig.cache
 C:\Users\Laptop\Documents\ISA III\itb2203_2024_predictiongame\BackEnd\obj\Debug\net8.0\ref\itb2203_2024_predictiongame.dll
+C:\Users\Laptop\Documents\ISA III\itb2203_2024_predictiongame\BackEnd\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
+C:\Users\Laptop\Documents\ISA III\itb2203_2024_predictiongame\BackEnd\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+C:\Users\Laptop\Documents\ISA III\itb2203_2024_predictiongame\BackEnd\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.InMemory.dll
