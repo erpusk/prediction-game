@@ -1,9 +1,6 @@
-using BackEnd.Data.Repos;
-using Backend.Data;
 using Microsoft.EntityFrameworkCore;
-using WorkoutApplication.Data.Repos;
-using WorkoutApplication.Models.Classes;
-using WorkoutApplication.Models.Enums;
+using itb2203_2024_predictiongame.Backend.Data.Repos;
+using itb2203_2024_predictiongame.Backend.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 

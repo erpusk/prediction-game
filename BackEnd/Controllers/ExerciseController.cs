@@ -1,9 +1,9 @@
+using itb2203_2024_predictiongame.Backend.Data.Repos;
+using itb2203_2024_predictiongame.Backend.Models.Classes;
+using itb2203_2024_predictiongame.Backend.Models.Enums;
 using Microsoft.AspNetCore.Mvc;
-using WorkoutApplication.Data.Repos;
-using WorkoutApplication.Models.Classes;
-using WorkoutApplication.Models.Enums;
 
-namespace WorkoutApplication.Controllers
+namespace itb2203_2024_predictiongame.Backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -12,24 +12,29 @@ namespace WorkoutApplication.Controllers
         private readonly ExercisesRepo repo = repo;
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] ExerciseIntensity? intensity){
+        public async Task<IActionResult> GetAll([FromQuery] ExerciseIntensity? intensity)
+        {
             var result = await repo.GetAllExercises(intensity);
             return Ok(result);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetExercise(int id){
+        public async Task<IActionResult> GetExercise(int id)
+        {
             var exercise = await repo.GetExerciseById(id);
-            if(exercise == null) {
+            if (exercise == null)
+            {
                 return NotFound();
             }
             return Ok(exercise);
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveExercise([FromBody] Exercise exercise){
+        public async Task<IActionResult> SaveExercise([FromBody] Exercise exercise)
+        {
             var exerciseExists = await repo.ExerciseExistsInDb(exercise.Id);
-            if(exerciseExists) { 
+            if (exerciseExists)
+            {
                 return Conflict();
             }
             var result = await repo.SaveExerciseToDb(exercise);
@@ -37,11 +42,12 @@ namespace WorkoutApplication.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] Exercise exercise ){
+        public async Task<IActionResult> Update(int id, [FromBody] Exercise exercise)
+        {
             bool result = await repo.UpdateExercise(id, exercise);
             return result ? NoContent() : NotFound();
         }
 
-        
+
     }
 }
