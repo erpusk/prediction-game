@@ -1,3 +1,4 @@
+using Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using WorkoutApplication.Models.Classes;
 using WorkoutApplication.Models.Enums;
