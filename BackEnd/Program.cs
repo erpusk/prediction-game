@@ -4,8 +4,6 @@ using itb2203_2024_predictiongame.Backend.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
@@ -15,6 +13,16 @@ builder.Services.AddDbContext<DataContext>(options =>
     .AddScoped<ExercisesRepo>()
     .AddScoped<PredictionGamesRepo>();
 
+builder.Services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+    {
+        builder
+        .SetIsOriginAllowed(_ => true)
+        .AllowCredentials()
+        .AllowAnyMethod()
+        .AllowAnyHeader();
+    }));
+
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -23,7 +31,6 @@ using (var scope = app.Services.CreateScope())
     context.Database.EnsureCreated();
 }
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -34,6 +41,5 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.MapControllers();
-
 
 app.Run();
