@@ -13,28 +13,24 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 
-builder.Services.AddDbContext<DataContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")))
-    .AddScoped<ExercisesRepo>()
-    .AddScoped<PredictionGamesRepo>();
+builder.Services
+    .AddDbContext<DataContext>(options => options.UseInMemoryDatabase("restDB"))
+    .AddScoped<ExercisesRepo>();
+
 
 var app = builder.Build();
-
-using (var scope = app.Services.CreateScope())
-{
-    var context = scope.ServiceProvider.GetRequiredService<DataContext>();
-    context.Database.EnsureCreated();
-}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseCors("MyPolicy");
 }
 
 app.UseHttpsRedirection();
 
 app.MapControllers();
+
 
 app.Run();

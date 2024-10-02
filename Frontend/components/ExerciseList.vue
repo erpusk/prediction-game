@@ -9,13 +9,13 @@
       <div v-else>
         <UTable :rows="exercises" :columns="columns">
         
-        <template #actions-data="{ row }">
+        <!--<template #actions-data="{ row }">
             <button @click="deleteExercise(row)">
                 <DeleteIconComponent />
             </button>
-        </template>
+        </template>-->
 
-      </UTable>
+         </UTable>
       </div>
     </div>
   </template>
@@ -28,7 +28,7 @@
   
   const columns = [
     {
-      key: "name",
+      key: "title",
       label: "Nimetus",
     },
     {
@@ -42,9 +42,13 @@
   ];
   
   const workoutStore = useWorkoutStore();
-  const { exercises } = workoutStore;
+  const { exercises } = storeToRefs(workoutStore);
   
-  const deleteExercise = (exercise: Exercise) => {
-  workoutStore.deleteExercise(exercise);
-};
+  onMounted(() => {
+  workoutStore.loadExercises();
+  });
+
+  //const deleteExercise = (exercise: Exercise) => {
+  //workoutStore.deleteExercise(exercise);
+  //};
   </script>  

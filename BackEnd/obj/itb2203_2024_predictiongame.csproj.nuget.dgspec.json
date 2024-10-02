@@ -1,6 +1,7 @@
 {
   "format": 1,
   "restore": {
+<<<<<<< HEAD
     "C:\\university\\itb2203_2024_predictiongame\\BackEnd\\itb2203_2024_predictiongame.csproj": {}
   },
   "projects": {
@@ -12,9 +13,27 @@
         "projectPath": "C:\\university\\itb2203_2024_predictiongame\\BackEnd\\itb2203_2024_predictiongame.csproj",
         "packagesPath": "C:\\Users\\maxgu\\.nuget\\packages\\",
         "outputPath": "C:\\university\\itb2203_2024_predictiongame\\BackEnd\\obj\\",
+=======
+    "C:\\Users\\Laptop\\Documents\\ISA III\\itb2203_2024_predictiongame\\BackEnd\\itb2203_2024_predictiongame.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\Laptop\\Documents\\ISA III\\itb2203_2024_predictiongame\\BackEnd\\itb2203_2024_predictiongame.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Laptop\\Documents\\ISA III\\itb2203_2024_predictiongame\\BackEnd\\itb2203_2024_predictiongame.csproj",
+        "projectName": "itb2203_2024_predictiongame",
+        "projectPath": "C:\\Users\\Laptop\\Documents\\ISA III\\itb2203_2024_predictiongame\\BackEnd\\itb2203_2024_predictiongame.csproj",
+        "packagesPath": "C:\\Users\\Laptop\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Laptop\\Documents\\ISA III\\itb2203_2024_predictiongame\\BackEnd\\obj\\",
+>>>>>>> 5f4e888ed42339e8dade53cb7c3ba387dade3e0c
         "projectStyle": "PackageReference",
         "configFilePaths": [
+<<<<<<< HEAD
           "C:\\Users\\maxgu\\AppData\\Roaming\\NuGet\\NuGet.Config",
+=======
+          "C:\\Users\\Laptop\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+>>>>>>> 5f4e888ed42339e8dade53cb7c3ba387dade3e0c
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
