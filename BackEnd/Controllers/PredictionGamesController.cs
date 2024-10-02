@@ -38,5 +38,17 @@ namespace BackEnd.Controllers
             var result = await repo.SavePredictionGameToDb(predictionGame);
             return CreatedAtAction(nameof(GetPredictionGame), new { id = predictionGame.Id }, result);
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdatePredictionGame(int id, [FromBody] PredictionGame predictionGame){
+            bool result = await repo.UpdatePredictionGame(id, predictionGame);
+            return result ? NoContent() : NotFound();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeletePredictionGame(int id) {
+            bool result = await repo.DeletePredictionGameById(id);
+            return result ? NoContent() : NotFound();
+        }
     }
 }

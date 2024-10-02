@@ -1,24 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\erkop\\source\\repos\\itb2203_2024_predictiongame\\Backend\\itb2203_2024_predictiongame.csproj": {}
+    "C:\\university\\itb2203_2024_predictiongame\\BackEnd\\itb2203_2024_predictiongame.csproj": {}
   },
   "projects": {
-    "C:\\Users\\erkop\\source\\repos\\itb2203_2024_predictiongame\\Backend\\itb2203_2024_predictiongame.csproj": {
+    "C:\\university\\itb2203_2024_predictiongame\\BackEnd\\itb2203_2024_predictiongame.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\erkop\\source\\repos\\itb2203_2024_predictiongame\\Backend\\itb2203_2024_predictiongame.csproj",
+        "projectUniqueName": "C:\\university\\itb2203_2024_predictiongame\\BackEnd\\itb2203_2024_predictiongame.csproj",
         "projectName": "itb2203_2024_predictiongame",
-        "projectPath": "C:\\Users\\erkop\\source\\repos\\itb2203_2024_predictiongame\\Backend\\itb2203_2024_predictiongame.csproj",
-        "packagesPath": "C:\\Users\\erkop\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\erkop\\source\\repos\\itb2203_2024_predictiongame\\Backend\\obj\\",
+        "projectPath": "C:\\university\\itb2203_2024_predictiongame\\BackEnd\\itb2203_2024_predictiongame.csproj",
+        "packagesPath": "C:\\Users\\maxgu\\.nuget\\packages\\",
+        "outputPath": "C:\\university\\itb2203_2024_predictiongame\\BackEnd\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\erkop\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\maxgu\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -26,6 +22,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {

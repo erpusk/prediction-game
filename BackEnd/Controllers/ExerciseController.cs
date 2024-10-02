@@ -41,5 +41,7 @@ namespace WorkoutApplication.Controllers
             bool result = await repo.UpdateExercise(id, exercise);
             return result ? NoContent() : NotFound();
         }
+
+        
     }
 }
