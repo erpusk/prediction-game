@@ -1,3 +1,3 @@
 <template>
     <AddExercise />
-  </template>  
+</template>  

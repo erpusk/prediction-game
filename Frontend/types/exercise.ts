@@ -1,5 +1,4 @@
 export type Exercise = {
-    id: number;
-    name: string | undefined;
+    title: string | undefined;
     description: string | undefined;
 }

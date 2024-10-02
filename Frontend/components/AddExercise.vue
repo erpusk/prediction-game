@@ -6,8 +6,8 @@
       @submit="onSubmit"
       @error="onError"
     >
-      <UFormGroup label="Nimetus" name="name">
-        <UInput v-model="state.name" />
+      <UFormGroup label="Nimetus" name="title">
+        <UInput v-model="state.title" />
       </UFormGroup>
   
       <UFormGroup label="Kirjeldus" name="description">
@@ -16,21 +16,21 @@
   
       <UButton type="submit"> Lisa </UButton>
     </UForm>
-  </template>
+</template>
   
-  <script setup lang="ts">
+<script setup lang="ts">
   import type { FormError, FormErrorEvent, FormSubmitEvent } from "#ui/types";
   
   const { addExercise } = useWorkoutStore();
 
-const state = reactive<Omit<Exercise, 'id'>>({
-    name: undefined,
+  const state = reactive<Exercise>({
+    title: undefined,
     description: undefined,
   });
   
   const validate = (state: any): FormError[] => {
     const errors = [];
-    if (!state.name) errors.push({ path: "name", message: "Required" });
+    if (!state.title) errors.push({ path: "title", message: "Required" });
     if (!state.description)
       errors.push({ path: "description", message: "Required" });
     return errors;
@@ -46,4 +46,4 @@ const state = reactive<Omit<Exercise, 'id'>>({
     element?.focus();
     element?.scrollIntoView({ behavior: "smooth", block: "center" });
   }
-  </script>  
+</script>  
