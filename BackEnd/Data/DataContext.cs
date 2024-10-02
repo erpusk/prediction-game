@@ -1,14 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using BackEnd.Models.Classes;
+using itb2203_2024_predictiongame.Backend.Models.Classes;
+using itb2203_2024_predictiongame.Backend.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using WorkoutApplication.Models.Classes;
-using WorkoutApplication.Models.Enums;
 
-namespace Backend.Data;
+namespace itb2203_2024_predictiongame.Backend.Data;
 
 public class DataContext(DbContextOptions options) : DbContext(options)
 {

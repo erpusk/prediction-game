@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace BackEnd.Models.Classes
+namespace itb2203_2024_predictiongame.Backend.Models.Classes
 {
-    public record PredictionGame {
+    public record PredictionGame
+    {
         public int Id { get; set; }
         public string PredictionGameTitle { get; set; } = string.Empty;
         public DateTime CreationDate { get; set; }
