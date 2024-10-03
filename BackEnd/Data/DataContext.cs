@@ -9,6 +9,7 @@ public class DataContext(DbContextOptions options) : DbContext(options)
 {
     public DbSet<PredictionGame> PredictionGames { get; set; }
     public DbSet<Event> Events { get; set; }
+    public DbSet<ApplicationUser> ApplicationUsers{ get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
