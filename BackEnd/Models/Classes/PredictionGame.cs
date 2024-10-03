@@ -1,3 +1,5 @@
+using BackEnd.Models.Classes;
+
 namespace itb2203_2024_predictiongame.Backend.Models.Classes
 {
     public record PredictionGame
@@ -10,7 +12,7 @@ namespace itb2203_2024_predictiongame.Backend.Models.Classes
         public int GameCreatorId { get; set; }
         // public ApplicationUser GameCreator { get; set; }
         public string Privacy { get; set; } = "Private game";
-        // public List<Match> Matches { get; set; } = new List<Match>();
+        public List<Event> Events { get; set; } = new List<Event>();
         // public List<GameParticipant> Participants { get; set; } = new List<GameParticipant>();
     }
 }
