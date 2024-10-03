@@ -1,1 +1,1 @@
-<template>Siia tuleb avaleht</template>
+<template>Here comes the main page</template>
