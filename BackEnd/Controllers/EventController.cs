@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using BackEnd.Data.Repos;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,17 +16,17 @@ namespace BackEnd.Controllers
 
         [HttpGet]
         public async Task<IActionResult> GetAll(){
-            var matches = await _repo.GetAll();
-            return Ok(matches);
+            var events = await _repo.GetAll();
+            return Ok(events);
         }
 
         [HttpGet("Id")]
         public async Task<IActionResult> GetEventhById(int Id){
-            var match = await _repo.GetById(Id);
-            if (match == null){
+            var events = await _repo.GetById(Id);
+            if (events == null){
                 return NotFound();
             }
-            return Ok(match);
+            return Ok(events);
         }
 
         
