@@ -18,12 +18,12 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
         //READ
         public async Task<List<PredictionGame>> GetAllPredictionGames()
         {
-            IQueryable<PredictionGame> query = context.PredictionGames.AsQueryable();
+            IQueryable<PredictionGame> query = context.PredictionGames.Include(m => m.Events).AsQueryable();
 
             return await query.ToListAsync();
         }
 
-        public async Task<PredictionGame?> GetPredictionGameById(int id) => await context.PredictionGames.FindAsync(id);
+        public async Task<PredictionGame?> GetPredictionGameById(int id) => await context.PredictionGames.Include(m => m.Events).FirstOrDefaultAsync(x => x.Id == id);
         public async Task<bool> PredictionGameExistsInDb(int id) => await context.PredictionGames.AnyAsync(x => x.Id == id);
 
         //UPDATE

@@ -1,7 +1,10 @@
+using System.Text.RegularExpressions;
+using BackEnd.Models.Classes;
 using itb2203_2024_predictiongame.Backend.Models.Classes;
 using itb2203_2024_predictiongame.Backend.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Match = itb2203_2024_predictiongame.Backend.Models;
 
 namespace itb2203_2024_predictiongame.Backend.Data;
 
@@ -9,12 +12,14 @@ public class DataContext(DbContextOptions options) : DbContext(options)
 {
     public DbSet<Exercise> Exercises { get; set; }
     public DbSet<PredictionGame> PredictionGames { get; set; }
+    public DbSet<Event> Events { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
         ConfigurePredictionGameEntity(modelBuilder.Entity<PredictionGame>());
+        ConfigureEventEntity(modelBuilder.Entity<Event>());
 
         modelBuilder.Entity<Exercise>().Property(x => x.Id).ValueGeneratedOnAdd();
 
@@ -68,6 +73,23 @@ public class DataContext(DbContextOptions options) : DbContext(options)
                 RecommendedDurationInSeconds = 30,
                 RecDurationAfter = 30,
                 RecDurationBefore = 10
+            }
+        );
+    }
+
+    private static void ConfigureEventEntity(EntityTypeBuilder<Event> Event)
+    {
+        Event.Property(x => x.Id).ValueGeneratedOnAdd();
+        Event.HasData(
+            new Event
+            {
+                Id = 1,
+                TeamA = "Koerad",
+                TeamB = "Kassid",
+                EventDate = new DateTime(),
+                PredictionGameId = 1,
+                IsCompleted = false
+
             }
         );
     }
