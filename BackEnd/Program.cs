@@ -15,7 +15,6 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>{
 
 builder.Services.AddDbContext<DataContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")))
-    .AddScoped<ExercisesRepo>()
     .AddScoped<PredictionGamesRepo>()
     .AddScoped<EventRepo>();
 
