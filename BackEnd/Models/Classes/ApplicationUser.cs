@@ -9,6 +9,7 @@ namespace BackEnd.Models.Classes
 {
     public class ApplicationUser : IdentityUser
     {
+        public int UserId { get; set; }
         public DateTime DateOfBirth { get; set; }
         public List<PredictionGame> CreatedPredictionGames { get; set; } = new List<PredictionGame>();
         public List<PredictionGame> JoinedPredictionGames { get; set; } = new List<PredictionGame>();
