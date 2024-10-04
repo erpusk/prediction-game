@@ -1,3 +1,4 @@
+import type { GameEvent } from "~/types/gameEvent";
 import type { PredictionGame } from "~/types/predictionGame";
 
 export const usePredictionGameStore = defineStore("predictionGame", () => {
@@ -17,4 +18,22 @@ export const usePredictionGameStore = defineStore("predictionGame", () => {
 
   return { predictionGames, loadPredictionGames, addPredictionGame };
 });
+
+export const useGameEventsStore = defineStore("gameEvent", () => {
+  const api = useApi();
+  const gameEvents = ref<GameEvent[]>([]);
+  
+  const loadGameEvents = async () => {
+    gameEvents.value = await api.customFetch<GameEvent[]>("Events");
+  };
+
+  const addGameEvent = async (gameEvent: GameEvent) => {
+    const res = await api.customFetch("Events", {
+      method: "POST",
+      body: event,
+    });
+  };
+
+  return { gameEvents, loadGameEvents, addGameEvent };
+})
 
