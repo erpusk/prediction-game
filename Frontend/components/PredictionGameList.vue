@@ -43,7 +43,7 @@
     {
       key: "actions",
       label: "Actions",
-    },
+    }
   ];
   
   const predictionGameStore = usePredictionGameStore();

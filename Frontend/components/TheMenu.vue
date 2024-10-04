@@ -21,5 +21,9 @@
       label: "Add a prediction game",
       to: "/add-predictiongame",
     },
+    {
+      label: "ijfijfes",
+      to: "/gameevents",
+    }
   ];
   </script>  

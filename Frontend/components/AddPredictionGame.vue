@@ -38,7 +38,7 @@
       startDate: '', 
       endDate: '', 
       gameCreatorId: 1, 
-      privacy: 'Private game', 
+      privacy: 'Private game'
     });
   
     const startDateStr = computed({

@@ -24,13 +24,13 @@ export const useGameEventsStore = defineStore("gameEvent", () => {
   const gameEvents = ref<GameEvent[]>([]);
   
   const loadGameEvents = async () => {
-    gameEvents.value = await api.customFetch<GameEvent[]>("Events");
+    gameEvents.value = await api.customFetch<GameEvent[]>("Event");
   };
 
   const addGameEvent = async (gameEvent: GameEvent) => {
-    const res = await api.customFetch("Events", {
+    const res = await api.customFetch("Event", {
       method: "POST",
-      body: event,
+      body: gameEvent,
     });
   };
 
