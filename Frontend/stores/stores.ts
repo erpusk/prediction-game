@@ -1,19 +1,20 @@
-export const useWorkoutStore = defineStore("workout", () => {
+import type { PredictionGame } from "~/types/predictionGame";
+
+export const usePredictionGameStore = defineStore("predictionGame", () => {
   const api = useApi();
-  const exercises = ref<Exercise[]>([]);
+  const predictionGames = ref<PredictionGame[]>([]);
 
-
-  const loadExercises = async () => {
-    exercises.value = await api.customFetch<Exercise[]>("Exercises");
+  const loadPredictionGames = async () => {
+    predictionGames.value = await api.customFetch<PredictionGame[]>("PredictionGames");
   };
 
-  const addExercise = async (exercise: Exercise) => {
-    const res = await api.customFetch("Exercises", {
+  const addPredictionGame = async (game: PredictionGame) => {
+    const res = await api.customFetch("PredictionGames", {
       method: "POST",
-      body: exercise,
+      body: game,
     });
   };
 
-  return { exercises, loadExercises, addExercise };
+  return { predictionGames, loadPredictionGames, addPredictionGame };
 });
 
