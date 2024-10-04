@@ -50,6 +50,12 @@ namespace BackEnd.Controllers
             return Ok(result);
         }
 
+        [HttpDelete("Id")]
+        public async Task<IActionResult> DeleteEvent(int Id){
+            var result = await _repo.DeleteEvent(Id);
+            return result ? NoContent() : NotFound();
+        }
+
         
     }
 }

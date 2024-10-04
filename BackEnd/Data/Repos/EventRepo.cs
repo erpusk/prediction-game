@@ -41,5 +41,14 @@ namespace BackEnd.Data.Repos
             await _context.SaveChangesAsync();
             return eventModel;
         }
+        public async Task<bool> DeleteEvent(int Id){
+            var result = await GetById(Id);
+            if(result == null){
+                return false;
+            }
+            _context.Remove(result);
+            int changesCount = await _context.SaveChangesAsync();
+            return changesCount == 1;
+        }
     }
 }
