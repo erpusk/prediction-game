@@ -24,15 +24,22 @@
         <USelect v-model="state.privacy" :options="['Private game', 'Public game']" />
       </UFormGroup>
   
-      <UButton type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 rounded-md transition duration-300">
-        Create a game
-      </UButton>
+      <div class="flex justify-center space-x-4 mt-6">
+        <UButton type="button" @click="navigateToListOfPredictionGames" class="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-md transition duration-300">
+            Back to List
+        </UButton>
+        <UButton type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition duration-300">
+            Create a Game
+        </UButton>
+      </div>
     </UForm>
   </template>
   
   
   <script setup lang="ts">
     import type { FormError, FormErrorEvent, FormSubmitEvent } from "#ui/types";
+    import { useRouter } from 'vue-router';
+
   
     const { addPredictionGame } = usePredictionGameStore();
   
@@ -81,6 +88,12 @@
       addPredictionGame(payload);
       await navigateTo("/predictiongames");
     }
+
+    const router = useRouter();
+
+    const navigateToListOfPredictionGames = () => {
+    router.push('/predictiongames');
+    };
   
     async function onError(event: FormErrorEvent) {
       const element = document.getElementById(event.errors[0].id);
