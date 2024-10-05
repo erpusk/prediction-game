@@ -17,9 +17,5 @@
       label: "Prediction Games",
       to: "/predictiongames",
     },
-    {
-      label: "Add a prediction game",
-      to: "/add-predictiongame",
-    },
   ];
   </script>  
