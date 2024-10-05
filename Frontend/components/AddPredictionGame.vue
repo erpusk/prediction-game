@@ -2,29 +2,34 @@
     <UForm
       :validate="validate"
       :state="state"
-      class="space-y-4"
+      class="space-y-6 p-6 bg-white rounded-lg shadow-lg"
       @submit="onSubmit"
       @error="onError"
     >
-      <UFormGroup label="Nimetus" name="predictionGameTitle">
-        <UInput v-model="state.predictionGameTitle" />
+      <h2 class="text-2xl font-semibold text-center mb-4">Create a Prediction Game</h2>
+      
+      <UFormGroup label="Prediction game title" name="predictionGameTitle">
+        <UInput v-model="state.predictionGameTitle" placeholder="Enter game title" class="border rounded-md p-2" />
       </UFormGroup>
   
-      <UFormGroup label="Alguskuupäev" name="startDate">
-        <UInput v-model="startDateStr" type="date" />
+      <UFormGroup label="Start date" name="startDate">
+        <UInput v-model="startDateStr" type="date" class="border rounded-md p-2" />
       </UFormGroup>
   
-      <UFormGroup label="Lõppkuupäev" name="endDate">
-        <UInput v-model="endDateStr" type="date" />
+      <UFormGroup label="End date" name="endDate">
+        <UInput v-model="endDateStr" type="date" class="border rounded-md p-2" />
       </UFormGroup>
   
-      <UFormGroup label="Privaatsus" name="privacy">
-        <UInput v-model="state.privacy" />
+      <UFormGroup label="Game privacy" name="privacy">
+        <USelect v-model="state.privacy" :options="['Private game', 'Public game']" />
       </UFormGroup>
   
-      <UButton type="submit">Lisa</UButton>
+      <UButton type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 rounded-md transition duration-300">
+        Create a game
+      </UButton>
     </UForm>
   </template>
+  
   
   <script setup lang="ts">
     import type { FormError, FormErrorEvent, FormSubmitEvent } from "#ui/types";
