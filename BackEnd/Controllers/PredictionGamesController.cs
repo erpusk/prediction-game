@@ -29,14 +29,14 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SavePredictionGame([FromBody] PredictionGame predictionGame)
+        public async Task<IActionResult> CreatePredictionGame([FromBody] PredictionGame predictionGame)
         {
             var predictionGameExists = await repo.PredictionGameExistsInDb(predictionGame.Id);
             if (predictionGameExists)
             {
                 return Conflict();
             }
-            var result = await repo.SavePredictionGameToDb(predictionGame);
+            var result = await repo.CreatePredictionGameToDb(predictionGame);
             return CreatedAtAction(nameof(GetPredictionGame), new { id = predictionGame.Id }, result);
         }
 
