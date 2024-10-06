@@ -13,6 +13,20 @@ namespace BackEnd.Controllers
     public class ApplicationUserController(ApplicationUserRepo repo) : ControllerBase()
     {
         private readonly ApplicationUserRepo _repo = repo;
+        
+        [HttpGet]
+        public async Task<IActionResult> GetAll(){
+            var result = await _repo.GetAllUsers();
+            return Ok(result);
+        }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetApplicationUser(int id){
+            var result = await _repo.GetUserById(id);
+            if (result == null){
+                return NotFound();
+            }
+            return Ok(result);
+        }
     }
 }

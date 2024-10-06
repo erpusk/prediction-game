@@ -19,9 +19,9 @@ namespace BackEnd.Data.Repos
         }
 
         public async Task<List<ApplicationUser>> GetAllUsers() => await _context.ApplicationUsers.ToListAsync();
-        public async Task<ApplicationUser?> GetUserById(int userId) => await _context.ApplicationUsers.FindAsync(userId);
-        public async Task<bool> IsUserExistsInDB(string id) => await _context.ApplicationUsers.AnyAsync(x => x.Id == id);
-        public async Task<bool> UpdateApplicationUser(string id, ApplicationUser user){
+        public async Task<ApplicationUser?> GetUserById(int id) => await _context.ApplicationUsers.FindAsync(id);
+        public async Task<bool> IsUserExistsInDB(int id) => await _context.ApplicationUsers.AnyAsync(x => x.Id == id);
+        public async Task<bool> UpdateApplicationUser(int id, ApplicationUser user){
             bool isIdsMatch = id == user.Id;
             bool userExistsInDB = await IsUserExistsInDB(id);
 
@@ -30,6 +30,16 @@ namespace BackEnd.Data.Repos
             }
             
             _context.Update(user);
+            int changesCount = await _context.SaveChangesAsync();
+            return changesCount == 1;
+        }
+        public async Task<bool> DeleteUserById(int id){
+            ApplicationUser? user = await GetUserById(id);
+            if (user == null){
+                return false;
+            }
+
+            _context.Remove(user);
             int changesCount = await _context.SaveChangesAsync();
             return changesCount == 1;
         }

@@ -17,6 +17,7 @@ public class DataContext(DbContextOptions options) : DbContext(options)
 
         ConfigurePredictionGameEntity(modelBuilder.Entity<PredictionGame>());
         ConfigureEventEntity(modelBuilder.Entity<Event>());
+        ConfigureApplicationUserEntity(modelBuilder.Entity<ApplicationUser>());
     }
 
     private static void ConfigureEventEntity(EntityTypeBuilder<Event> Event)
@@ -49,6 +50,20 @@ public class DataContext(DbContextOptions options) : DbContext(options)
                 StartDate = new DateOnly(2024, 06, 14),
                 EndDate = new DateOnly(2024, 07, 14),
                 GameCreatorId = 1
+            }
+        );
+    }
+    private static void ConfigureApplicationUserEntity(EntityTypeBuilder<ApplicationUser> user)
+    {
+        user.Property(x => x.Id).ValueGeneratedOnAdd();
+        user.HasData(
+            new ApplicationUser
+            {
+                Id = 1,
+                UserName = "MariMas",
+                DateOfBirth = DateTime.Now,
+                JoinedPredictionGames = null,
+                CreatedPredictionGames = null,
             }
         );
     }
