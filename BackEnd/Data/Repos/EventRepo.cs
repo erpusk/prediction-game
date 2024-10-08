@@ -24,5 +24,31 @@ namespace BackEnd.Data.Repos
         }
 
         public async Task<Event?> GetById(int id) => await _context.Events.FindAsync(id);
+
+        public async Task<Event> AddEvent(Event eventModel){
+            await _context.AddAsync(eventModel);
+            await _context.SaveChangesAsync();
+            return eventModel;
+        }
+
+        public async Task<Event?> UpdateEvent(int Id, Event eventModel){
+            bool idsMatch = Id == eventModel.Id;
+            bool eventExists = await _context.Events.AnyAsync(x => x.Id == Id);
+            if (!eventExists || !idsMatch){
+                return null;
+            }
+            _context.Update(eventModel);
+            await _context.SaveChangesAsync();
+            return eventModel;
+        }
+        public async Task<bool> DeleteEvent(int Id){
+            var result = await GetById(Id);
+            if(result == null){
+                return false;
+            }
+            _context.Remove(result);
+            int changesCount = await _context.SaveChangesAsync();
+            return changesCount == 1;
+        }
     }
 }
