@@ -1,17 +1,24 @@
 <template>
-    <div>
-      <h1 class="text-xl text-center">{{ title }}</h1>
+    <div class="p-6 bg-white rounded-lg shadow-lg">
+      <button 
+        @click="goToCreateNewPredictionGame" 
+        class="absolute top-20 right-10 bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white font-semibold py-3 px-6 rounded-md shadow-md hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
+        Create a new Prediction Game
+      </button>
   
+      <h1 class="text-3xl font-bold text-center mb-6">{{ title }}</h1>
+      
       <div v-if="predictionGames.length === 0">
-        <h2 class="text-x1 text-center">Prediction games are missing</h2>
+        <h2 class="text-lg text-center text-gray-500">Prediction games are missing</h2>
       </div>
-      <div v-else>
+  
+      <div v-else class="mt-8">
         <UTable :rows="predictionGames" :columns="columns">
-          <!--<template #actions-data="{ row }">
-              <button @click="deletePredictionGame(row)">
-                  <DeleteIconComponent />
-              </button>
-          </template>-->
+          <template #actions-data="{ row }">
+            <button @click="deletePredictionGame(row)" class="text-red-500 hover:text-red-700">
+              <DeleteIconComponent />
+            </button>
+          </template>
         </UTable>
       </div>
     </div>
@@ -20,6 +27,7 @@
   <script setup lang="ts">
   import { usePredictionGameStore } from '@/stores/stores';
   import DeleteIconComponent from '@/components/DeleteIconComponent.vue';
+  import { useRouter } from 'vue-router';
   
   defineProps<{ title: string }>();
   
@@ -48,13 +56,17 @@
   
   const predictionGameStore = usePredictionGameStore();
   const { predictionGames } = storeToRefs(predictionGameStore);
+  const router = useRouter();
+  
+  const goToCreateNewPredictionGame = () => {
+    router.push('/add-predictionGame');
+  };
   
   onMounted(() => {
     predictionGameStore.loadPredictionGames();
   });
   
-//   const deletePredictionGame = (game: PredictionGame) => {
-//     predictionGameStore.deletePredictionGame(game);
-//   };
-  </script>
-  
+  const deletePredictionGame = (game: PredictionGame) => {
+    predictionGameStore.deletePredictionGame(game);
+  };
+  </script>  

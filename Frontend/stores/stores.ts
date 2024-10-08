@@ -14,9 +14,22 @@ export const usePredictionGameStore = defineStore("predictionGame", () => {
       method: "POST",
       body: game,
     });
+    loadPredictionGames();
   };
 
-  return { predictionGames, loadPredictionGames, addPredictionGame };
+  const deletePredictionGame = async (game: PredictionGame) => {
+    await api.customFetch(`PredictionGames/${game.id}`, {
+      method: "DELETE",
+    });
+
+    const index = predictionGames.value.findIndex(g => g.id === game.id);
+    
+    if (index !== -1) {
+      predictionGames.value.splice(index, 1);
+    }
+  }
+
+  return { predictionGames, loadPredictionGames, addPredictionGame, deletePredictionGame };
 });
 
 export const useGameEventsStore = defineStore("gameEvent", () => {

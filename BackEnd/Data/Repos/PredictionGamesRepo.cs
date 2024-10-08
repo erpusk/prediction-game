@@ -7,9 +7,10 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
     {
         private readonly DataContext context = context;
 
+
         //CREATE
-        public async Task<PredictionGame> SavePredictionGameToDb(PredictionGame predictionGame)
-        {
+        public async Task<PredictionGame> CreatePredictionGameToDb(PredictionGame predictionGame)
+        {           
             context.Add(predictionGame);
             await context.SaveChangesAsync();
             return predictionGame;

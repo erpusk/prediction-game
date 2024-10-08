@@ -2,6 +2,7 @@ using BackEnd.Models.Classes;
 using itb2203_2024_predictiongame.Backend.Models.Classes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using RandomString4Net;
 
 namespace itb2203_2024_predictiongame.Backend.Data;
 
@@ -45,9 +46,10 @@ public class DataContext(DbContextOptions options) : DbContext(options)
                 Id = 1,
                 PredictionGameTitle = "Football EM 2024",
                 CreationDate = DateTime.Now,
-                StartDate = new DateOnly(2024, 06, 14),
-                EndDate = new DateOnly(2024, 07, 14),
-                GameCreatorId = 1
+                StartDate = new DateTime(2024, 06, 14),
+                EndDate = new DateTime(2024, 07, 14),
+                GameCreatorId = 1,
+                UniqueCode =  RandomString.GetString(Types.ALPHABET_LOWERCASE, 6),
             }
         );
     }
