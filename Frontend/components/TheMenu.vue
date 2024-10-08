@@ -22,7 +22,7 @@
       to: "/add-predictiongame",
     },
     {
-      label: "ijfijfes",
+      label: "Events",
       to: "/gameevents",
     }
   ];
