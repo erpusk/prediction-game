@@ -21,8 +21,8 @@ namespace BackEnd.Controllers
             return Ok(events);
         }
 
-        [HttpGet("Id")]
-        public async Task<IActionResult> GetEventById(int Id){
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetEventById([FromRoute]int Id){
             var events = await _repo.GetById(Id);
             if (events == null){
                 return NotFound();
@@ -40,9 +40,9 @@ namespace BackEnd.Controllers
             return CreatedAtAction(nameof(GetEventById), new {id = eventModel.Id}, eventModel);
         }
 
-        [HttpPut("Id")]
-        public async Task<IActionResult> EditEvent(int Id, [FromBody] Event eventModel){
-            var result = await _repo.UpdateEvent(Id, eventModel);
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateEvent(int id, [FromBody] Event eventModel){
+            var result = await _repo.UpdateEvent(id, eventModel);
             if (result == null){
                 return NotFound();
             }
@@ -50,9 +50,9 @@ namespace BackEnd.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("Id")]
-        public async Task<IActionResult> DeleteEvent(int Id){
-            var result = await _repo.DeleteEvent(Id);
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteEvent([FromRoute]int id){
+            var result = await _repo.DeleteEvent(id);
             return result ? NoContent() : NotFound();
         }
 
