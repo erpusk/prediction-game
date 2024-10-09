@@ -1,11 +1,11 @@
 <template>
-    <div>
-      <h1 class="text-xl text-center">{{ title }}</h1>
-  
+    <div class="p-6 bg-white rounded-lg shadow-lg">
+
       <div v-if="gameEvents.length === 0">
-        <h2 class="text-x1 text-center">Prediction games are missing</h2>
+        <h2 class="text-x1 text-center">No events have been added</h2>
       </div>
-      <div v-else>
+      <div v-else class="mt-8">
+        <h1 class="text-3xl font-bold text-center mb-6 text-black" >{{ title }}</h1>
         <UTable :rows="gameEvents" :columns="columns">
           <!--<template #actions-data="{ row }">
               <button @click="deletePredictionGame(row)">

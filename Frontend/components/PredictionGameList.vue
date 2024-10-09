@@ -6,13 +6,13 @@
         Create a new Prediction Game
       </button>
   
-      <h1 class="text-3xl font-bold text-center mb-6">{{ title }}</h1>
       
       <div v-if="predictionGames.length === 0">
         <h2 class="text-lg text-center text-gray-500">Prediction games are missing</h2>
       </div>
   
       <div v-else class="mt-8">
+        <h1 class="text-3xl font-bold text-center mb-6 text-black" >{{ title }}</h1>
         <UTable :rows="predictionGames" :columns="columns">
           <template #actions-data="{ row }">
             <button @click="deletePredictionGame(row)" class="flex items-center text-red-500 hover:text-red-700">
