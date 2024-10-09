@@ -18,8 +18,11 @@ namespace BackEnd.Data.Repos
             _context = context;
         }
 
-        public async Task<List<Event>> GetAll(){
+        public async Task<List<Event>> GetAll(int? PredictionGameId = null){
             IQueryable<Event> result = _context.Events.AsQueryable();
+            if (PredictionGameId.HasValue){
+                result = result.Where(x => x.PredictionGameId == PredictionGameId);
+            }
             return await result.ToListAsync();
         }
 

@@ -20,10 +20,6 @@
     {
       label: "Add a prediction game",
       to: "/add-predictiongame",
-    },
-    {
-      label: "Events",
-      to: "/gameevents",
     }
   ];
   </script>  

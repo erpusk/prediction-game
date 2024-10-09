@@ -2,12 +2,13 @@
     <UForm
       :validate="validate"
       :state="state"
-      class="space-y-4"
+      class="p-6 bg-white rounded-lg shadow-lg"
       @submit="onSubmit"
       @error="onError"
     >
+      <h2 class="text-2xl font-semibold text-center mb-4 text-black">Add an event</h2>
       <UFormGroup label="Esimene meeskond" name="teamA">
-        <UInput v-model="state.teamA" />
+        <UInput v-model="state.teamA" class="border rounded-md p-2"/>
       </UFormGroup>
   
       <UFormGroup label="Teine meeskond" name="teamB">
@@ -17,8 +18,16 @@
       <UFormGroup label="Toimumisaeg" name="eventDate">
         <UInput v-model="eventDateStr" type="date" />
       </UFormGroup>
-  
-      <UButton type="submit">Lisa</UButton>
+      
+      <div class="flex justify-center space-x-4 mt-6">
+        <UButton type="button" @click="navigateToListOfPredictionGames" class="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-md transition duration-300">
+            Back to List
+        </UButton>
+        <UButton type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition duration-300">
+          Add
+        </UButton>
+      </div>
+      
     </UForm>
   </template>
   
@@ -28,7 +37,11 @@
     import type { GameEvent } from "~/types/gameEvent";
 
     const { addGameEvent } = useGameEventsStore();
-  
+
+    const props = defineProps<{
+      predictionGameId: string | string[]; // Accept predictionGameId as a prop
+    }>();
+
     const state = reactive<GameEvent>({
         id: 0,
         teamA: '',
@@ -61,13 +74,13 @@
             teamA: state.teamA,
             teamB: state.teamB,
             eventDate: eventDateStr.value,
-            predictionGameId: state.predictionGameId,
+            predictionGameId: parseInt(props.predictionGameId.toString(), 10),
             teamAScore: state.teamAScore,
             teamBScore: state.teamBScore,
             isCompleted: state.isCompleted
         };
       addGameEvent(payload);
-      await navigateTo("/events");
+      await navigateTo(`/gameevents/${props.predictionGameId}`);
     }
   
     async function onError(event: FormErrorEvent) {
@@ -75,4 +88,10 @@
       element?.focus();
       element?.scrollIntoView({ behavior: "smooth", block: "center" });
     }
+
+    const router = useRouter()
+
+    const navigateToListOfPredictionGames = () => {
+    router.push('/predictiongames');
+    };
   </script>

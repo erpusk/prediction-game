@@ -16,8 +16,8 @@ namespace BackEnd.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(){
-            var events = await _repo.GetAll();
+        public async Task<IActionResult> GetAll([FromQuery] int? PredictionGameId){
+            var events = await _repo.GetAll(PredictionGameId);
             return Ok(events);
         }
 

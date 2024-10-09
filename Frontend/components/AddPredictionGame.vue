@@ -6,7 +6,7 @@
       @submit="onSubmit"
       @error="onError"
     >
-      <h2 class="text-2xl font-semibold text-center mb-4">Create a Prediction Game</h2>
+      <h2 class="text-2xl font-semibold text-center mb-4 text-black">Create a Prediction Game</h2>
       
       <UFormGroup label="Prediction game title" name="predictionGameTitle">
         <UInput v-model="state.predictionGameTitle" placeholder="Enter game title" class="border rounded-md p-2" />
