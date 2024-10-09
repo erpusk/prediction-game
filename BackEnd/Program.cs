@@ -11,12 +11,14 @@ builder.Services.AddControllers();
 
 builder.Services.AddControllers().AddNewtonsoftJson(options =>{
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+    
 });
 
 builder.Services.AddDbContext<DataContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")))
     .AddScoped<PredictionGamesRepo>()
-    .AddScoped<EventRepo>();
+    .AddScoped<EventRepo>()
+    .AddScoped<ApplicationUserRepo>();
 
 builder.Services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
     {
