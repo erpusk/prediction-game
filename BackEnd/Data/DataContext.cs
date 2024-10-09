@@ -62,8 +62,6 @@ public class DataContext(DbContextOptions options) : DbContext(options)
                 Id = 1,
                 UserName = "MariMas",
                 DateOfBirth = DateTime.Now,
-                JoinedPredictionGames = null,
-                CreatedPredictionGames = null,
             }
         );
     }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using BackEnd.Models.Classes;
 using itb2203_2024_predictiongame.Backend.Data;
@@ -10,17 +11,17 @@ namespace BackEnd.Data.Repos
 {
     public class ApplicationUserRepo(DataContext context) 
     {
-        private readonly DataContext _context = context;
+        private readonly DataContext context = context;
 
         public async Task<ApplicationUser> SaveApplicationUserToDb(ApplicationUser user){
-            _context.Add(user);
-            await _context.SaveChangesAsync();
+            context.Add(user);
+            await context.SaveChangesAsync();
             return user;
         }
 
-        public async Task<List<ApplicationUser>> GetAllUsers() => await _context.ApplicationUsers.ToListAsync();
-        public async Task<ApplicationUser?> GetUserById(int id) => await _context.ApplicationUsers.FindAsync(id);
-        public async Task<bool> IsUserExistsInDB(int id) => await _context.ApplicationUsers.AnyAsync(x => x.Id == id);
+        public async Task<List<ApplicationUser>> GetAllUsers() => await context.ApplicationUsers.ToListAsync();
+        public async Task<ApplicationUser?> GetUserById(int id) => await context.ApplicationUsers.FindAsync(id);
+        public async Task<bool> IsUserExistsInDB(int id) => await context.ApplicationUsers.AnyAsync(x => x.Id == id);
         public async Task<bool> UpdateApplicationUser(int id, ApplicationUser user){
             bool isIdsMatch = id == user.Id;
             bool userExistsInDB = await IsUserExistsInDB(id);
@@ -29,8 +30,8 @@ namespace BackEnd.Data.Repos
                 return false;
             }
             
-            _context.Update(user);
-            int changesCount = await _context.SaveChangesAsync();
+            context.Update(user);
+            int changesCount = await context.SaveChangesAsync();
             return changesCount == 1;
         }
         public async Task<bool> DeleteUserById(int id){
@@ -39,8 +40,8 @@ namespace BackEnd.Data.Repos
                 return false;
             }
 
-            _context.Remove(user);
-            int changesCount = await _context.SaveChangesAsync();
+            context.Remove(user);
+            int changesCount = await context.SaveChangesAsync();
             return changesCount == 1;
         }
 
