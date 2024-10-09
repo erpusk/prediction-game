@@ -8,7 +8,7 @@ export const useApi = () => {
     options?: NitroFetchOptions<NitroFetchRequest>
   ) => {
     return await $fetch<T>(url, {
-      baseURL: runtimeConfig.public.exercisesApiUrl,
+      baseURL: runtimeConfig.public.predictionGamesApiUrl,
       ...options,
     });
   };

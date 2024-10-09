@@ -10,16 +10,16 @@
   
   const links = [
     {
-      label: "Avaleht",
+      label: "Main page",
       to: "/",
     },
     {
-      label: "Harjutused",
-      to: "/exercises",
+      label: "Prediction Games",
+      to: "/predictiongames",
     },
     {
-      label: "Lisa harjutus",
-      to: "/add-exercise",
-    },
+      label: "Add a prediction game",
+      to: "/add-predictiongame",
+    }
   ];
   </script>  

@@ -1,19 +1,57 @@
-export const useWorkoutStore = defineStore("workout", () => {
+import Predictiongames from "~/pages/predictiongames.vue";
+import type { GameEvent } from "~/types/gameEvent";
+import type { PredictionGame } from "~/types/predictionGame";
+
+export const usePredictionGameStore = defineStore("predictionGame", () => {
   const api = useApi();
-  const exercises = ref<Exercise[]>([]);
+  const predictionGames = ref<PredictionGame[]>([]);
+  
 
-
-  const loadExercises = async () => {
-    exercises.value = await api.customFetch<Exercise[]>("Exercises");
+  const loadPredictionGames = async () => {
+    predictionGames.value = await api.customFetch<PredictionGame[]>("PredictionGames");
   };
 
-  const addExercise = async (exercise: Exercise) => {
-    const res = await api.customFetch("Exercises", {
+  const addPredictionGame = async (game: PredictionGame) => {
+    const res = await api.customFetch("PredictionGames", {
       method: "POST",
-      body: exercise,
+      body: game,
+    });
+    loadPredictionGames();
+  };
+
+  const deletePredictionGame = async (game: PredictionGame) => {
+    await api.customFetch(`PredictionGames/${game.id}`, {
+      method: "DELETE",
+    });
+
+    const index = predictionGames.value.findIndex(g => g.id === game.id);
+    
+    if (index !== -1) {
+      predictionGames.value.splice(index, 1);
+    }
+  }
+
+  return { predictionGames, loadPredictionGames, addPredictionGame, deletePredictionGame};
+});
+
+export const useGameEventsStore = defineStore("gameEvent", () => {
+  const api = useApi();
+  const gameEvents = ref<GameEvent[]>([]);
+
+  
+  
+  const loadGameEvents = async (predictionGameId: string | string[]) => {
+    const url = predictionGameId ? `Event?predictionGameId=${predictionGameId}` : 'Event';
+      gameEvents.value = await api.customFetch<GameEvent[]>(url);
+  };
+
+  const addGameEvent = async (gameEvent: GameEvent) => {
+    const res = await api.customFetch("Event", {
+      method: "POST",
+      body: gameEvent,
     });
   };
 
-  return { exercises, loadExercises, addExercise };
-});
+  return { gameEvents, loadGameEvents, addGameEvent };
+})
 
