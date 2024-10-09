@@ -18,6 +18,9 @@
             <button @click="deletePredictionGame(row)" class="text-red-500 hover:text-red-700">
               <DeleteIconComponent />
             </button>
+            <button @click="showEvents(row)" class="text-red-500 hover:text-red-700">
+              Show events
+            </button>
           </template>
         </UTable>
       </div>
@@ -56,6 +59,7 @@
   
   const predictionGameStore = usePredictionGameStore();
   const { predictionGames } = storeToRefs(predictionGameStore);
+  const gameEventStore = useGameEventsStore();
   const router = useRouter();
   
   const goToCreateNewPredictionGame = () => {
@@ -69,4 +73,9 @@
   const deletePredictionGame = (game: PredictionGame) => {
     predictionGameStore.deletePredictionGame(game);
   };
+
+  const showEvents = (game: PredictionGame) => {
+    const predictionGameId = game.id; // Get the predictionGameId from the clicked game
+    router.push(`/gameevents/${predictionGameId}`);
+  }
   </script>  

@@ -19,7 +19,10 @@
 
 <script setup lang="ts">
 import { useGameEventsStore } from '@/stores/stores';
-defineProps<{ title: string }>();
+const props = defineProps<{
+  title: string;
+  predictionGameId: string | string[]; // Accept predictionGameId as a prop
+  }>();
 
 const columns = [
   {
@@ -46,9 +49,12 @@ const columns = [
 
 const gameEventStore = useGameEventsStore();
 const { gameEvents } = storeToRefs(gameEventStore);
+const route = useRoute();
+
+
 
 onMounted(() => {
-  gameEventStore.loadGameEvents();
+  gameEventStore.loadGameEvents(props.predictionGameId);
 });
 
 //   const deletePredictionGame = (game: PredictionGame) => {

@@ -1,9 +1,11 @@
+import Predictiongames from "~/pages/predictiongames.vue";
 import type { GameEvent } from "~/types/gameEvent";
 import type { PredictionGame } from "~/types/predictionGame";
 
 export const usePredictionGameStore = defineStore("predictionGame", () => {
   const api = useApi();
   const predictionGames = ref<PredictionGame[]>([]);
+  
 
   const loadPredictionGames = async () => {
     predictionGames.value = await api.customFetch<PredictionGame[]>("PredictionGames");
@@ -29,15 +31,18 @@ export const usePredictionGameStore = defineStore("predictionGame", () => {
     }
   }
 
-  return { predictionGames, loadPredictionGames, addPredictionGame, deletePredictionGame };
+  return { predictionGames, loadPredictionGames, addPredictionGame, deletePredictionGame};
 });
 
 export const useGameEventsStore = defineStore("gameEvent", () => {
   const api = useApi();
   const gameEvents = ref<GameEvent[]>([]);
+
   
-  const loadGameEvents = async () => {
-    gameEvents.value = await api.customFetch<GameEvent[]>("Event");
+  
+  const loadGameEvents = async (predictionGameId: string | string[]) => {
+    const url = predictionGameId ? `Event?predictionGameId=${predictionGameId}` : 'Event';
+      gameEvents.value = await api.customFetch<GameEvent[]>(url);
   };
 
   const addGameEvent = async (gameEvent: GameEvent) => {
