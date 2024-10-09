@@ -28,7 +28,11 @@
     import type { GameEvent } from "~/types/gameEvent";
 
     const { addGameEvent } = useGameEventsStore();
-  
+
+    const props = defineProps<{
+      predictionGameId: string | string[]; // Accept predictionGameId as a prop
+    }>();
+
     const state = reactive<GameEvent>({
         id: 0,
         teamA: '',
@@ -61,13 +65,13 @@
             teamA: state.teamA,
             teamB: state.teamB,
             eventDate: eventDateStr.value,
-            predictionGameId: state.predictionGameId,
+            predictionGameId: parseInt(props.predictionGameId.toString(), 10),
             teamAScore: state.teamAScore,
             teamBScore: state.teamBScore,
             isCompleted: state.isCompleted
         };
       addGameEvent(payload);
-      await navigateTo("/events");
+      await navigateTo(`/gameevents/${props.predictionGameId}`);
     }
   
     async function onError(event: FormErrorEvent) {

@@ -15,11 +15,14 @@
       <div v-else class="mt-8">
         <UTable :rows="predictionGames" :columns="columns">
           <template #actions-data="{ row }">
-            <button @click="deletePredictionGame(row)" class="text-red-500 hover:text-red-700">
+            <button @click="deletePredictionGame(row)" class="flex items-center text-red-500 hover:text-red-700">
               <DeleteIconComponent />
             </button>
-            <button @click="showEvents(row)" class="text-red-500 hover:text-red-700">
+            <button @click="showEvents(row)" class="bg-blue-500 text-white rounded px-4 py-2 hover:bg-blue-600">
               Show events
+            </button>
+            <button @click="goToAddGameEvent(row)" class="bg-blue-500 text-white rounded px-4 py-2 hover:bg-blue-600">
+              Add events
             </button>
           </template>
         </UTable>
@@ -77,5 +80,10 @@
   const showEvents = (game: PredictionGame) => {
     const predictionGameId = game.id; // Get the predictionGameId from the clicked game
     router.push(`/gameevents/${predictionGameId}`);
+  }
+
+  const goToAddGameEvent = (game: PredictionGame) => {
+    const predictionGameId = game.id;
+    router.push(`/add-gameevents/${predictionGameId}`)
   }
   </script>  
