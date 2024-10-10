@@ -1,3 +1,6 @@
+using System.Security.Claims;
+using BackEnd.DTOs.PredictionGame;
+using BackEnd.Mappers;
 using itb2203_2024_predictiongame.Backend.Data.Repos;
 using itb2203_2024_predictiongame.Backend.Models.Classes;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +17,8 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
         public async Task<IActionResult> GetAll()
         {
             var result = await repo.GetAllPredictionGames();
-            return Ok(result);
+            var resultAsDto = result.Select(s => s.ToPredictionGameDto()).ToList();
+            return Ok(resultAsDto);
         }
 
         [HttpGet("{id}")]
@@ -25,25 +29,42 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
             {
                 return NotFound();
             }
-            return Ok(predictionGame);
+            return Ok(predictionGame.ToPredictionGameDto());
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreatePredictionGame([FromBody] PredictionGame predictionGame)
+        public async Task<IActionResult> CreatePredictionGame([FromBody] CreatePredictionGameRequestDto predictionGameDto)
         {
-            var predictionGameExists = await repo.PredictionGameExistsInDb(predictionGame.Id);
+            var predictionGameModel = predictionGameDto.ToPredictionGameFromCreateDTO();
+
+            var predictionGameExists = await repo.PredictionGameExistsInDb(predictionGameModel.Id);
             if (predictionGameExists)
             {
                 return Conflict();
             }
-            var result = await repo.CreatePredictionGameToDb(predictionGame);
-            return CreatedAtAction(nameof(GetPredictionGame), new { id = predictionGame.Id }, result);
+            var result = await repo.CreatePredictionGameToDb(predictionGameModel);
+            return CreatedAtAction(nameof(GetPredictionGame), new { id = predictionGameModel.Id }, result.ToPredictionGameDto());
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePredictionGame(int id, [FromBody] PredictionGame predictionGame)
+        public async Task<IActionResult> UpdatePredictionGame(int id, [FromBody] UpdatePredictionGameDto updateDto)
         {
-            bool result = await repo.UpdatePredictionGame(id, predictionGame);
+            var predictionGameModel = await repo.GetPredictionGameById(id);
+            if (predictionGameModel == null) {
+                return NotFound();
+            }
+            
+            predictionGameModel.PredictionGameTitle = updateDto.PredictionGameTitle;
+            predictionGameModel.StartDate = updateDto.StartDate;
+            predictionGameModel.EndDate = updateDto.EndDate;
+            predictionGameModel.Privacy = updateDto.Privacy;
+            predictionGameModel.Events = updateDto.Events?.Select(e => e.ToEvent()).ToList();
+            predictionGameModel.UniqueCode = updateDto.UniqueCode;
+            // predictionGameModel.GameCreator = updateDto.GameCreator != null
+            //                     ? ApplicationUserMappers.ToApplicationUserFromDto(updateDto.GameCreator)
+            //                     : null;
+            
+            bool result = await repo.UpdatePredictionGame(id, predictionGameModel);
             return result ? NoContent() : NotFound();
         }
 
