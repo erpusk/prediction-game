@@ -29,6 +29,7 @@ export const usePredictionGameStore = defineStore("predictionGame", () => {
     if (index !== -1) {
       predictionGames.value.splice(index, 1);
     }
+    loadPredictionGames()
   }
 
   return { predictionGames, loadPredictionGames, addPredictionGame, deletePredictionGame};
@@ -50,8 +51,20 @@ export const useGameEventsStore = defineStore("gameEvent", () => {
       method: "POST",
       body: gameEvent,
     });
+    loadGameEvents
   };
 
-  return { gameEvents, loadGameEvents, addGameEvent };
-})
+  const deletePredictionGameEvent = async (gameEvent: GameEvent) => {
+    await api.customFetch(`Event/${gameEvent.id}`, {
+      method: "DELETE",
+    });
+    const index = gameEvents.value.findIndex(g => g.id === gameEvent.id);
+    
+    if (index !== -1) {
+      gameEvents.value.splice(index, 1);
+    }
+    loadGameEvents
+  }
 
+  return { gameEvents, loadGameEvents, addGameEvent, deletePredictionGameEvent };
+})
