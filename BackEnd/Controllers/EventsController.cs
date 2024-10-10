@@ -1,4 +1,6 @@
 using BackEnd.Data.Repos;
+using BackEnd.DTOs.Event;
+using BackEnd.Mappers;
 using BackEnd.Models.Classes;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,38 +18,51 @@ namespace BackEnd.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] int? PredictionGameId){
-            var events = await _repo.GetAll(PredictionGameId);
-            return Ok(events);
+        public async Task<IActionResult> GetAll([FromQuery] int? predictionGameId){
+            var events = await _repo.GetAll(predictionGameId);
+            var eventsAsDto = events.Select(e => e.ToEventDto()).ToList();
+            return Ok(eventsAsDto);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetEventById([FromRoute]int Id){
-            var events = await _repo.GetById(Id);
+        public async Task<IActionResult> GetEventById([FromRoute]int id){
+            var events = await _repo.GetById(id);
             if (events == null){
                 return NotFound();
             }
-            return Ok(events);
+            return Ok(events.ToEventDto());
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddEvent([FromBody] Event eventModel){
+        public async Task<IActionResult> AddEvent([FromBody] CreateEventRequestDto eventDto){
+            var eventModel = eventDto.ToEventFromCreateDTO();
+
             var eventExists = await _repo.GetById(eventModel.Id);
             if (eventExists != null){
                 return Conflict();
             }
             var result = await _repo.AddEvent(eventModel);
-            return CreatedAtAction(nameof(GetEventById), new {id = eventModel.Id}, eventModel);
+            return CreatedAtAction(nameof(GetEventById), new {id = eventModel.Id}, eventModel.ToEventDto());
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateEvent(int id, [FromBody] Event eventModel){
-            var result = await _repo.UpdateEvent(id, eventModel);
-            if (result == null){
+        public async Task<IActionResult> UpdateEvent(int id, [FromBody] UpdateEventRequestDto eventDto){
+            var eventModel = await _repo.GetById(id);
+            
+            if (eventModel == null) {
                 return NotFound();
             }
 
-            return Ok(result);
+            eventModel.TeamA = eventDto.TeamA;
+            eventModel.TeamB = eventDto.TeamB;
+            eventModel.PredictionGameId = eventDto.PredictionGameId;
+            eventModel.EventDate = eventDto.EventDate;
+            eventModel.TeamAScore = eventDto.TeamAScore;
+            eventModel.TeamBScore = eventDto.TeamBScore;
+            eventModel.IsCompleted = eventDto.IsCompleted;
+
+            var result = await _repo.UpdateEvent(id, eventModel);
+            return result ? NoContent() : NotFound();
         }
 
         [HttpDelete("{id}")]

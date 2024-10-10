@@ -47,19 +47,19 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePredictionGame(int id, [FromBody] UpdatePredictionGameDto updateDto)
+        public async Task<IActionResult> UpdatePredictionGame(int id, [FromBody] UpdatePredictionGameDto predictionGameDto)
         {
             var predictionGameModel = await repo.GetPredictionGameById(id);
             if (predictionGameModel == null) {
                 return NotFound();
             }
             
-            predictionGameModel.PredictionGameTitle = updateDto.PredictionGameTitle;
-            predictionGameModel.StartDate = updateDto.StartDate;
-            predictionGameModel.EndDate = updateDto.EndDate;
-            predictionGameModel.Privacy = updateDto.Privacy;
-            predictionGameModel.Events = updateDto.Events?.Select(e => e.ToEvent()).ToList();
-            predictionGameModel.UniqueCode = updateDto.UniqueCode;
+            predictionGameModel.PredictionGameTitle = predictionGameDto.PredictionGameTitle;
+            predictionGameModel.StartDate = predictionGameDto.StartDate;
+            predictionGameModel.EndDate = predictionGameDto.EndDate;
+            predictionGameModel.Privacy = predictionGameDto.Privacy;
+            predictionGameModel.Events = predictionGameDto.Events?.Select(e => e.ToEvent()).ToList();
+            predictionGameModel.UniqueCode = predictionGameDto.UniqueCode;
             // predictionGameModel.GameCreator = updateDto.GameCreator != null
             //                     ? ApplicationUserMappers.ToApplicationUserFromDto(updateDto.GameCreator)
             //                     : null;

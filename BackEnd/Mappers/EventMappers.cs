@@ -33,5 +33,29 @@ namespace BackEnd.Mappers
                 IsCompleted = eventDto.IsCompleted
             };
         }
+
+        public static Event ToEventFromCreateDTO(this CreateEventRequestDto eventDto) {
+            return new Event {
+                TeamA = eventDto.TeamA,
+                TeamB = eventDto.TeamB,
+                EventDate = eventDto.EventDate,
+                PredictionGameId = eventDto.PredictionGameId,
+                TeamAScore = eventDto.TeamAScore,
+                TeamBScore = eventDto.TeamBScore,
+                IsCompleted = eventDto.IsCompleted
+            };
+        }
+
+        public static Event ToEventFromUpdateDTO(this UpdateEventRequestDto eventDto) {
+            return new Event {
+                TeamA = eventDto.TeamA,
+                TeamB = eventDto.TeamB,
+                EventDate = eventDto.EventDate,
+                PredictionGameId = eventDto.PredictionGameId,
+                TeamAScore = eventDto.TeamAScore,
+                TeamBScore = eventDto.TeamBScore,
+                IsCompleted = eventDto.IsCompleted
+            };
+        }
     }
 }
