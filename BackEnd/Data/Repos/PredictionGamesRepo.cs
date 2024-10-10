@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using itb2203_2024_predictiongame.Backend.Models.Classes;
+using BackEnd.Mappers;
+using BackEnd.DTOs.PredictionGame;
 
 namespace itb2203_2024_predictiongame.Backend.Data.Repos
 {
@@ -41,12 +43,12 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
             context.Update(predictionGame);
 
             int updatedRecordsCount = await context.SaveChangesAsync();
-            return updatedRecordsCount == 1;
+            return updatedRecordsCount > 0;
         }
 
         public async Task<bool> DeletePredictionGameById(int id)
         {
-            PredictionGame? predictionGameInDb = await GetPredictionGameById(id);
+            PredictionGame? predictionGameInDb = await context.PredictionGames.FindAsync(id);
             if (predictionGameInDb == null)
             {
                 return false;
