@@ -33,7 +33,7 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreatePredictionGame([FromBody] PredictionGame predictionGame)
+        public async Task<IActionResult> CreatePredictionGame([FromBody] PredictionGame predictionGame, [FromHeader(Name = "X-UserId")] int userId)
         {
             var predictionGameModel = predictionGameDto.ToPredictionGameFromCreateDTO();
 
@@ -42,6 +42,9 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
             {
                 return Conflict();
             }
+
+            predictionGame.GameCreatorId = userId;
+
             var result = await repo.CreatePredictionGameToDb(predictionGame);
             return CreatedAtAction(nameof(GetPredictionGame), new { id = predictionGame.Id }, result);
         }
