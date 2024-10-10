@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BackEnd.DTOs.ApplicationUser;
 using BackEnd.DTOs.Event;
 
 namespace BackEnd.DTOs.PredictionGame
