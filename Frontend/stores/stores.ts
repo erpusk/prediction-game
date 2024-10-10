@@ -38,6 +38,7 @@ export const usePredictionGameStore = defineStore("predictionGame", () => {
 export const useGameEventsStore = defineStore("gameEvent", () => {
   const api = useApi();
   const gameEvents = ref<GameEvent[]>([]);
+  
 
   
   
@@ -65,6 +66,7 @@ export const useGameEventsStore = defineStore("gameEvent", () => {
     }
     loadGameEvents
   }
+
   const editPredictionGameEvent = async (gameEvent: GameEvent) => {
     await api.customFetch(`Event/${gameEvent.id}`, {
       method: "PUT",
@@ -73,5 +75,10 @@ export const useGameEventsStore = defineStore("gameEvent", () => {
     loadGameEvents(gameEvent.predictionGameId.toString())
   }
 
-  return { gameEvents, loadGameEvents, addGameEvent, deletePredictionGameEvent, editPredictionGameEvent };
+  const loadSingleEvent = async (id: string) => {
+    const event = await api.customFetch<GameEvent>(`Event/${id}`)
+    return event;
+  }
+
+  return { gameEvents, loadGameEvents, addGameEvent, deletePredictionGameEvent, editPredictionGameEvent, loadSingleEvent };
 })

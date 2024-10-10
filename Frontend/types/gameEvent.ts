@@ -4,8 +4,8 @@ export interface GameEvent {
     teamB: string;
     eventDate: Date | string | undefined;
     predictionGameId: number;
-    teamAScore?: number | null;
-    teamBScore?: number | null;
+    teamAScore: number;
+    teamBScore: number;
     isCompleted: boolean;
     // predictions?: Prediction[];  // Uncomment when implementing predictions
   }

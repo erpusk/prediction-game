@@ -19,6 +19,9 @@
               <button @click="goToEditPredictionGameEvent(row)" class="bg-blue-500 text-white rounded px-4 py-2 hover:bg-blue-600">
                 Edit
               </button>
+              <button @click="goToPredictionGameEventDetails(row)" class="bg-blue-500 text-white rounded px-4 py-2 hover:bg-blue-600">
+                Details
+              </button>
           </template>
         </UTable>
       </div>
@@ -78,5 +81,8 @@ const deletePredictionGameEvent = (gameEvent: GameEvent) => {
 
 const goToEditPredictionGameEvent = (gameEvent: GameEvent) => {
   router.push(`/edit-gameevent/${props.predictionGameId}/${gameEvent.id}`)
+}
+const goToPredictionGameEventDetails = (gameEvent: GameEvent) => {
+  router.push(`/gameevent-details/${props.predictionGameId}/${gameEvent.id}`)
 }
 </script>

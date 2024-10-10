@@ -20,7 +20,7 @@
       </UFormGroup>
       
       <div class="flex justify-center space-x-4 mt-6">
-        <UButton type="button" @click="navigateToListOfPredictionGames" class="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-md transition duration-300">
+        <UButton type="button" @click="navigateToListOfGameEvents" class="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-md transition duration-300">
             Back to List
         </UButton>
         <UButton type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition duration-300">
@@ -48,8 +48,8 @@
         teamB: '',
         eventDate: new Date(),
         predictionGameId: 0,
-        teamAScore: null,
-        teamBScore: null,
+        teamAScore: 0,
+        teamBScore: 0,
         isCompleted: false
     });
   
@@ -91,7 +91,7 @@
 
     const router = useRouter()
 
-    const navigateToListOfPredictionGames = () => {
-    router.push('/predictiongames');
+    const navigateToListOfGameEvents = () => {
+    router.push(`/gameevents/${props.predictionGameId}`);
     };
   </script>

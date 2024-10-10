@@ -49,8 +49,8 @@
         teamB: '',
         eventDate: new Date(),
         predictionGameId: 0,
-        teamAScore: null,
-        teamBScore: null,
+        teamAScore: 0,
+        teamBScore: 0,
         isCompleted: false
     });
   
