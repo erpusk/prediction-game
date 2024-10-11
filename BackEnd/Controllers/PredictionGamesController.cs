@@ -33,9 +33,9 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreatePredictionGame([FromBody] PredictionGame predictionGame, [FromHeader(Name = "X-UserId")] int userId)
+        public async Task<IActionResult> CreatePredictionGame([FromBody] CreatePredictionGameRequestDto predictionGameDto, [FromHeader(Name = "UserId")] int userId)
         {
-            var predictionGameModel = predictionGameDto.ToPredictionGameFromCreateDTO();
+            var predictionGameModel = predictionGameDto.ToPredictionGameFromCreateDTO(userId);
 
             var predictionGameExists = await repo.PredictionGameExistsInDb(predictionGameModel.Id);
             if (predictionGameExists)
@@ -43,10 +43,8 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
                 return Conflict();
             }
 
-            predictionGame.GameCreatorId = userId;
-
-            var result = await repo.CreatePredictionGameToDb(predictionGame);
-            return CreatedAtAction(nameof(GetPredictionGame), new { id = predictionGame.Id }, result);
+            var result = await repo.CreatePredictionGameToDb(predictionGameModel);
+            return CreatedAtAction(nameof(GetPredictionGame), new { id = predictionGameModel.Id }, result.ToPredictionGameDto());
         }
 
         [HttpPut("{id}")]
