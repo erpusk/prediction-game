@@ -12,11 +12,11 @@
       </UFormGroup>
   
       <UFormGroup label="Teine meeskond" name="teamB">
-        <UInput v-model="state.teamB" />
+        <UInput v-model="state.teamB" class="border rounded-md p-2"/>
       </UFormGroup>
   
       <UFormGroup label="Toimumisaeg" name="eventDate">
-        <UInput v-model="eventDateStr" type="date" />
+        <UInput v-model="eventDateStr" type="date" class="border rounded-md p-2"/>
       </UFormGroup>
       
       <div class="flex justify-center space-x-4 mt-6">

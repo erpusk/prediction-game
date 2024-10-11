@@ -12,11 +12,11 @@
       </UFormGroup>
   
       <UFormGroup label="Teine meeskond" name="teamB">
-        <UInput v-model="state.teamB" />
+        <UInput v-model="state.teamB" class="border rounded-md p-2"/>
       </UFormGroup>
   
       <UFormGroup label="Toimumisaeg" name="eventDate">
-        <UInput v-model="eventDateStr" type="date" />
+        <UInput v-model="eventDateStr" type="date" class="border rounded-md p-2"/>
       </UFormGroup>
       
       <div class="flex justify-center space-x-4 mt-6">
@@ -37,6 +37,8 @@
     import type { GameEvent } from "~/types/gameEvent";
 
     const { editPredictionGameEvent } = useGameEventsStore();
+    const {loadSingleEvent} = useGameEventsStore();
+    
 
     const props = defineProps<{
       predictionGameId: string | string[],
@@ -60,6 +62,20 @@
             state.eventDate = value;
         }
     });
+
+    onMounted(async () => {
+  const gameEventData = await loadSingleEvent(props.gameEventId.toString());
+  if (gameEventData) {
+    state.id = gameEventData.id;
+    state.teamA = gameEventData.teamA;
+    state.teamB = gameEventData.teamB;
+    state.eventDate = new Date(gameEventData.eventDate);
+    state.predictionGameId = gameEventData.predictionGameId;
+    state.teamAScore = gameEventData.teamAScore;
+    state.teamBScore = gameEventData.teamBScore;
+    state.isCompleted = gameEventData.isCompleted;
+  }
+});
   
     const validate = (state: any): FormError[] => {
       const errors = [];

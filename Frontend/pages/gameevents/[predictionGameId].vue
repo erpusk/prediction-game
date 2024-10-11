@@ -3,9 +3,9 @@
   </template>
   
   <script setup lang="ts">
-  import GameEventsList from '@/components/GameEventsList.vue'; // Adjust path as necessary
+  import GameEventsList from '@/components/GameEventsList.vue'; 
   import { useRoute } from 'vue-router';
   
   const route = useRoute();
-  const predictionGameId = route.params.predictionGameId; // Get predictionGameId from route params
+  const predictionGameId = route.params.predictionGameId; 
   </script>

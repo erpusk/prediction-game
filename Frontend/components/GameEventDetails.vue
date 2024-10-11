@@ -1,7 +1,6 @@
 <template>
     <div class="event-details p-4 bg-white rounded-lg shadow-md">
       <h2 class="text-lg font-bold text-center mb-2 text-black">Event Details</h2>
-      <p class="border rounded-md p-2 text-center text-black"><strong>Event ID:</strong> {{ }}</p>
       <p class="border rounded-md p-2 text-center text-black"><strong>Team A:</strong> {{ event.teamA }}</p>
       <p class="border rounded-md p-2 text-center text-black"><strong>Team B:</strong> {{ event.teamB }}</p>
       <p class="border rounded-md p-2 text-center text-black"><strong>Event Date:</strong> {{ event.eventDate }}</p>
@@ -14,7 +13,7 @@
   
   <script setup lang="ts">
   import { defineProps, ref, computed, onMounted } from 'vue';
-  import { useGameEventsStore } from '~/stores/stores'; // Adjust the import path as necessary
+  import { useGameEventsStore } from '~/stores/stores'; 
   const props = defineProps<{
     id: string | string[];
     predictionGameId: string | string[];
