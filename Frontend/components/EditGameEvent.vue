@@ -6,7 +6,7 @@
       @submit="onSubmit"
       @error="onError"
     >
-      <h2 class="text-2xl font-semibold text-center mb-4 text-black">Add an event</h2>
+      <h2 class="text-2xl font-semibold text-center mb-4 text-black">Edit an event</h2>
       <UFormGroup label="Esimene meeskond" name="teamA">
         <UInput v-model="state.teamA" class="border rounded-md p-2"/>
       </UFormGroup>
@@ -24,7 +24,7 @@
             Back to List
         </UButton>
         <UButton type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition duration-300">
-          Add
+          Confirm
         </UButton>
       </div>
       
@@ -36,10 +36,13 @@
     import { useGameEventsStore } from "~/stores/stores";
     import type { GameEvent } from "~/types/gameEvent";
 
-    const { addGameEvent } = useGameEventsStore();
+    const { editPredictionGameEvent } = useGameEventsStore();
+    const {loadSingleEvent} = useGameEventsStore();
+    
 
     const props = defineProps<{
-      predictionGameId: string | string[]; // Accept predictionGameId as a prop
+      predictionGameId: string | string[],
+      gameEventId: string | string[];
     }>();
 
     const state = reactive<GameEvent>({
@@ -59,6 +62,20 @@
             state.eventDate = value;
         }
     });
+
+    onMounted(async () => {
+  const gameEventData = await loadSingleEvent(props.gameEventId.toString());
+  if (gameEventData) {
+    state.id = gameEventData.id;
+    state.teamA = gameEventData.teamA;
+    state.teamB = gameEventData.teamB;
+    state.eventDate = new Date(gameEventData.eventDate);
+    state.predictionGameId = gameEventData.predictionGameId;
+    state.teamAScore = gameEventData.teamAScore;
+    state.teamBScore = gameEventData.teamBScore;
+    state.isCompleted = gameEventData.isCompleted;
+  }
+});
   
     const validate = (state: any): FormError[] => {
       const errors = [];
@@ -70,16 +87,18 @@
   
     async function onSubmit(gameEvent: FormSubmitEvent<any>) {
         const payload = {
-            id: state.id,
+            
+            
+            id: parseInt(props.gameEventId.toString()),
             teamA: state.teamA,
             teamB: state.teamB,
             eventDate: eventDateStr.value,
-            predictionGameId: parseInt(props.predictionGameId.toString(), 10),
+            predictionGameId: parseInt(props.predictionGameId.toString()),
             teamAScore: state.teamAScore,
             teamBScore: state.teamBScore,
             isCompleted: state.isCompleted
         };
-      addGameEvent(payload);
+      editPredictionGameEvent(payload);
       await navigateTo(`/gameevents/${props.predictionGameId}`);
     }
   
