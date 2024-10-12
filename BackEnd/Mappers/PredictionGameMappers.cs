@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using BackEnd.DTOs.Event;
 using BackEnd.DTOs.PredictionGame;
 using itb2203_2024_predictiongame.Backend.Models.Classes;
