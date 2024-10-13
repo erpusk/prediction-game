@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using BackEnd.DTOs.Event;
 using BackEnd.DTOs.PredictionGame;
 using itb2203_2024_predictiongame.Backend.Models.Classes;
@@ -28,7 +24,7 @@ namespace BackEnd.Mappers
         public static PredictionGame ToPredictionGameFromCreateDTO(this CreatePredictionGameRequestDto predictionGameDto) {
             return new PredictionGame {
                 PredictionGameTitle = predictionGameDto.PredictionGameTitle,
-                CreationDate = DateTime.Now,
+                CreationDate = DateTime.Now.ToUniversalTime(),
                 StartDate = predictionGameDto.StartDate,
                 EndDate = predictionGameDto.EndDate,
                 Privacy = predictionGameDto.Privacy,

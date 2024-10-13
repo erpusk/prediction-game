@@ -1,8 +1,6 @@
-using System.Security.Claims;
 using BackEnd.DTOs.PredictionGame;
 using BackEnd.Mappers;
 using itb2203_2024_predictiongame.Backend.Data.Repos;
-using itb2203_2024_predictiongame.Backend.Models.Classes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace itb2203_2024_predictiongame.Backend.Controllers

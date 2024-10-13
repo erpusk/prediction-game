@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using BackEnd.Models.Classes;
 using itb2203_2024_predictiongame.Backend.Data;
 using Microsoft.EntityFrameworkCore;

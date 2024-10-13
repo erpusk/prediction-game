@@ -1,7 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using itb2203_2024_predictiongame.Backend.Models.Classes;
-using BackEnd.Mappers;
-using BackEnd.DTOs.PredictionGame;
 
 namespace itb2203_2024_predictiongame.Backend.Data.Repos
 {
