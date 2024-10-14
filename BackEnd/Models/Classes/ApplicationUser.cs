@@ -1,4 +1,5 @@
 
+using itb2203_2024_predictiongame.Backend.Models.Classes;
 using Microsoft.AspNetCore.Identity;
 
 namespace BackEnd.Models.Classes
