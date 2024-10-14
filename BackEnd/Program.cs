@@ -15,7 +15,7 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>{
 });
 
 builder.Services.AddDbContext<DataContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")))
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")))
     .AddScoped<PredictionGamesRepo>()
     .AddScoped<EventRepo>()
     .AddScoped<ApplicationUserRepo>();
@@ -48,5 +48,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.MapControllers();
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 app.Run();

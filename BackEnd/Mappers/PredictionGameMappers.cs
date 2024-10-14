@@ -25,7 +25,7 @@ namespace BackEnd.Mappers
         public static PredictionGame ToPredictionGameFromCreateDTO(this CreatePredictionGameRequestDto predictionGameDto, int gameCreatorId) {
             return new PredictionGame {
                 PredictionGameTitle = predictionGameDto.PredictionGameTitle,
-                CreationDate = DateTime.Now,
+                CreationDate = DateTime.Now.ToUniversalTime(),
                 StartDate = predictionGameDto.StartDate,
                 EndDate = predictionGameDto.EndDate,
                 Privacy = predictionGameDto.Privacy,

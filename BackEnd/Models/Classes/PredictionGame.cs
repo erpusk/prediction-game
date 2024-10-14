@@ -7,10 +7,10 @@ namespace itb2203_2024_predictiongame.Backend.Models.Classes
     {
         public int Id { get; set; }
         public string PredictionGameTitle { get; set; } = string.Empty;
-        public DateTime CreationDate { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        public int GameCreatorId { get; set; }
+        public DateTime CreationDate { get; set; } = DateTime.Now.ToUniversalTime();
+        public DateTime StartDate { get; set; } = DateTime.Now.ToUniversalTime();
+        public DateTime EndDate { get; set; } = DateTime.Now.ToUniversalTime();
+        public int? GameCreatorId { get; set; } = null;
         // public ApplicationUser GameCreator { get; set; }
         public string Privacy { get; set; } = "Private game";
         public List<Event>? Events { get; set; } = new List<Event>();
