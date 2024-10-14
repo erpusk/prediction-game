@@ -54,18 +54,36 @@
     });
   
     const startDateStr = computed({
-        get: () => (state.startDate instanceof Date ? state.startDate.toISOString().split('T')[0] : state.startDate),
-        set: (value: string) => {
-            state.startDate = value;
+    get: () => {
+        if (state.startDate) {
+            return (new Date(state.startDate)).toISOString().split('T')[0];
         }
-    });
+        return ''; // Tagasta tühi string, kui kuupäeva pole
+    },
+    set: (value: string) => {
+        if (value) {
+            state.startDate = new Date(value).toISOString();  // Määrame kuupäeva ISO formaadis
+        } else {
+            state.startDate = ''; // Tühjenda väärtus, kui kuupäev on määramata
+        }
+    }
+});
 
-    const endDateStr = computed({
-        get: () => (state.endDate instanceof Date ? state.endDate.toISOString().split('T')[0] : state.endDate),
-        set: (value: string) => {
-            state.endDate = value;
+const endDateStr = computed({
+    get: () => {
+        if (state.endDate) {
+            return (new Date(state.endDate)).toISOString().split('T')[0];
         }
-    });
+        return '';
+    },
+    set: (value: string) => {
+        if (value) {
+            state.endDate = new Date(value).toISOString();
+        } else {
+            state.endDate = '';
+        }
+    }
+});
   
     const validate = (state: any): FormError[] => {
       const errors = [];
@@ -79,9 +97,9 @@
         const payload = {
             id: state.id,
             predictionGameTitle: state.predictionGameTitle,
-            creationDate: state.creationDate,
-            startDate: startDateStr.value,
-            endDate: endDateStr.value,
+            creationDate: new Date().toISOString(),
+            startDate: startDateStr.value ? new Date(startDateStr.value).toISOString() : null,
+            endDate: endDateStr.value ? new Date(endDateStr.value).toISOString() : null,
             gameCreatorId: state.gameCreatorId,
             privacy: state.privacy
         };
