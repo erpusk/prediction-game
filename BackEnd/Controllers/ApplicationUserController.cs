@@ -1,4 +1,6 @@
 using BackEnd.Data.Repos;
+using BackEnd.DTOs.ApplicationUser;
+using BackEnd.Mappers;
 using BackEnd.Models.Classes;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,7 +15,8 @@ namespace BackEnd.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll(){
             var result = await repo.GetAllUsers();
-            return Ok(result);
+            var usersAsDto = result.Select(e => e.ToApplicationUserDto()).ToList();
+            return Ok(usersAsDto);
         }
 
         [HttpGet("{id}")]
@@ -22,23 +25,34 @@ namespace BackEnd.Controllers
             if (result == null){
                 return NotFound();
             }
-            return Ok(result);
+            return Ok(result.ToApplicationUserDto());
         }
         [HttpPost]
-        public async Task<IActionResult> SaveApplicationUser([FromBody] ApplicationUser user){
-            var userExists = await repo.IsUserExistsInDB(user.Id);
+        public async Task<IActionResult> SaveApplicationUser([FromBody]CreateApplicationUserRequestDto userDto){
+            var applicationUserModel = userDto.ToApplicationUserFromCreateDto();
 
+
+            var userExists = await repo.IsUserExistsInDB(applicationUserModel.Id);
             if (userExists) {
                 return Conflict();
             }
 
-            var result = await repo.SaveApplicationUserToDb(user);
-            return CreatedAtAction(nameof(GetApplicationUser), new { id = user.Id }, result);
+            var result = await repo.SaveApplicationUserToDb(applicationUserModel);
+            return CreatedAtAction(nameof(GetApplicationUser), new { id = applicationUserModel.Id }, result.ToApplicationUserDto());
         }
 
         [HttpPut("{id}")] 
-        public async Task<IActionResult> UpdateApplicationUser(int id, [FromBody]ApplicationUser user){
-            var result = await repo.UpdateApplicationUser(id, user);
+        public async Task<IActionResult> UpdateApplicationUser(int id, [FromBody] UpdateApplicationUserDto userDto){
+            var userModel = await repo.GetUserById(id);
+
+            if (userModel == null){
+                return NotFound();
+            }
+
+            userModel.UserName = userDto.UserName;
+            userModel.DateOfBirth = userDto.DateOfBirth;
+
+            var result = await repo.UpdateApplicationUser(id, userModel);
             return result ? NoContent() : NotFound();
         }
 

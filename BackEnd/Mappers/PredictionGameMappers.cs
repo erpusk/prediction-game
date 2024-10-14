@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using BackEnd.DTOs.Event;
 using BackEnd.DTOs.PredictionGame;
 using itb2203_2024_predictiongame.Backend.Models.Classes;
@@ -18,14 +14,15 @@ namespace BackEnd.Mappers
                 EndDate = predictionGameModel.EndDate,
                 Privacy = predictionGameModel.Privacy,
                 Events = predictionGameModel.Events?.Select(e => e.ToEventDto()).ToList() ?? new List<EventDto>(),
-                UniqueCode = predictionGameModel.UniqueCode
+                UniqueCode = predictionGameModel.UniqueCode,
+                GameCreatorId = predictionGameModel.GameCreatorId
                 // GameCreator = predictionGameModel.GameCreator != null 
                 //             ? ApplicationUserMappers.ToApplicationUserDto(predictionGameModel.GameCreator) 
                 //             : null,
             };
         }
 
-        public static PredictionGame ToPredictionGameFromCreateDTO(this CreatePredictionGameRequestDto predictionGameDto) {
+        public static PredictionGame ToPredictionGameFromCreateDTO(this CreatePredictionGameRequestDto predictionGameDto, int gameCreatorId) {
             return new PredictionGame {
                 PredictionGameTitle = predictionGameDto.PredictionGameTitle,
                 CreationDate = DateTime.Now,
@@ -33,7 +30,8 @@ namespace BackEnd.Mappers
                 EndDate = predictionGameDto.EndDate,
                 Privacy = predictionGameDto.Privacy,
                 Events = predictionGameDto.Events?.Select(e => e.ToEvent()).ToList(),
-                UniqueCode = predictionGameDto.UniqueCode
+                UniqueCode = predictionGameDto.UniqueCode,
+                GameCreatorId = gameCreatorId
                 // GameCreator = predictionGameDto.GameCreator != null
                 //                 ? ApplicationUserMappers.ToApplicationUserFromDto(predictionGameDto.GameCreator)
                 //                 : null,
