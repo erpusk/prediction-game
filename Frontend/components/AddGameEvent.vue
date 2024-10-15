@@ -54,11 +54,18 @@
     });
   
     const eventDateStr = computed({
-        get: () => (state.eventDate instanceof Date ? state.eventDate.toISOString().split('T')[0] : state.eventDate),
-        set: (value: string) => {
-            state.eventDate = value;
+    get: () => {
+        if (state.eventDate instanceof Date) {
+            return state.eventDate.toISOString().split('T')[0];
         }
+        return state.eventDate;
+    },
+    set: (value: string) => {
+        state.eventDate = value ? new Date(value) : ''; 
+    }
     });
+
+
   
     const validate = (state: any): FormError[] => {
       const errors = [];
@@ -73,7 +80,7 @@
             id: state.id,
             teamA: state.teamA,
             teamB: state.teamB,
-            eventDate: eventDateStr.value,
+            eventDate: state.eventDate instanceof Date ? state.eventDate.toISOString() : '',
             predictionGameId: parseInt(props.predictionGameId.toString(), 10),
             teamAScore: state.teamAScore,
             teamBScore: state.teamBScore,
