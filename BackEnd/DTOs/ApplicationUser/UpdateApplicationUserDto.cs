@@ -8,6 +8,6 @@ namespace BackEnd.DTOs.ApplicationUser
     public class UpdateApplicationUserDto
     {
         public string? UserName { get; set; }
-        public DateTime DateOfBirth { get; set; }
+        public DateTime DateOfBirth { get; set; } 
     }
 }

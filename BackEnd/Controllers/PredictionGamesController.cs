@@ -1,3 +1,4 @@
+using BackEnd.Data.Repos;
 using BackEnd.DTOs.PredictionGame;
 using BackEnd.Mappers;
 using itb2203_2024_predictiongame.Backend.Data.Repos;
@@ -7,9 +8,10 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class PredictionGamesController(PredictionGamesRepo repo) : ControllerBase()
+    public class PredictionGamesController(PredictionGamesRepo repo, ApplicationUserRepo usersRepo) : ControllerBase()
     {
         private readonly PredictionGamesRepo repo = repo;
+        private readonly ApplicationUserRepo usersRepo = usersRepo;
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
@@ -33,7 +35,13 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
         [HttpPost]
         public async Task<IActionResult> CreatePredictionGame([FromBody] CreatePredictionGameRequestDto predictionGameDto, [FromHeader(Name = "UserId")] int userId)
         {
-            var predictionGameModel = predictionGameDto.ToPredictionGameFromCreateDTO(userId);
+            var gameCreator = await usersRepo.GetUserById(userId);
+            if (gameCreator == null)
+            {
+                return Conflict();
+            }
+
+            var predictionGameModel = predictionGameDto.ToPredictionGameFromCreateDTO(userId, gameCreator);
 
             var predictionGameExists = await repo.PredictionGameExistsInDb(predictionGameModel.Id);
             if (predictionGameExists)

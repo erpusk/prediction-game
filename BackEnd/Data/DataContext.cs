@@ -14,6 +14,11 @@ public class DataContext(DbContextOptions options) : DbContext(options)
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<PredictionGame>()
+        .HasOne(e => e.GameCreator)
+        .WithMany(e => e.CreatedPredictionGames)
+        .HasForeignKey(e => e.GameCreatorId)
+        .IsRequired();
         base.OnModelCreating(modelBuilder);
 
         ConfigurePredictionGameEntity(modelBuilder.Entity<PredictionGame>());
