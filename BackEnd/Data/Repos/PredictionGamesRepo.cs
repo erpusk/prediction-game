@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using itb2203_2024_predictiongame.Backend.Models.Classes;
+using BackEnd.Models.Classes;
 
 namespace itb2203_2024_predictiongame.Backend.Data.Repos
 {
@@ -19,7 +20,7 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
         //READ
         public async Task<List<PredictionGame>> GetAllPredictionGames()
         {
-            IQueryable<PredictionGame> query = context.PredictionGames.Include(m => m.Events).AsQueryable();
+            IQueryable<PredictionGame> query = context.PredictionGames.Include(m => m.Events).Include(m => m.GameCreator).AsQueryable();
 
             return await query.ToListAsync();
         }
@@ -57,5 +58,7 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
 
             return changesCount == 1;
         }
+
+        public async Task<ApplicationUser?> GetUserById(int userId) => await context.ApplicationUsers.FindAsync(userId); //abimeetod Kasutaja saamiseks.
     }
 }

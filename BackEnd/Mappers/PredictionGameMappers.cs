@@ -1,3 +1,4 @@
+using BackEnd.DTOs.ApplicationUser;
 using BackEnd.DTOs.Event;
 using BackEnd.DTOs.PredictionGame;
 using BackEnd.Models.Classes;
