@@ -20,7 +20,10 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
         //READ
         public async Task<List<PredictionGame>> GetAllPredictionGames()
         {
-            IQueryable<PredictionGame> query = context.PredictionGames.Include(m => m.Events).Include(m => m.GameCreator).AsQueryable();
+            IQueryable<PredictionGame> query = context.PredictionGames
+            .Include(m => m.Events)
+            .Include(m => m.GameCreator)
+            .AsQueryable();
 
             return await query.ToListAsync();
         }

@@ -12,7 +12,7 @@ namespace BackEnd.Controllers
     {
         private readonly ApplicationUserRepo repo = repo;
         
-        [HttpGet]
+        [HttpGet]  // Võiks olla tulevikus ainult kindla mängu kasutajate kuvamiseks.
         public async Task<IActionResult> GetAll(){
             var result = await repo.GetAllUsers();
             var usersAsDto = result.Select(e => e.ToApplicationUserDto()).ToList();
@@ -20,7 +20,7 @@ namespace BackEnd.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetApplicationUser(int id){
+        public async Task<IActionResult> GetApplicationUser(int id){  //Kasutaja profiili kuvamiseks.
             var result = await repo.GetUserById(id);
             if (result == null){
                 return NotFound();
@@ -41,8 +41,8 @@ namespace BackEnd.Controllers
             return CreatedAtAction(nameof(GetApplicationUser), new { id = applicationUserModel.Id }, result.ToApplicationUserDto());
         }
 
-        [HttpPut("{id}")] 
-        public async Task<IActionResult> UpdateApplicationUser(int id, [FromBody] UpdateApplicationUserDto userDto){
+        [HttpPut("{id}")] //Kasutaja andmete uuendamine, kontstantseid andmeid nagu sünnipäev ei muudaks.
+        public async Task<IActionResult> UpdateApplicationUser(int id, [FromBody] UpdateApplicationUserDto userDto){ 
             var userModel = await repo.GetUserById(id);
 
             if (userModel == null){
@@ -56,7 +56,7 @@ namespace BackEnd.Controllers
             return result ? NoContent() : NotFound();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}")] // Kasutaja kustutamine, kas on vaja?
         public async Task<IActionResult> DeleteApplicationUser(int id){
             var result = await repo.DeleteUserById(id);
             return result ? NoContent() : NotFound();
