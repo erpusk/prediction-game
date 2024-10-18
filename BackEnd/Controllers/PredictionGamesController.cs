@@ -40,7 +40,7 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
                 return Conflict();
             }
 
-            var predictionGameModel = predictionGameDto.ToPredictionGameFromCreateDTO(userId, gameCreator);
+            var predictionGameModel = predictionGameDto.ToPredictionGameFromCreateDTO(gameCreator);
 
             var predictionGameExists = await repo.PredictionGameExistsInDb(predictionGameModel.Id);
             if (predictionGameExists)

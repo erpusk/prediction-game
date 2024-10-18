@@ -22,7 +22,7 @@ namespace BackEnd.Mappers
             };
         }
 
-        public static PredictionGame ToPredictionGameFromCreateDTO(this CreatePredictionGameRequestDto predictionGameDto, int gameCreatorId, ApplicationUser gameCreator) {
+        public static PredictionGame ToPredictionGameFromCreateDTO(this CreatePredictionGameRequestDto predictionGameDto, ApplicationUser gameCreator) {
             return new PredictionGame {
                 PredictionGameTitle = predictionGameDto.PredictionGameTitle,
                 CreationDate = DateTime.Now.ToUniversalTime(),
@@ -31,7 +31,7 @@ namespace BackEnd.Mappers
                 Privacy = predictionGameDto.Privacy,
                 Events = predictionGameDto.Events?.Select(e => e.ToEvent()).ToList(),
                 UniqueCode = predictionGameDto.UniqueCode,
-                GameCreatorId = gameCreatorId,
+                GameCreatorId = gameCreator.Id,
                 GameCreator = gameCreator
             };
         }

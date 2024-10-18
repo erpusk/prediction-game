@@ -45,6 +45,13 @@ public class DataContext(DbContextOptions options) : DbContext(options)
 
     private static void ConfigurePredictionGameEntity(EntityTypeBuilder<PredictionGame> predictionGame)
     {
+
+        predictionGame
+        .HasOne(e => e.GameCreator)
+        .WithMany(e => e.CreatedPredictionGames)
+        .HasForeignKey(e => e.GameCreatorId)
+        .IsRequired();
+        
         predictionGame.Property(x => x.Id).ValueGeneratedOnAdd();
 
         predictionGame.HasData(
