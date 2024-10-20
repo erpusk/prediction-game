@@ -1,5 +1,7 @@
+using BackEnd.DTOs.ApplicationUser;
 using BackEnd.DTOs.Event;
 using BackEnd.DTOs.PredictionGame;
+using BackEnd.Models.Classes;
 using itb2203_2024_predictiongame.Backend.Models.Classes;
 
 namespace BackEnd.Mappers
@@ -15,14 +17,12 @@ namespace BackEnd.Mappers
                 Privacy = predictionGameModel.Privacy,
                 Events = predictionGameModel.Events?.Select(e => e.ToEventDto()).ToList() ?? new List<EventDto>(),
                 UniqueCode = predictionGameModel.UniqueCode,
-                GameCreatorId = predictionGameModel.GameCreatorId
-                // GameCreator = predictionGameModel.GameCreator != null 
-                //             ? ApplicationUserMappers.ToApplicationUserDto(predictionGameModel.GameCreator) 
-                //             : null,
+                GameCreatorId = predictionGameModel.GameCreatorId,
+                GameCreator = predictionGameModel.GameCreator?.ToApplicationUserDto(),
             };
         }
 
-        public static PredictionGame ToPredictionGameFromCreateDTO(this CreatePredictionGameRequestDto predictionGameDto, int gameCreatorId) {
+        public static PredictionGame ToPredictionGameFromCreateDTO(this CreatePredictionGameRequestDto predictionGameDto, ApplicationUser gameCreator) {
             return new PredictionGame {
                 PredictionGameTitle = predictionGameDto.PredictionGameTitle,
                 CreationDate = DateTime.Now.ToUniversalTime(),
@@ -31,10 +31,8 @@ namespace BackEnd.Mappers
                 Privacy = predictionGameDto.Privacy,
                 Events = predictionGameDto.Events?.Select(e => e.ToEvent()).ToList(),
                 UniqueCode = predictionGameDto.UniqueCode,
-                GameCreatorId = gameCreatorId
-                // GameCreator = predictionGameDto.GameCreator != null
-                //                 ? ApplicationUserMappers.ToApplicationUserFromDto(predictionGameDto.GameCreator)
-                //                 : null,
+                GameCreatorId = gameCreator.Id,
+                GameCreator = gameCreator
             };
         }
 

@@ -10,7 +10,7 @@ namespace BackEnd.DTOs.ApplicationUser
     {
         public int Id { get; set; }
         public string? UserName { get; set; }
-        public DateTime DateOfBirth { get; set; }
+        public DateTime DateOfBirth { get; set; } = DateTime.Now.ToUniversalTime();
         public List<PredictionGameDto> CreatedPredictionGames { get; set; } = new List<PredictionGameDto>();
         //public List<PredictionGameDto> JoinedPredictionGames { get; set; } = new List<PredictionGameDto>();
     }
