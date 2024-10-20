@@ -2,7 +2,9 @@
     <div class="p-6 bg-white rounded-lg shadow-lg">
       <button 
         @click="goToCreateNewPredictionGameEvent(props.predictionGameId)" 
-        class="absolute top-20 right-10 bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white font-semibold py-3 px-6 rounded-md shadow-md hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
+        class="absolute top-20 right-10 bg-gradient-to-r from-blue-500 to-blue-700 
+        hover:from-blue-600 hover:to-blue-800 text-white font-semibold py-3 px-6 rounded-md shadow-md 
+        hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
         Create a new Event
       </button>
 
@@ -32,7 +34,7 @@
 import { useGameEventsStore } from '@/stores/stores';
 const props = defineProps<{
   title: string;
-  predictionGameId: string | string[]; // Accept predictionGameId as a prop
+  predictionGameId: string | string[];
   }>();
 
 const columns = [

@@ -1,17 +1,19 @@
 <template>
-    <div v-if="$route.path !== '/'" class="button-group fixed bottom-4 left-4">
-        <button class="btn-primary" @click="ToMainPage">Back</button>
-      </div>
-  </template>
-  
-  <script setup lang="ts">
-  import { useRouter, useRoute} from 'vue-router';
-  const router = useRouter();
-  const route = useRoute();
-  const ToMainPage = () => {
-    router.push('/');
-  };
-  </script>  
+  <div v-if="$route.path !== '/'" class="button-group fixed bottom-4 left-4">
+    <button class="btn-primary" @click="goBack">Back</button>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { useRouter, useRoute } from 'vue-router';
+
+const router = useRouter();
+const route = useRoute();
+
+const goBack = () => {
+  router.go(-1); 
+};
+</script> 
 
 <style scoped>
   .btn-primary {

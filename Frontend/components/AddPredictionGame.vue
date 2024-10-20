@@ -25,8 +25,9 @@
       </UFormGroup>
   
       <div class="flex justify-center space-x-4 mt-6">
-        <UButton type="button" @click="navigateToListOfPredictionGames" class="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-md transition duration-300">
-            Back to List
+        <UButton type="button" @click="navigateToListOfPredictionGames" class="bg-gray-300 
+        hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-md transition duration-300">
+            To Games List
         </UButton>
         <UButton type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition duration-300">
             Create a Game
