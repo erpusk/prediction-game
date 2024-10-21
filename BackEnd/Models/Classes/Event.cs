@@ -10,8 +10,6 @@ namespace BackEnd.Models.Classes
         public int? TeamAScore { get; set; } 
         public int? TeamBScore { get; set; } 
         public bool IsCompleted { get; set; } 
-
-    // Predictions (optional, depending on if prediction logic is part of the match)
-    // public List<Prediction> Predictions { get; set; } = new List<Prediction>();
+        public List<Prediction> Predictions { get; set; } = new List<Prediction>();
     }
 }

@@ -11,6 +11,7 @@ public class DataContext(DbContextOptions options) : DbContext(options)
     public DbSet<PredictionGame> PredictionGames { get; set; }
     public DbSet<Event> Events { get; set; }
     public DbSet<ApplicationUser> ApplicationUsers{ get; set; }
+    public DbSet<Prediction> Predictions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -19,6 +20,7 @@ public class DataContext(DbContextOptions options) : DbContext(options)
         ConfigurePredictionGameEntity(modelBuilder.Entity<PredictionGame>());
         ConfigureEventEntity(modelBuilder.Entity<Event>());
         ConfigureApplicationUserEntity(modelBuilder.Entity<ApplicationUser>());
+        ConfigurePredictionEntity(modelBuilder.Entity<Prediction>());
     }
 
     private static void ConfigureEventEntity(EntityTypeBuilder<Event> Event)
@@ -74,5 +76,18 @@ public class DataContext(DbContextOptions options) : DbContext(options)
                 DateOfBirth = DateTime.Now.ToUniversalTime(),
             }
         );
+    }
+
+    private static void ConfigurePredictionEntity(EntityTypeBuilder<Prediction> prediction){
+        prediction.Property(x => x.Id).ValueGeneratedOnAdd();
+        prediction.HasData(
+            new Prediction{
+                Id = 1,
+                endScoreTeamA = 2,
+                endScoreTeamB = 6,
+                PredictionMakerId = 1
+            }
+        );
+
     }
 }
