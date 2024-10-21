@@ -14,12 +14,6 @@ public class DataContext(DbContextOptions options) : DbContext(options)
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<PredictionGame>()
-        .HasOne(e => e.GameCreator)
-        .WithMany(e => e.CreatedPredictionGames)
-        .HasForeignKey(e => e.GameCreatorId)
-        .IsRequired()
-        .OnDelete(DeleteBehavior.Cascade);
         base.OnModelCreating(modelBuilder);
 
         ConfigurePredictionGameEntity(modelBuilder.Entity<PredictionGame>());
@@ -51,7 +45,8 @@ public class DataContext(DbContextOptions options) : DbContext(options)
         .HasOne(e => e.GameCreator)
         .WithMany(e => e.CreatedPredictionGames)
         .HasForeignKey(e => e.GameCreatorId)
-        .IsRequired();
+        .IsRequired()
+        .OnDelete(DeleteBehavior.Cascade);
         
         predictionGame.Property(x => x.Id).ValueGeneratedOnAdd();
 
