@@ -9,23 +9,28 @@
         <button class="btn-primary" @click="ToMyGames">Games</button>
       </div>
       <div class="absolute top-10 right-4 flex space-x-2">
-        <button class="btn-secondary">Login</button>
-        <button class="btn-secondary">Sign Up</button>
+        <button class="btn-secondary" @click="ToLogin">Login</button>
+        <button class="btn-secondary" @click="ToRegister">Sign Up</button>
       </div>
     </div>
   </template>
   
-
-  <script setup lang="ts">
-  import { useRouter } from 'vue-router';
-  const router = useRouter();
-  const ToCreateGame = () => {
-    router.push('/add-predictiongame');
-  };
-  const ToMyGames = () => {
+<script setup lang="ts">
+import { useRouter } from 'vue-router';
+const router = useRouter();
+const ToCreateGame = () => {
+  router.push('/add-predictiongame');
+};
+const ToMyGames = () => {
   router.push('/predictiongames');
 };
-  </script>
+const ToLogin = () => {
+  router.push('/login')
+};
+const ToRegister = () => {
+  router.push('/register')
+}
+</script>
 
   
   <style scoped>
