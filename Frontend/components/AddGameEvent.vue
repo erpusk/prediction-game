@@ -39,7 +39,7 @@
     const { addGameEvent } = useGameEventsStore();
 
     const props = defineProps<{
-      predictionGameId: string | string[]; // Accept predictionGameId as a prop
+      predictionGameId: number; // Accept predictionGameId as a prop
     }>();
 
     const state = reactive<GameEvent>({
@@ -54,7 +54,7 @@
     });
   
     const eventDateStr = computed({
-    get: () => {
+      get: () => {
         if (state.eventDate instanceof Date) {
             return state.eventDate.toISOString().split('T')[0];
         }
@@ -80,8 +80,8 @@
             id: state.id,
             teamA: state.teamA,
             teamB: state.teamB,
-            eventDate: state.eventDate instanceof Date ? state.eventDate.toISOString() : '',
-            predictionGameId: parseInt(props.predictionGameId.toString(), 10),
+            eventDate: state.eventDate,
+            predictionGameId: props.predictionGameId,
             teamAScore: state.teamAScore,
             teamBScore: state.teamBScore,
             isCompleted: state.isCompleted

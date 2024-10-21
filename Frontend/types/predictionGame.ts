@@ -1,7 +1,7 @@
 export interface PredictionGame {
     id: number;
     predictionGameTitle: string;
-    creationDate: Date;
+    creationDate: Date | string;
     startDate: string | Date | undefined;
     endDate: string | Date | undefined;
     gameCreatorId: number;
