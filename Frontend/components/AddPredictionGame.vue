@@ -98,8 +98,8 @@ const endDateStr = computed({
             id: state.id,
             predictionGameTitle: state.predictionGameTitle,
             creationDate: new Date().toISOString(),
-            startDate: startDateStr.value ? new Date(startDateStr.value).toISOString() : null,
-            endDate: endDateStr.value ? new Date(endDateStr.value).toISOString() : null,
+            startDate: startDateStr.value ? new Date(startDateStr.value).toISOString() : undefined,
+            endDate: endDateStr.value ? new Date(endDateStr.value).toISOString() : undefined,
             gameCreatorId: state.gameCreatorId,
             privacy: state.privacy
         };

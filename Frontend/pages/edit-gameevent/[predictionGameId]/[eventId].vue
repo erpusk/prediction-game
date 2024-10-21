@@ -6,6 +6,6 @@
   import { useRoute } from 'vue-router';
 
   const route = useRoute();
-  const gameEventId = route.params.eventId; 
-  const predictionGameId = route.params.predictionGameId
+  const gameEventId = parseInt(route.params.eventId.toString()); 
+  const predictionGameId = parseInt(route.params.predictionGameId.toString())
   </script>

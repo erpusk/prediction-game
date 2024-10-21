@@ -18,7 +18,8 @@ public class DataContext(DbContextOptions options) : DbContext(options)
         .HasOne(e => e.GameCreator)
         .WithMany(e => e.CreatedPredictionGames)
         .HasForeignKey(e => e.GameCreatorId)
-        .IsRequired();
+        .IsRequired()
+        .OnDelete(DeleteBehavior.Cascade);
         base.OnModelCreating(modelBuilder);
 
         ConfigurePredictionGameEntity(modelBuilder.Entity<PredictionGame>());
