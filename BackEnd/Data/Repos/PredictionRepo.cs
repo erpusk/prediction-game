@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using BackEnd.DTOs.Prediction;
 using BackEnd.Models.Classes;
 using itb2203_2024_predictiongame.Backend.Data;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace BackEnd.Data.Repos
@@ -28,6 +29,11 @@ namespace BackEnd.Data.Repos
         public async Task<Prediction?> GetById(int id){
             var prediction = await _context.Predictions.FirstOrDefaultAsync(x => x.Id == id);
             return prediction;
+        }
+
+        public async Task<Event?> GetPredictionsEvent(Prediction prediction){
+            var predictionsEvent = await _context.Events.FirstOrDefaultAsync(x => x.Id == prediction.EventId);
+            return predictionsEvent;
         }
 
         public async Task<Prediction> CreatePrediction(Prediction prediction){

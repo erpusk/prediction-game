@@ -42,6 +42,13 @@ namespace BackEnd.Controllers
             if (predictionExists){
                 return Conflict();
             }
+            var eventWherePredictionIsAdded = await _repo.GetPredictionsEvent(predictionModel);
+            if (eventWherePredictionIsAdded is null){
+                return BadRequest("Event where to add the prediction was not found");
+            }
+            if (eventWherePredictionIsAdded.IsCompleted == true){
+                return Conflict("Event has already ended");
+            }
             var result = await _repo.CreatePrediction(predictionModel);
             return CreatedAtAction(nameof(GetById), new {id = predictionModel.Id}, result.toPredictionDto());
         }
