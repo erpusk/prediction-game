@@ -1,5 +1,6 @@
 <template>
-  <div class="p-6 bg-white rounded-lg shadow-lg">
+  <div class="min-h-screen bg-white flex justify-center items-center p-6">
+  <div class="p-20 bg-white rounded-lg shadow-lg max-w-5x1">
     <button 
       @click="showModal = true" 
       class="absolute top-20 right-10 bg-gradient-to-r from-blue-500 to-blue-700 
@@ -32,6 +33,7 @@
         </template>
       </UTable>
     </div>
+  </div>
   </div>
 </template>
 

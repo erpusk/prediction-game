@@ -14,7 +14,7 @@
         @submit="onSubmit"
         @error="onError"
       >
-        <UFormGroup label="Esimene meeskond" name="teamA">
+        <UFormGroup label="Esimene meeskond" name="teamA" >
           <UInput v-model="state.teamA" class="border rounded-md p-2 w-full"/>
         </UFormGroup>
     
@@ -35,7 +35,11 @@
     </div>
   </div>
 </template>
-
+<style scoped>
+div :deep(label) {
+  color: black !important;
+}
+</style>
   
   <script setup lang="ts">
     import type { FormError, FormErrorEvent, FormSubmitEvent } from "#ui/types";
