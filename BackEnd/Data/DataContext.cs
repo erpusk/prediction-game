@@ -1,13 +1,16 @@
 using BackEnd.Models.Classes;
 using itb2203_2024_predictiongame.Backend.Models.Classes;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Npgsql.Replication;
 using RandomString4Net;
 
 namespace itb2203_2024_predictiongame.Backend.Data;
 
-public class DataContext(DbContextOptions options) : DbContext(options)
-{
+public class DataContext : IdentityDbContext<ApplicationUser, IdentityRole<int>, int> {
+    public DataContext(DbContextOptions options) : base(options) { }
     public DbSet<PredictionGame> PredictionGames { get; set; }
     public DbSet<Event> Events { get; set; }
     public DbSet<ApplicationUser> ApplicationUsers{ get; set; }
@@ -19,6 +22,25 @@ public class DataContext(DbContextOptions options) : DbContext(options)
         ConfigurePredictionGameEntity(modelBuilder.Entity<PredictionGame>());
         ConfigureEventEntity(modelBuilder.Entity<Event>());
         ConfigureApplicationUserEntity(modelBuilder.Entity<ApplicationUser>());
+
+        ConfigureAccountEntity(modelBuilder.Entity<IdentityRole<int>>());
+    }
+
+    private void ConfigureAccountEntity(EntityTypeBuilder<IdentityRole<int>> roleBuilder)
+    {
+        List<IdentityRole<int>> roles = new List<IdentityRole<int>>() {
+            new IdentityRole<int> {
+                Id = 1,
+                Name = "Admin",
+                NormalizedName = "ADMIN"
+            },
+            new IdentityRole<int> {
+                Id = 2,
+                Name = "User",
+                NormalizedName = "USER"
+            }
+        };
+        roleBuilder.HasData(roles);
     }
 
     private static void ConfigureEventEntity(EntityTypeBuilder<Event> Event)
@@ -66,13 +88,16 @@ public class DataContext(DbContextOptions options) : DbContext(options)
     private static void ConfigureApplicationUserEntity(EntityTypeBuilder<ApplicationUser> user)
     {
         user.Property(x => x.Id).ValueGeneratedOnAdd();
-        user.HasData(
-            new ApplicationUser
-            {
-                Id = 1,
-                UserName = "MariMas",
-                DateOfBirth = DateTime.Now.ToUniversalTime(),
-            }
-        );
+        var passwordHasher = new PasswordHasher<ApplicationUser>();
+        var applicationUser = new ApplicationUser
+        {
+            Id = 1,
+            UserName = "MariMas",
+            DateOfBirth = DateTime.Now.ToUniversalTime(),
+            Email = "mari.maasikas@test.ee",
+            PasswordHash = passwordHasher.HashPassword(null!, "Default_Password1"),
+        };
+
+        user.HasData(applicationUser);
     }
 }
