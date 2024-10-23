@@ -18,13 +18,15 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
         }
 
         //READ
-        public async Task<List<PredictionGame>> GetAllPredictionGames()
+        public async Task<List<PredictionGame>> GetAllPredictionGames(string? code)
         {
             IQueryable<PredictionGame> query = context.PredictionGames
             .Include(m => m.Events)
             .Include(m => m.GameCreator)
             .AsQueryable();
-
+            if (code != null){
+                query = query.Where(x => x.UniqueCode == code);
+            }
             return await query.ToListAsync();
         }
 

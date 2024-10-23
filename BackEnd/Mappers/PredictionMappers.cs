@@ -12,10 +12,18 @@ namespace BackEnd.Mappers
         public static PredictionDto toPredictionDto(this Prediction predictionModel){
             return new PredictionDto{
                 Id = predictionModel.Id,
-                endScoreTeamA = predictionModel.endScoreTeamA,
-                endScoreTeamB = predictionModel.endScoreTeamB,
+                endScoreTeamA = predictionModel.EndScoreTeamA,
+                endScoreTeamB = predictionModel.EndScoreTeamB,
                 PredictionMakerId = predictionModel.PredictionMakerId,
             };
         }
+
+        public static Prediction toPredictionFromCreateDto(this CreatePredictionRequestDto predictionDto){
+            return new Prediction {
+                EndScoreTeamA = predictionDto.endScoreTeamA,
+                EndScoreTeamB = predictionDto.endScoreTeamB,
+                EventId = predictionDto.eventId
+            };
+        }  
     }
 }

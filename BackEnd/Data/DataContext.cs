@@ -83,9 +83,10 @@ public class DataContext(DbContextOptions options) : DbContext(options)
         prediction.HasData(
             new Prediction{
                 Id = 1,
-                endScoreTeamA = 2,
-                endScoreTeamB = 6,
-                PredictionMakerId = 1
+                EndScoreTeamA = 2,
+                EndScoreTeamB = 6,
+                PredictionMakerId = 1,
+                EventId = 1
             }
         );
 

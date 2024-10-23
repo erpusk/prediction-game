@@ -13,12 +13,17 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
         private readonly PredictionGamesRepo repo = repo;
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll(string? code = null)
         {
-            var result = await repo.GetAllPredictionGames();
+            var result = await repo.GetAllPredictionGames(code);
             var resultAsDto = result.Select(s => s.ToPredictionGameDto()).ToList();
             return Ok(resultAsDto);
         }
+
+        //[HttpGet("{code}")]
+        //public async Task<IActionResult> GetByUniqueCode([FromRoute] string code){
+        //    var result = await repo.GetByUniqueCode(code);
+        //}
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPredictionGame(int id)
@@ -30,6 +35,8 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
             }
             return Ok(predictionGame.ToPredictionGameDto());
         }
+
+        
 
         [HttpPost]
         public async Task<IActionResult> CreatePredictionGame([FromBody] CreatePredictionGameRequestDto predictionGameDto, [FromHeader(Name = "UserId")] int userId)

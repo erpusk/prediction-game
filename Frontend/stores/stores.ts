@@ -1,5 +1,5 @@
-import Predictiongames from "~/pages/predictiongames.vue";
 import type { GameEvent } from "~/types/gameEvent";
+import type { Prediction } from "~/types/prediction";
 import type { PredictionGame } from "~/types/predictionGame";
 
 export const usePredictionGameStore = defineStore("predictionGame", () => {
@@ -81,4 +81,24 @@ export const useGameEventsStore = defineStore("gameEvent", () => {
   }
 
   return { gameEvents, loadGameEvents, addGameEvent, deletePredictionGameEvent, editPredictionGameEvent, loadSingleEvent };
+})
+
+export const usePredictionsStore = defineStore("prediction", () => {
+  const api = useApi();
+  const predictions = ref<Prediction[]>([]);
+  
+  const addPrediction = async (prediction: Prediction) => {
+    const res = await api.customFetch("Prediction", {
+      method: "POST",
+      body: prediction
+    })
+    
+  }
+
+  const loadPredictions = async (gameEventId: number) => {
+    const url = gameEventId ? `Prediction?eventId=${gameEventId}` : 'Prediction';
+      predictions.value = await api.customFetch<Prediction[]>(url);
+  };
+
+  return {addPrediction, loadPredictions}
 })
