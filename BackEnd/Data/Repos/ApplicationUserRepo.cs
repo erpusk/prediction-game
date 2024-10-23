@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using BackEnd.Models.Classes;
 using itb2203_2024_predictiongame.Backend.Data;
+using itb2203_2024_predictiongame.Backend.Models.Classes;
 using Microsoft.EntityFrameworkCore;
 
 namespace BackEnd.Data.Repos
@@ -19,7 +15,12 @@ namespace BackEnd.Data.Repos
             return user;
         }
 
-        public async Task<List<ApplicationUser>> GetAllUsers() => await context.ApplicationUsers.ToListAsync();
+        public async Task<List<ApplicationUser>> GetAllUsers() 
+        {
+             IQueryable<ApplicationUser> query = context.ApplicationUsers.Include(m => m.CreatedPredictionGames).AsQueryable();
+             
+             return await query.ToListAsync();
+        }
         public async Task<ApplicationUser?> GetUserById(int id) => await context.ApplicationUsers.FindAsync(id);
         public async Task<bool> IsUserExistsInDB(int id) => await context.ApplicationUsers.AnyAsync(x => x.Id == id);
         public async Task<bool> UpdateApplicationUser(int id, ApplicationUser user){

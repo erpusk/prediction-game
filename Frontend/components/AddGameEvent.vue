@@ -49,7 +49,7 @@ div :deep(label) {
     const { addGameEvent } = useGameEventsStore();
 
     const props = defineProps<{
-      predictionGameId: string | string[];
+      predictionGameId: number; // Accept predictionGameId as a prop
     }>();
 
     const state = reactive<GameEvent>({
@@ -64,11 +64,18 @@ div :deep(label) {
     });
   
     const eventDateStr = computed({
-        get: () => (state.eventDate instanceof Date ? state.eventDate.toISOString().split('T')[0] : state.eventDate),
-        set: (value: string) => {
-            state.eventDate = value;
+      get: () => {
+        if (state.eventDate instanceof Date) {
+            return state.eventDate.toISOString().split('T')[0];
         }
+        return state.eventDate;
+    },
+    set: (value: string) => {
+        state.eventDate = value ? new Date(value) : ''; 
+    }
     });
+
+
   
     const validate = (state: any): FormError[] => {
       const errors = [];
@@ -83,8 +90,8 @@ div :deep(label) {
             id: state.id,
             teamA: state.teamA,
             teamB: state.teamB,
-            eventDate: eventDateStr.value,
-            predictionGameId: parseInt(props.predictionGameId.toString(), 10),
+            eventDate: state.eventDate,
+            predictionGameId: props.predictionGameId,
             teamAScore: state.teamAScore,
             teamBScore: state.teamBScore,
             isCompleted: state.isCompleted

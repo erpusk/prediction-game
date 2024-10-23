@@ -1,9 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using BackEnd.DTOs.ApplicationUser;
 using BackEnd.DTOs.Event;
 using BackEnd.DTOs.PredictionGame;
+using BackEnd.Models.Classes;
 using itb2203_2024_predictiongame.Backend.Models.Classes;
 
 namespace BackEnd.Mappers
@@ -18,25 +16,23 @@ namespace BackEnd.Mappers
                 EndDate = predictionGameModel.EndDate,
                 Privacy = predictionGameModel.Privacy,
                 Events = predictionGameModel.Events?.Select(e => e.ToEventDto()).ToList() ?? new List<EventDto>(),
-                UniqueCode = predictionGameModel.UniqueCode
-                // GameCreator = predictionGameModel.GameCreator != null 
-                //             ? ApplicationUserMappers.ToApplicationUserDto(predictionGameModel.GameCreator) 
-                //             : null,
+                UniqueCode = predictionGameModel.UniqueCode,
+                GameCreatorId = predictionGameModel.GameCreatorId,
+                GameCreator = predictionGameModel.GameCreator?.ToApplicationUserDto(),
             };
         }
 
-        public static PredictionGame ToPredictionGameFromCreateDTO(this CreatePredictionGameRequestDto predictionGameDto) {
+        public static PredictionGame ToPredictionGameFromCreateDTO(this CreatePredictionGameRequestDto predictionGameDto, ApplicationUser gameCreator) {
             return new PredictionGame {
                 PredictionGameTitle = predictionGameDto.PredictionGameTitle,
-                CreationDate = DateTime.Now,
+                CreationDate = DateTime.Now.ToUniversalTime(),
                 StartDate = predictionGameDto.StartDate,
                 EndDate = predictionGameDto.EndDate,
                 Privacy = predictionGameDto.Privacy,
                 Events = predictionGameDto.Events?.Select(e => e.ToEvent()).ToList(),
-                UniqueCode = predictionGameDto.UniqueCode
-                // GameCreator = predictionGameDto.GameCreator != null
-                //                 ? ApplicationUserMappers.ToApplicationUserFromDto(predictionGameDto.GameCreator)
-                //                 : null,
+                UniqueCode = predictionGameDto.UniqueCode,
+                GameCreatorId = gameCreator.Id,
+                GameCreator = gameCreator
             };
         }
 

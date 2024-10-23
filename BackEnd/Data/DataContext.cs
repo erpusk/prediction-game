@@ -30,7 +30,7 @@ public class DataContext(DbContextOptions options) : DbContext(options)
                 Id = 1,
                 TeamA = "Koerad",
                 TeamB = "Kassid",
-                EventDate = new DateTime(),
+                EventDate = DateTime.Now.ToUniversalTime(),
                 PredictionGameId = 1,
                 IsCompleted = false
 
@@ -40,6 +40,14 @@ public class DataContext(DbContextOptions options) : DbContext(options)
 
     private static void ConfigurePredictionGameEntity(EntityTypeBuilder<PredictionGame> predictionGame)
     {
+
+        predictionGame
+        .HasOne(e => e.GameCreator)
+        .WithMany(e => e.CreatedPredictionGames)
+        .HasForeignKey(e => e.GameCreatorId)
+        .IsRequired()
+        .OnDelete(DeleteBehavior.Cascade);
+        
         predictionGame.Property(x => x.Id).ValueGeneratedOnAdd();
 
         predictionGame.HasData(
@@ -47,9 +55,9 @@ public class DataContext(DbContextOptions options) : DbContext(options)
             {
                 Id = 1,
                 PredictionGameTitle = "Football EM 2024",
-                CreationDate = DateTime.Now,
-                StartDate = new DateTime(2024, 06, 14),
-                EndDate = new DateTime(2024, 07, 14),
+                CreationDate = new DateTime(2024, 06, 14).ToUniversalTime(),
+                StartDate = new DateTime(2024, 06, 14).ToUniversalTime(),
+                EndDate = new DateTime(2024, 07, 14).ToUniversalTime(),
                 GameCreatorId = 1,
                 UniqueCode =  RandomString.GetString(Types.ALPHABET_LOWERCASE, 6),
             }
@@ -63,7 +71,7 @@ public class DataContext(DbContextOptions options) : DbContext(options)
             {
                 Id = 1,
                 UserName = "MariMas",
-                DateOfBirth = DateTime.Now,
+                DateOfBirth = DateTime.Now.ToUniversalTime(),
             }
         );
     }

@@ -75,7 +75,7 @@ export const useGameEventsStore = defineStore("gameEvent", () => {
     loadGameEvents(gameEvent.predictionGameId.toString())
   }
 
-  const loadSingleEvent = async (id: string) => {
+  const loadSingleEvent = async (id: Number) => {
     const event = await api.customFetch<GameEvent>(`Event/${id}`)
     return event;
   }

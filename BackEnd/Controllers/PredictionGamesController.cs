@@ -1,8 +1,7 @@
-using System.Security.Claims;
+using BackEnd.Data.Repos;
 using BackEnd.DTOs.PredictionGame;
 using BackEnd.Mappers;
 using itb2203_2024_predictiongame.Backend.Data.Repos;
-using itb2203_2024_predictiongame.Backend.Models.Classes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace itb2203_2024_predictiongame.Backend.Controllers
@@ -33,15 +32,24 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreatePredictionGame([FromBody] CreatePredictionGameRequestDto predictionGameDto)
+        public async Task<IActionResult> CreatePredictionGame([FromBody] CreatePredictionGameRequestDto predictionGameDto, [FromHeader(Name = "UserId")] int userId)
         {
-            var predictionGameModel = predictionGameDto.ToPredictionGameFromCreateDTO();
+            var gameCreator = await repo.GetUserById(userId);
+            if (gameCreator == null)
+            {
+                return Conflict();
+            }
+
+            var predictionGameModel = predictionGameDto.ToPredictionGameFromCreateDTO(gameCreator);
 
             var predictionGameExists = await repo.PredictionGameExistsInDb(predictionGameModel.Id);
             if (predictionGameExists)
             {
                 return Conflict();
             }
+
+
+
             var result = await repo.CreatePredictionGameToDb(predictionGameModel);
             return CreatedAtAction(nameof(GetPredictionGame), new { id = predictionGameModel.Id }, result.ToPredictionGameDto());
         }

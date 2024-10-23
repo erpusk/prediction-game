@@ -1,7 +1,6 @@
 using BackEnd.Data.Repos;
 using BackEnd.DTOs.Event;
 using BackEnd.Mappers;
-using BackEnd.Models.Classes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BackEnd.Controllers

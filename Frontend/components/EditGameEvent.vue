@@ -49,8 +49,8 @@
     
 
     const props = defineProps<{
-      predictionGameId: string | string[],
-      gameEventId: string | string[];
+      predictionGameId: number,
+      gameEventId: number;
     }>();
 
     const state = reactive<GameEvent>({
@@ -72,7 +72,7 @@
     });
 
     onMounted(async () => {
-  const gameEventData = await loadSingleEvent(props.gameEventId.toString());
+  const gameEventData = await loadSingleEvent(props.gameEventId);
   if (gameEventData) {
     state.id = gameEventData.id;
     state.teamA = gameEventData.teamA;
@@ -100,7 +100,7 @@
             id: parseInt(props.gameEventId.toString()),
             teamA: state.teamA,
             teamB: state.teamB,
-            eventDate: eventDateStr.value,
+            eventDate: state.eventDate,
             predictionGameId: parseInt(props.predictionGameId.toString()),
             teamAScore: state.teamAScore,
             teamBScore: state.teamBScore,
