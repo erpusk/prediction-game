@@ -23,3 +23,40 @@
         
     </form>
 </template>
+
+<script setup>
+
+const userStore = useUserStore();
+const router = useRouter();
+
+const username = ref('');
+const email = ref('');
+const password = ref('');
+const confirmpassword = ref('');
+const errorMessage = ref(null);
+
+const registerUser = async () => {
+    if(!username.value || !email.value || !password.value || !confirmpassword.value) {
+        errorMessage.value = "All fields must be covered";
+        return;
+    }
+
+    if(password.value !== confirmpassword.value) {
+        errorMessage.value = "Passwords do not match."
+        return;
+    }
+
+    try {
+        await userStore.register({
+            username: username.value,
+            email: email.value,
+            password: password.value,
+    })
+
+    userStore.setUser(response.user);
+    router.push('/')
+    } catch(error) {
+        errorMessage.value = "Registration failed, try again."
+    }
+};
+</script>
