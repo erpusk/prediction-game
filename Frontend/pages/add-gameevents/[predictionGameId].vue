@@ -6,5 +6,5 @@
   import { useRoute } from 'vue-router';
   
   const route = useRoute();
-  const predictionGameId = route.params.predictionGameId; 
+  const predictionGameId = Number(route.params.predictionGameId);
   </script>

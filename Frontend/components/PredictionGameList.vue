@@ -13,7 +13,7 @@
   
       <div v-else class="mt-8">
         <h1 class="text-3xl font-bold text-center mb-6 text-black" >{{ title }}</h1>
-        <UTable :rows="predictionGames" :columns="columns">
+        <UTable :rows="formattedPredictionGames" :columns="columns">
           <template #actions-data="{ row }">
             <button @click="deletePredictionGame(row)" class="flex items-center text-red-500 hover:text-red-700">
               <DeleteIconComponent />
@@ -31,6 +31,7 @@
   import { usePredictionGameStore } from '@/stores/stores';
   import DeleteIconComponent from '@/components/DeleteIconComponent.vue';
   import { useRouter } from 'vue-router';
+import { format } from 'date-fns';
   
   defineProps<{ title: string }>();
   
@@ -61,6 +62,14 @@
   const { predictionGames } = storeToRefs(predictionGameStore);
   const gameEventStore = useGameEventsStore();
   const router = useRouter();
+
+  const formattedPredictionGames = computed(() => {
+  return predictionGames.value.map(game => ({
+    ...game,
+    startDate: game.startDate ? format(new Date(game.startDate), 'dd.MM.yyyy') : '',
+    endDate: game.endDate ? format(new Date(game.endDate), 'dd.MM.yyyy') : '',
+  }));
+});
   
   const goToCreateNewPredictionGame = () => {
     router.push('/add-predictionGame');

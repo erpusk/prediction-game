@@ -11,7 +11,7 @@
       </div>
       <div v-else class="mt-8">
         <h1 class="text-3xl font-bold text-center mb-6 text-black" >{{ title }}</h1>
-        <UTable :rows="gameEvents" :columns="columns">
+        <UTable :rows="formattedGameEvents" :columns="columns">
           <template #actions-data="{ row }">
               <button @click="deletePredictionGameEvent(row)" class="flex items-center text-red-500 hover:text-red-700">
                 <DeleteIconComponent />
@@ -30,6 +30,7 @@
 
 <script setup lang="ts">
 import { useGameEventsStore } from '@/stores/stores';
+import { format } from 'date-fns';
 const props = defineProps<{
   title: string;
   predictionGameId: string | string[]; // Accept predictionGameId as a prop
@@ -66,6 +67,13 @@ const gameEventStore = useGameEventsStore();
 const { gameEvents } = storeToRefs(gameEventStore);
 const route = useRoute();
 const router = useRouter();
+
+const formattedGameEvents = computed(() => {
+  return gameEvents.value.map(event => ({
+    ...event,
+    eventDate : event.eventDate ? format(new Date(event.eventDate), 'dd.MM.yyyy HH:mm') : '',
+  }));
+});
 
 const goToCreateNewPredictionGameEvent = (predictionGameId: string | string[]) => {
   router.push(`/add-gameevents/${predictionGameId}`);
