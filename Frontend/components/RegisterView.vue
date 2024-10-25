@@ -1,5 +1,5 @@
 <template>
-    <form name="register-form">
+    <form name="register-form" @submit.prevent="registerUser">
 
         <UFormGroup label="Username">
             <UInput class="border rounded-md p-2" type="text"/>
@@ -21,6 +21,7 @@
             Register
         </UButton>
         
+        <p v-if="errorMessage" class="text-red-500">{{ errorMessage }}</p>
     </form>
 </template>
 
