@@ -8,7 +8,9 @@ export const useUserStore = defineStore('user', () => {
     const token = ref<string | null>(null);
 
     const isAuthenticated = computed(() => !!token.value)
+
     const loadUser = async () => {
+      if(!token.value) return;
         try {
             const userData = await api.customFetch<AppUser>('User')
             user.value = userData;
@@ -17,23 +19,18 @@ export const useUserStore = defineStore('user', () => {
         }
     };
 
-    const mockUser = { id: 1, name: 'Maksim', email: 'test@domain.ee' };
-    const mockToken = 'fake-jwt-token';
-  
-
     const login = async (credentials: { email: string; password: string }) => {
       try {
-        await new Promise((resolve) => setTimeout(resolve, 500)); 
+        const response = await api.customFetch<{ user: AppUser; token: string }>('loginMethod', {
+          method: 'POST',
+          body: credentials,
+        });
+        
+        user.value = response.user;
+        token.value = response.token;
 
-        if (credentials.email === 'test@domain.ee' && credentials.password === '1234') {
-  
-         user.value = mockUser;
-         token.value = mockToken; 
-          localStorage.setItem('token', mockToken);
+        localStorage.setItem('token', response.token);
 
-        } else {
-          throw new Error('Vale kasutajanimi või parool');
-        }
       } catch (error) {
         console.error('Login failed: ', error);
       }
@@ -49,7 +46,7 @@ export const useUserStore = defineStore('user', () => {
 
     const register = async (registrationData: { username: string; email: string; password: string}) => {
         try {
-            const response = await api.customFetch<{ user: AppUser; token: string}>('Register', {
+            const response = await api.customFetch<{ user: AppUser; token: string}>('registerMethod', {
                 method: 'POST',
                 body: registrationData,
             });

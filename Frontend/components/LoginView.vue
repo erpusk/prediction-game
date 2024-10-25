@@ -19,30 +19,28 @@
 
 <script setup>
 import { ref } from 'vue';
-import { useUserStore } from '~/stores/userStore'; // Import userStore
+import { useUserStore } from '~/stores/userStore'; 
 import { useRouter } from 'vue-router';
 
-const userStore = useUserStore(); // Kasutame userStore
-const router = useRouter(); // Routeri kasutamine
+const userStore = useUserStore();
+const router = useRouter(); 
 
 const email = ref('');
 const password = ref('');
 const errorMessage = ref(null);
 
+const handleLogin = async () => {
+  errorMessage.value = null;
+  try {
+    await userStore.login({ email: email.value, password: password.value });
 
-const login = async () => {
-  await new Promise((resolve) => setTimeout(resolve, 500)); // Simuleeri viivitust
-
-  if (email.value === 'test@domain.ee' && password.value === '1234') {
-    
-    const fakeUser = { id: 1, name: 'Maksim', token: 'fake-jwt-token' };
-    const fakeToken = 'fake-jwt-token';
-    userStore.setUser(fakeUser); 
-    userStore.setToken(fakeToken)
-    router.push('/'); 
-
-  } else {
-    errorMessage.value = 'Vale kasutajanimi või parool.'; 
+    if(userStore.isAuthenticated) {
+      router.push('/');
+    } else {
+      throw new Error('Autentimine ebaõnnestus')
+    }
+  } catch(error) {
+    errorMessage.value = error.message || 'Vale kasutajanimi või parool';
   }
 };
 </script>
