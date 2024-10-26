@@ -20,15 +20,15 @@
         <UInput v-model="eventDateStr" type="date" class="border rounded-md p-2"/>
       </UFormGroup>
 
-      <UFormGroup label="Team A Score" name="teamAScore" class="!text-black">
-        <UInput v-model="state.teamAScore" type="text" @input="validateNumericInput($event)" class="border rounded-md p-2" placeholder="Enter score for Team A"/>
+      <UFormGroup v-if="isPastDate" label="Team A Score" name="teamAScore" class="!text-black" step="1" min="0">
+        <UInput v-model="state.teamAScore" type="text" @input="validateNumericInput" class="border rounded-md p-2" placeholder="Enter score for Team A"/>
       </UFormGroup>
 
-      <UFormGroup label="Team B Score" name="teamBScore" class="!text-black">
-        <UInput v-model="state.teamBScore" type="text" @input="validateNumericInput($event)" class="border rounded-md p-2" placeholder="Enter score for Team B"/>
+      <UFormGroup v-if="isPastDate" label="Team B Score" name="teamBScore" class="!text-black" step="1" min="0">
+        <UInput v-model="state.teamBScore" type="text" @input="validateNumericInput" class="border rounded-md p-2" placeholder="Enter score for Team B"/>
       </UFormGroup>
 
-      <UFormGroup label="Is Completed?" name="isCompleted" class="!text-black">
+      <UFormGroup v-if="isPastDate" label="Is Completed?" name="isCompleted" class="!text-black">
         <UCheckbox v-model="state.isCompleted" />
       </UFormGroup>
       
@@ -66,13 +66,15 @@
       gameEventId: number;
     }>();
 
-    function validateNumericInput(event: Event) {
-      const input = event.target as HTMLInputElement;
-      const value = input.value;
-      if (!/^\d*$/.test(value)) {
-        input.value = value.replace(/\D/g, '');
-      } 
-    }
+    function validateNumericInput(event: InputEvent) {
+      const target = event.target as HTMLInputElement;
+      const value = target.value;
+      if (isNaN(Number(value)) || !/^\d+$/.test(value)) {
+        target.setCustomValidity("Result is not valid");
+      } else {
+        target.setCustomValidity("");
+      }
+}
 
     const state = reactive<GameEvent>({
         id: 0,
@@ -159,4 +161,8 @@
     const navigateToListOfGameEvents = () => {
     router.push(`/gameevents/${props.predictionGameId}`);
     };
+
+    const isPastDate = computed(() => {
+      return new Date(state.eventDate) <= new Date();
+    });
   </script>
