@@ -1,5 +1,6 @@
 <template>
-    <div class="event-details p-4 bg-white rounded-lg shadow-md">
+    <div class=" min-h-screen flex items-center justify-center event-details p-6 bg-white rounded-lg shadow-md">
+      <div class="bg-white p-6 rounded-lg  max-w-lg w-full">
       <h2 class="text-lg font-bold text-center mb-2 text-black">Event Details</h2>
       <p class="border rounded-md p-2 text-center text-black"><strong>Team A:</strong> {{ event.teamA }}</p>
       <p class="border rounded-md p-2 text-center text-black"><strong>Team B:</strong> {{ event.teamB }}</p>
@@ -9,6 +10,7 @@
       <p class="border rounded-md p-2 text-center text-black"><strong>Team B Score:</strong> {{ event.teamBScore }}</p>
       <p class="border rounded-md p-2 text-center text-black"><strong>Is Completed:</strong> {{ event.isCompleted ? 'Yes' : 'No' }}</p>
     </div>
+  </div>
   </template>
   
   <script setup lang="ts">
