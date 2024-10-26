@@ -29,6 +29,7 @@
   
   <script setup lang="ts">
     import type { FormError, FormErrorEvent, FormSubmitEvent } from "#ui/types";
+import { stringifyQuery } from "vue-router";
 import type { Prediction } from "~/types/prediction";
 
     const { addPrediction } = usePredictionsStore();
@@ -50,6 +51,8 @@ import type { Prediction } from "~/types/prediction";
       const errors = [];
       if (!state.endScoreTeamA) errors.push({ path: "endScoreTeamA", message: "End scores for both teams are required" });
       if (!state.endScoreTeamB) errors.push({ path: "endScoreTeamB", message: "End scores for both teams are required" });
+      if (!parseInt(state.endScoreTeamA)) errors.push({ path: "endScoreTeamA", message: "Needs to be a number" });
+      if (!parseInt(state.endScoreTeamB)) errors.push({ path: "endScoreTeamB", message: "Needs to be a number" });
       return errors;
     };
   
