@@ -1,12 +1,14 @@
 using BackEnd.Data.Repos;
 using BackEnd.DTOs.Event;
 using BackEnd.Mappers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BackEnd.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class EventController: ControllerBase
     {
         private readonly EventRepo _repo;
