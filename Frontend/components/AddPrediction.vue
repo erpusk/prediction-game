@@ -61,8 +61,12 @@ import type { Prediction } from "~/types/prediction";
             predictionMakerId: state.predictionMakerId,
             eventId: props.gameEventId
         };
-      addPrediction(payload);
-      await navigateTo(`/gameevents/${props.predictionGameId}`);
+    const res = await addPrediction(payload);
+    if (res.status === 409) {  
+      alert("Event has already ended. Cannot add prediction"); 
+      console.log(res)
+    }
+    await navigateTo(`/gameevents/${props.predictionGameId}`);
     }
   
     async function onError(prediction: FormErrorEvent) {
@@ -74,6 +78,6 @@ import type { Prediction } from "~/types/prediction";
     const router = useRouter()
 
     const navigateToGameEvent = () => {
-    router.push(`/Event/${props.gameEventId}`);
+    router.push(`/gameevents/${props.predictionGameId}`);
     };
-  </script>
+</script>

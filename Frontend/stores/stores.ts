@@ -88,11 +88,11 @@ export const usePredictionsStore = defineStore("prediction", () => {
   const predictions = ref<Prediction[]>([]);
   
   const addPrediction = async (prediction: Prediction) => {
-    const res = await api.customFetch("Prediction", {
+    const res: Response = await api.customFetch("Prediction", {
       method: "POST",
       body: prediction
     })
-    
+    return res;
   }
 
   const loadPredictions = async (gameEventId: number) => {
