@@ -8,24 +8,37 @@
         <button class="btn-primary">Join Game</button>
         <button class="btn-primary" @click="ToMyGames">Games</button>
       </div>
-      <div class="absolute top-10 right-4 flex space-x-2">
-        <button class="btn-secondary">Login</button>
-        <button class="btn-secondary">Sign Up</button>
+      <div v-if="!userStore.isAuthenticated" class="absolute top-10 right-4 flex space-x-2">
+        <button class="btn-secondary" @click="ToLogin">Login</button>
+        <button class="btn-secondary" @click="ToRegister">Sign Up</button>
+      </div>
+      <div v-else class="absolute top-10 right-4 flex space-x-2">
+        <button class="btn-secondary" @click="userStore.logout()">Logout</button>
+        <textarea>Hello!, {{ userStore.user?.name }}</textarea>
       </div>
     </div>
   </template>
   
+<script setup lang="ts">
+import { useRouter } from 'vue-router';
+import { useUserStore } from '#imports';
 
-  <script setup lang="ts">
-  import { useRouter } from 'vue-router';
-  const router = useRouter();
-  const ToCreateGame = () => {
-    router.push('/add-predictiongame');
-  };
-  const ToMyGames = () => {
+const userStore = useUserStore();
+
+const router = useRouter();
+const ToCreateGame = () => {
+  router.push('/add-predictiongame');
+};
+const ToMyGames = () => {
   router.push('/predictiongames');
 };
-  </script>
+const ToLogin = () => {
+  router.push('/login')
+};
+const ToRegister = () => {
+  router.push('/register')
+}
+</script>
 
   
   <style scoped>
