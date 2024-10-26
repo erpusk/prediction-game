@@ -2,19 +2,19 @@
     <form name="register-form" @submit.prevent="registerUser">
 
         <UFormGroup label="Username">
-            <UInput class="border rounded-md p-2" type="text"/>
+            <UInput v-model="username" class="border rounded-md p-2" type="text" />
         </UFormGroup>
         
         <UFormGroup label="Email">
-            <UInput class="border rounded-md p-2" type="email"/>
+            <UInput v-model="email" class="border rounded-md p-2" type="email" />
         </UFormGroup>
         
         <UFormGroup label="Password">
-            <UInput class="border rounded-md p-2" type="password"/>
+            <UInput v-model="password" class="border rounded-md p-2" type="password" />
         </UFormGroup>
         
         <UFormGroup label="Confirm password">
-            <UInput class="border rounded-md p-2" type="password"/>
+            <UInput v-model="confirmpassword" class="border rounded-md p-2" type="password" />
         </UFormGroup>
 
         <UButton type="submit">
@@ -37,27 +37,31 @@ const confirmpassword = ref('');
 const errorMessage = ref(null);
 
 const registerUser = async () => {
-    if(!username.value || !email.value || !password.value || !confirmpassword.value) {
+    if (!username.value || !email.value || !password.value || !confirmpassword.value) {
         errorMessage.value = "All fields must be covered";
         return;
     }
 
-    if(password.value !== confirmpassword.value) {
-        errorMessage.value = "Passwords do not match."
+    if (password.value !== confirmpassword.value) {
+        errorMessage.value = "Passwords do not match.";
         return;
     }
 
     try {
-        await userStore.register({
+        const response = await userStore.register({
             username: username.value,
             email: email.value,
             password: password.value,
-    })
+        });
+        console.log(response)
+        console.log("before setting user")
 
-    userStore.setUser(response.user);
-    router.push('/')
-    } catch(error) {
-        errorMessage.value = "Registration failed, try again."
+        userStore.setUser(response.user);
+        console.log("before setting user2")
+        router.push('/');
+        console.log("before setting user3")
+    } catch (error) {
+        errorMessage.value = "Registration failed, try again.";
     }
 };
 </script>

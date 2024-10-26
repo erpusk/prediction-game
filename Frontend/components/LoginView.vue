@@ -1,5 +1,5 @@
 <template>
-    <form name="login-form" @submit.prevent="login">
+    <form name="login-form" @submit.prevent="handleLogin">
         <UFormGroup label="Email">
             <UInput v-model="email" class="border rounded-md p-2" type="email" required/>
         </UFormGroup>
