@@ -33,7 +33,7 @@
   });
   
   onMounted(async () => {
-    const gameEvent = await gameEventStore.loadSingleEvent(props.id.toString());
+    const gameEvent = await gameEventStore.loadSingleEvent(Number(props.id));
     event.value.teamA = gameEvent.teamA;
     event.value.teamB = gameEvent.teamB;
     event.value.eventDate = gameEvent.eventDate ? new Date(gameEvent.eventDate).toString() : '';

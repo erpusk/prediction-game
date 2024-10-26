@@ -23,9 +23,14 @@
 import { useRouter } from 'vue-router';
 import { useUserStore } from '#imports';
 
+// definePageMeta({ middleware: 'auth' });
 const userStore = useUserStore();
-
 const router = useRouter();
+
+onMounted(() => {
+  userStore.loadUser();
+});
+
 const ToCreateGame = () => {
   router.push('/add-predictiongame');
 };
