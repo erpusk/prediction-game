@@ -2,12 +2,14 @@ using BackEnd.Data.Repos;
 using BackEnd.DTOs.PredictionGame;
 using BackEnd.Mappers;
 using itb2203_2024_predictiongame.Backend.Data.Repos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace itb2203_2024_predictiongame.Backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class PredictionGamesController(PredictionGamesRepo repo) : ControllerBase()
     {
         private readonly PredictionGamesRepo repo = repo;

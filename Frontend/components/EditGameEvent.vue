@@ -1,21 +1,22 @@
 <template>
+  <div class="min-h-screen flex justify-center items-center bg-white">
     <UForm
       :validate="validate"
       :state="state"
-      class="p-6 bg-white rounded-lg shadow-lg"
+      class="p-6 bg-white rounded-lg shadow-lg max-w-lg w-full"
       @submit="onSubmit"
       @error="onError"
     >
       <h2 class="text-2xl font-semibold text-center mb-4 text-black">Edit an event</h2>
-      <UFormGroup label="Esimene meeskond" name="teamA">
+      <UFormGroup label="Esimene meeskond" name="teamA" class="!text-black">
         <UInput v-model="state.teamA" class="border rounded-md p-2"/>
       </UFormGroup>
   
-      <UFormGroup label="Teine meeskond" name="teamB">
+      <UFormGroup label="Teine meeskond" name="teamB" class="!text-black">
         <UInput v-model="state.teamB" class="border rounded-md p-2"/>
       </UFormGroup>
   
-      <UFormGroup label="Toimumisaeg" name="eventDate">
+      <UFormGroup label="Toimumisaeg" name="eventDate" class="!text-black">
         <UInput v-model="eventDateStr" type="date" class="border rounded-md p-2"/>
       </UFormGroup>
       
@@ -29,7 +30,14 @@
       </div>
       
     </UForm>
+  </div>
   </template>
+  <style scoped>
+  div :deep(label) {
+    color: black !important;
+  }
+  </style>
+  
   
   <script setup lang="ts">
     import type { FormError, FormErrorEvent, FormSubmitEvent } from "#ui/types";

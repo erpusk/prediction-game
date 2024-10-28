@@ -1,10 +1,18 @@
 <template>
-    <div class="p-6 bg-white rounded-lg shadow-lg">
-      <button 
-        @click="goToCreateNewPredictionGameEvent(props.predictionGameId)" 
-        class="absolute top-20 right-10 bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white font-semibold py-3 px-6 rounded-md shadow-md hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
-        Create a new Event
-      </button>
+  <div class="min-h-screen bg-white flex justify-center items-center p-6">
+  <div class="p-20 bg-white rounded-lg shadow-lg max-w-5x1">
+    <button 
+      @click="showModal = true" 
+      class="absolute top-20 right-10 bg-gradient-to-r from-blue-500 to-blue-700 
+      hover:from-blue-600 hover:to-blue-800 text-white font-semibold py-3 px-6 rounded-md shadow-md 
+      hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
+      Create a new Event
+    </button>
+    <AddGameEvent 
+      v-if="showModal" 
+      :predictionGameId="props.predictionGameId" 
+      @close="closeModal" 
+    />
 
       <div v-if="gameEvents.length === 0">
         <h2 class="text-x1 text-center">No events have been added</h2>
@@ -31,12 +39,16 @@
     </div>
   </template>
 
+
 <script setup lang="ts">
+import { ref, onMounted } from 'vue';
+import AddGameEvent from '@/components/AddGameEvent.vue';
 import { useGameEventsStore } from '@/stores/stores';
+const showModal = ref(false);
 import PredictionGameId from '~/pages/add-gameevents/[predictionGameId].vue';
 const props = defineProps<{
   title: string;
-  predictionGameId: string | string[]; // Accept predictionGameId as a prop
+  predictionGameId: string | string[];
   }>();
 
 const columns = [
@@ -89,6 +101,9 @@ const goToEditPredictionGameEvent = (gameEvent: GameEvent) => {
 const goToPredictionGameEventDetails = (gameEvent: GameEvent) => {
   router.push(`/gameevent-details/${props.predictionGameId}/${gameEvent.id}`)
 }
+const closeModal = () => {
+  showModal.value = false; // Sulge modaal
+};
 const goToMakingAPrediction = (gameEvent: GameEvent) => {
   router.push(`/add-prediction/${props.predictionGameId}/${gameEvent.id}`)
 }

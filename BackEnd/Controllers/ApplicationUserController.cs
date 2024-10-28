@@ -1,17 +1,23 @@
 using BackEnd.Data.Repos;
 using BackEnd.DTOs.ApplicationUser;
 using BackEnd.Mappers;
-using BackEnd.Models.Classes;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BackEnd.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ApplicationUserController(ApplicationUserRepo repo) : ControllerBase()
+    [Authorize]
+    public class ApplicationUserController : ControllerBase
     {
-        private readonly ApplicationUserRepo repo = repo;
-        
+        private readonly ApplicationUserRepo repo;
+
+        public ApplicationUserController(ApplicationUserRepo repoo)
+        {
+            repo = repoo;
+        }
+
         [HttpGet]  // Võiks olla tulevikus ainult kindla mängu kasutajate kuvamiseks.
         public async Task<IActionResult> GetAll(){
             var result = await repo.GetAllUsers();

@@ -1,8 +1,12 @@
 <template>
-    <div class="p-6 bg-white rounded-lg shadow-lg">
+  
+    <div class="min-h-screen bg-white flex justify-center items-center ">
+      <div class="bg-white rounded-lg shadow-lg max-w-5xl w-full">
       <button 
         @click="goToCreateNewPredictionGame" 
-        class="absolute top-20 right-10 bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white font-semibold py-3 px-6 rounded-md shadow-md hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
+        class="absolute top-20 right-10 bg-gradient-to-r from-blue-500 to-blue-700 
+        hover:from-blue-600 hover:to-blue-800 text-white font-semibold py-3 px-6 rounded-md shadow-md 
+        hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
         Create a new Prediction Game
       </button>
   
@@ -24,6 +28,7 @@
           </template>
         </UTable>
       </div>
+    </div>
     </div>
   </template>
   
