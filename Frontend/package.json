@@ -16,6 +16,7 @@
     "@pinia/nuxt": "^0.5.4",
     "@vueuse/head": "^2.0.0",
     "nuxt": "^3.13.2",
+    "jwt-decode": "^4.0.0",
     "vue": "latest",
     "vue-router": "latest"
   },

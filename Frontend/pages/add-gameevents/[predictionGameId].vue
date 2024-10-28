@@ -4,7 +4,9 @@
   
   <script setup lang="ts">
   import { useRoute } from 'vue-router';
+
+  definePageMeta({ middleware: 'auth' });
   
   const route = useRoute();
-  const predictionGameId = route.params.predictionGameId; 
+  const predictionGameId = Number(route.params.predictionGameId); 
   </script>
