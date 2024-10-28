@@ -1,17 +1,20 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using BackEnd.Data.Repos;
 using BackEnd.DTOs.Prediction;
 using BackEnd.Mappers;
 using BackEnd.Models.Classes;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BackEnd.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class PredictionController: ControllerBase
     {
         private readonly PredictionRepo _repo;
@@ -37,6 +40,7 @@ namespace BackEnd.Controllers
         }
         [HttpPost]
         public async Task<IActionResult> CreatePrediction([FromBody] CreatePredictionRequestDto predictioDto){
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var predictionModel = predictioDto.toPredictionFromCreateDto();
             bool predictionExists = await _repo.GetById(predictionModel.Id) != null;
             if (predictionExists){

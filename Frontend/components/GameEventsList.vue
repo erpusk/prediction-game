@@ -10,7 +10,7 @@
     </button>
     <AddGameEvent 
       v-if="showModal" 
-      :predictionGameId="props.predictionGameId" 
+      :predictionGameId="parseInt(props.predictionGameId.toString())" 
       @close="closeModal" 
     />
 
@@ -36,6 +36,7 @@
           </template>
         </UTable>
       </div>
+    </div>
     </div>
   </template>
 
