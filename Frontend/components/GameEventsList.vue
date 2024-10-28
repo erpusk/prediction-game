@@ -37,6 +37,27 @@
         </UTable>
       </div>
     </div>
+<<<<<<< HEAD
+=======
+    <div v-else class="mt-8">
+      <h1 class="text-3xl font-bold text-center mb-6 text-black">{{ title }}</h1>
+      <UTable :rows="gameEvents" :columns="columns">
+        <template #actions-data="{ row }">
+          <button @click="deletePredictionGameEvent(row)" class="flex items-center text-red-500 hover:text-red-700">
+            <DeleteIconComponent />
+          </button>
+          <button @click="goToEditPredictionGameEvent(row)" class="bg-blue-500 text-white rounded px-4 py-2 hover:bg-blue-600">
+            Edit
+          </button>
+          <button @click="goToPredictionGameEventDetails(row)" class="bg-blue-500 text-white rounded px-4 py-2 hover:bg-blue-600">
+            Details
+          </button>
+          <span v-if="row.isCompleted && row.teamAScore !== null && row.teamBScore !== null" class="text-green-500">
+              ✔️
+            </span>
+        </template>
+      </UTable>
+>>>>>>> 445d3a8ef901817c01d533565bd6d82c8041de90
     </div>
   </template>
 
