@@ -26,6 +26,7 @@ namespace itb2203_2024_predictiongame.Service
         {
             var claims = new[]
             {
+                new Claim("id", user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email!),
                 new Claim(JwtRegisteredClaimNames.GivenName, user.UserName!)
             };

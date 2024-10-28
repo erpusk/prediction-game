@@ -20,7 +20,7 @@ export const useUserStore = defineStore('user', () => {
       }
       token.value = storedToken;
 
-      const decodedToken = jwtDecode<{ id: Number }>(storedToken);
+      const decodedToken = jwtDecode<{ id: number }>(storedToken);
       const userId = decodedToken.id;
 
       try {
@@ -85,7 +85,7 @@ export const useUserStore = defineStore('user', () => {
         router.push('/login');
     }
 
-    loadUser();
+    //loadUser();
 
     return { user, token, isAuthenticated, setUser, setToken, loadUser, login, register, logout }
 });
