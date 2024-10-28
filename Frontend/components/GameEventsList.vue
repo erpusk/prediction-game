@@ -30,6 +30,9 @@
           <button @click="goToPredictionGameEventDetails(row)" class="bg-blue-500 text-white rounded px-4 py-2 hover:bg-blue-600">
             Details
           </button>
+          <span v-if="row.isCompleted && row.teamAScore !== null && row.teamBScore !== null" class="text-green-500">
+              ✔️
+            </span>
         </template>
       </UTable>
     </div>

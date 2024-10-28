@@ -53,6 +53,9 @@ namespace BackEnd.Controllers
             if (eventModel == null) {
                 return NotFound();
             }
+            if (eventDto.EventDate > DateTime.UtcNow) {
+                return BadRequest("Cannot add scores until the event has passed");
+            }  
 
             eventModel.TeamA = eventDto.TeamA;
             eventModel.TeamB = eventDto.TeamB;
