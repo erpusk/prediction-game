@@ -1,22 +1,35 @@
 <template>
+  <div class="min-h-screen flex justify-center items-center bg-white">
     <UForm
       :validate="validate"
       :state="state"
-      class="p-6 bg-white rounded-lg shadow-lg"
+      class="p-6 bg-white rounded-lg shadow-lg max-w-lg w-full"
       @submit="onSubmit"
       @error="onError"
     >
       <h2 class="text-2xl font-semibold text-center mb-4 text-black">Edit an event</h2>
-      <UFormGroup label="Esimene meeskond" name="teamA">
+      <UFormGroup label="Esimene meeskond" name="teamA" class="!text-black">
         <UInput v-model="state.teamA" class="border rounded-md p-2"/>
       </UFormGroup>
   
-      <UFormGroup label="Teine meeskond" name="teamB">
+      <UFormGroup label="Teine meeskond" name="teamB" class="!text-black">
         <UInput v-model="state.teamB" class="border rounded-md p-2"/>
       </UFormGroup>
   
-      <UFormGroup label="Toimumisaeg" name="eventDate">
+      <UFormGroup label="Toimumisaeg" name="eventDate" class="!text-black">
         <UInput v-model="eventDateStr" type="date" class="border rounded-md p-2"/>
+      </UFormGroup>
+
+      <UFormGroup v-if="isPastDate" label="Team A Score" name="teamAScore" class="!text-black" step="1" min="0">
+        <UInput v-model="state.teamAScore" type="text" @input="validateNumericInput" class="border rounded-md p-2" placeholder="Enter score for Team A"/>
+      </UFormGroup>
+
+      <UFormGroup v-if="isPastDate" label="Team B Score" name="teamBScore" class="!text-black" step="1" min="0">
+        <UInput v-model="state.teamBScore" type="text" @input="validateNumericInput" class="border rounded-md p-2" placeholder="Enter score for Team B"/>
+      </UFormGroup>
+
+      <UFormGroup v-if="isPastDate" label="Is Completed?" name="isCompleted" class="!text-black">
+        <UCheckbox v-model="state.isCompleted" />
       </UFormGroup>
       
       <div class="flex justify-center space-x-4 mt-6">
@@ -29,21 +42,39 @@
       </div>
       
     </UForm>
+  </div>
   </template>
+  <style scoped>
+  div :deep(label) {
+    color: black !important;
+  }
+  </style>
+  
   
   <script setup lang="ts">
     import type { FormError, FormErrorEvent, FormSubmitEvent } from "#ui/types";
     import { useGameEventsStore } from "~/stores/stores";
     import type { GameEvent } from "~/types/gameEvent";
+    import { reactive, computed, onMounted } from 'vue';
+    import { useRouter } from 'vue-router';
 
     const { editPredictionGameEvent } = useGameEventsStore();
     const {loadSingleEvent} = useGameEventsStore();
     
-
     const props = defineProps<{
       predictionGameId: number,
       gameEventId: number;
     }>();
+
+    function validateNumericInput(event: InputEvent) {
+      const target = event.target as HTMLInputElement;
+      const value = target.value;
+      if (isNaN(Number(value)) || !/^\d+$/.test(value)) {
+        target.setCustomValidity("Result is not valid");
+      } else {
+        target.setCustomValidity("");
+      }
+}
 
     const state = reactive<GameEvent>({
         id: 0,
@@ -82,6 +113,23 @@
       if (!state.teamA) errors.push({ path: "teamA", message: "Required" });
       if (!state.teamB) errors.push({ path: "teamB", message: "Required" });
       if (!state.eventDate) errors.push({ path: "eventDate", message: "Required" });
+      if (!state.teamA || state.teamA.trim() === '') {
+      errors.push({ path: "teamA", message: "Team A is required" });
+      }
+      if (!state.teamB || state.teamB.trim() === '') {
+      errors.push({ path: "teamB", message: "Team B is required" });
+      }
+      if (!state.eventDate) {
+      errors.push({ path: "eventDate", message: "Event Date is required" });
+      }
+      if (state.isCompleted) {
+      if (state.teamAScore === '' || state.teamAScore === null || isNaN(state.teamAScore)) {
+      errors.push({ path: 'teamAScore', message: 'Team A score is required when the event is completed' });
+      }
+      if (state.teamBScore === '' || state.teamBScore === null || isNaN(state.teamBScore)) {
+      errors.push({ path: 'teamBScore', message: 'Team B score is required when the event is completed' });
+      }
+      }
       return errors;
     };
   
@@ -113,4 +161,8 @@
     const navigateToListOfGameEvents = () => {
     router.push(`/gameevents/${props.predictionGameId}`);
     };
+
+    const isPastDate = computed(() => {
+      return new Date(state.eventDate) <= new Date();
+    });
   </script>

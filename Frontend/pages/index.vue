@@ -48,10 +48,10 @@ const ToRegister = () => {
   
   <style scoped>
   .logo-text {
-  font-family: 'Poppins', sans-serif; /* Lisa Google Fonts lingiga */
-  font-size: 3rem; /* Suurem tekst */
-  font-weight: 700; /* Rasvane font */
-  color: #2e3747; /* Veidi tumedam hall toon */
+  font-family: 'Poppins', sans-serif;
+  font-size: 3rem;
+  font-weight: 700;
+  color: #2e3747;
   text-shadow: 2px 2px 5px rgba(67, 107, 194, 0.2);
   
 
