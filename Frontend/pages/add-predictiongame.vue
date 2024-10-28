@@ -2,8 +2,8 @@
     <AddPredictionGame />
 </template>  
 
-<script>
-export default {
-  middleware: 'auth'
-}
+<script setup>
+definePageMeta({
+    middleware: 'auth',
+});
 </script>
