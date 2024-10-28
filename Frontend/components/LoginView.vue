@@ -8,9 +8,14 @@
             <UInput v-model="password" class="border rounded-md p-2" type="password" required/>
         </UFormGroup>
         
-        <UButton type="submit">
-            Login
-        </UButton>
+        <div class="flex space-x-4">
+            <UButton type="submit">
+                Login
+            </UButton>
+            <UButton @click="goToRegister" type="button">
+                Register
+            </UButton>
+        </div>
 
         <p v-if="errorMessage" class="text-red-500">{{ errorMessage }}</p>
     </form>
@@ -42,5 +47,9 @@ const handleLogin = async () => {
   } catch(error) {
     errorMessage.value = error.message || 'Vale kasutajanimi või parool';
   }
+};
+
+const goToRegister = () => {
+  router.push('/register');
 };
 </script>

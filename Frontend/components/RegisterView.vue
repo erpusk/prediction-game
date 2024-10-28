@@ -53,13 +53,8 @@ const registerUser = async () => {
             email: email.value,
             password: password.value,
         });
-        console.log(response)
-        console.log("before setting user")
-
         userStore.setUser(response.user);
-        console.log("before setting user2")
         router.push('/');
-        console.log("before setting user3")
     } catch (error) {
         errorMessage.value = "Registration failed, try again.";
     }
