@@ -18,10 +18,13 @@ namespace BackEnd.Data.Repos
             _context = context;
         }
 
-        public async Task<List<Prediction>> GetAll(int? eventId = null){
+        public async Task<List<Prediction>> GetAll(int? eventId= null, int? userId = null){
             IQueryable<Prediction> predictions = _context.Predictions.AsQueryable();
             if (eventId.HasValue){
                 predictions = predictions.Where(x => x.EventId == eventId);
+            }
+            if (userId.HasValue){
+                predictions = predictions.Where(x => x.PredictionMakerId == userId.Value);
             }
             return await predictions.ToListAsync();
         }
