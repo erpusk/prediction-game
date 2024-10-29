@@ -1,3 +1,4 @@
+import { ListFormat } from "typescript";
 import type { GameEvent } from "~/types/gameEvent";
 import type { Prediction } from "~/types/prediction";
 import type { PredictionGame } from "~/types/predictionGame";
@@ -100,5 +101,11 @@ export const usePredictionsStore = defineStore("prediction", () => {
       predictions.value = await api.customFetch<Prediction[]>(url);
   };
 
-  return {addPrediction, loadPredictions}
+  const getPredictions= async (gameEventId: number) => {
+    const url = gameEventId ? `Prediction?eventId=${gameEventId}` : 'Prediction';
+      const predictionsList = await api.customFetch<Prediction[]>(url)
+    return predictionsList
+  };
+
+  return {predictions, addPrediction, loadPredictions, getPredictions}
 })

@@ -100,7 +100,16 @@ public class DataContext : IdentityDbContext<ApplicationUser, IdentityRole<int>,
             PasswordHash = passwordHasher.HashPassword(null!, "Default_Password1"),
         };
 
-        user.HasData(applicationUser);
+        var applicationUser2 = new ApplicationUser
+        {
+            Id = 2,
+            UserName = "JuriJur",
+            DateOfBirth = DateTime.Now.ToUniversalTime(),
+            Email = "juri.juri@gmail.com",
+            PasswordHash = passwordHasher.HashPassword(null!, "Default_Password2"),
+        };
+
+        user.HasData(applicationUser, applicationUser2);
     }
 
     private static void ConfigurePredictionEntity(EntityTypeBuilder<Prediction> prediction){

@@ -9,7 +9,7 @@ export const useApi = () => {
     url: string,
     options?: NitroFetchOptions<NitroFetchRequest>
   ) => {
-    try {
+    //try {
     const token = localStorage.getItem('token');
 
     return await $fetch<T>(url, {
@@ -20,10 +20,10 @@ export const useApi = () => {
       },
       ...options,
     });
-  } catch (error: any){
+  /*} catch (error: any){
     var status = error.status
     return { error, status};
-  }
+  }*/
   };
   return { customFetch };
 };
