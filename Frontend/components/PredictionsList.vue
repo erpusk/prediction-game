@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen  flex justify-center items-center p-6">
+  <div class="min-h-screen flex justify-center items-center p-6">
     <div class="p-20 bg-gray-600 rounded-lg shadow-lg max-w-5x1">
         <div v-if="predictions.length === 0">
           <h2 class="text-x1 text-center text-White">No predictions have been added</h2>
