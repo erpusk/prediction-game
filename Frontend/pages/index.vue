@@ -27,10 +27,6 @@ import { useUserStore } from '#imports';
 const userStore = useUserStore();
 const router = useRouter();
 
-onMounted(() => {
-  //userStore.loadUser();
-});
-
 const ToCreateGame = () => {
   router.push('/add-predictiongame');
 };
