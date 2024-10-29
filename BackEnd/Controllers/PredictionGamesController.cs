@@ -15,17 +15,14 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
         private readonly PredictionGamesRepo repo = repo;
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(string? code = null)
+        public async Task<IActionResult> GetAll()
         {
-            var result = await repo.GetAllPredictionGames(code);
+            var result = await repo.GetAllPredictionGames();
             var resultAsDto = result.Select(s => s.ToPredictionGameDto()).ToList();
             return Ok(resultAsDto);
         }
 
-        //[HttpGet("{code}")]
-        //public async Task<IActionResult> GetByUniqueCode([FromRoute] string code){
-        //    var result = await repo.GetByUniqueCode(code);
-        //}
+        
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPredictionGame(int id)

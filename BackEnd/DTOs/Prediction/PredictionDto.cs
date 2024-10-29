@@ -9,7 +9,7 @@ namespace BackEnd.DTOs.Prediction
     {
         public int Id { get; set; }
         public int PredictionMakerId { get; set; }
-        public int endScoreTeamA { get; set; }
-        public int endScoreTeamB { get; set; }
+        public int EndScoreTeamA { get; set; }
+        public int EndScoreTeamB { get; set; }
     }
 }
