@@ -22,6 +22,8 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
             return Ok(resultAsDto);
         }
 
+        
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPredictionGame(int id)
         {
@@ -32,6 +34,8 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
             }
             return Ok(predictionGame.ToPredictionGameDto());
         }
+
+        
 
         [HttpPost]
         public async Task<IActionResult> CreatePredictionGame([FromBody] CreatePredictionGameRequestDto predictionGameDto, [FromHeader(Name = "UserId")] int userId)

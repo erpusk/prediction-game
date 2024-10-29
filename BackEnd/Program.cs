@@ -55,7 +55,8 @@ builder.Services.AddDbContext<DataContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")))
     .AddScoped<PredictionGamesRepo>()
     .AddScoped<EventRepo>()
-    .AddScoped<ApplicationUserRepo>();
+    .AddScoped<ApplicationUserRepo>()
+    .AddScoped<PredictionRepo>();
 
 builder.Services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
     {

@@ -12,6 +12,6 @@ namespace BackEnd.DTOs.Event
         public bool IsCompleted { get; set; } 
 
     // Predictions (optional, depending on if prediction logic is part of the match)
-    // public List<Prediction> Predictions { get; set; } = new List<Prediction>();
+        //public List<Prediction> Predictions { get; set; } = new List<Prediction>();
     }
 }

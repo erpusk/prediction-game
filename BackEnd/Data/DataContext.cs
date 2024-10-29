@@ -14,6 +14,7 @@ public class DataContext : IdentityDbContext<ApplicationUser, IdentityRole<int>,
     public DbSet<PredictionGame> PredictionGames { get; set; }
     public DbSet<Event> Events { get; set; }
     public DbSet<ApplicationUser> ApplicationUsers{ get; set; }
+    public DbSet<Prediction> Predictions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -22,7 +23,7 @@ public class DataContext : IdentityDbContext<ApplicationUser, IdentityRole<int>,
         ConfigurePredictionGameEntity(modelBuilder.Entity<PredictionGame>());
         ConfigureEventEntity(modelBuilder.Entity<Event>());
         ConfigureApplicationUserEntity(modelBuilder.Entity<ApplicationUser>());
-
+        ConfigurePredictionEntity(modelBuilder.Entity<Prediction>());
         ConfigureAccountEntity(modelBuilder.Entity<IdentityRole<int>>());
     }
 
@@ -41,6 +42,7 @@ public class DataContext : IdentityDbContext<ApplicationUser, IdentityRole<int>,
             }
         };
         roleBuilder.HasData(roles);
+        
     }
 
     private static void ConfigureEventEntity(EntityTypeBuilder<Event> Event)
@@ -98,6 +100,31 @@ public class DataContext : IdentityDbContext<ApplicationUser, IdentityRole<int>,
             PasswordHash = passwordHasher.HashPassword(null!, "Default_Password1"),
         };
 
-        user.HasData(applicationUser);
+        var applicationUser2 = new ApplicationUser
+        {
+            Id = 2,
+            UserName = "JuriJur",
+            DateOfBirth = DateTime.Now.ToUniversalTime(),
+            Email = "juri.juri@gmail.com",
+            PasswordHash = passwordHasher.HashPassword(null!, "Default_Password2"),
+        };
+
+        user.HasData(applicationUser, applicationUser2);
     }
+
+    private static void ConfigurePredictionEntity(EntityTypeBuilder<Prediction> prediction){
+        prediction.Property(x => x.Id).ValueGeneratedOnAdd();
+        prediction.HasData(
+            new Prediction{
+                Id = 1,
+                EndScoreTeamA = 2,
+                EndScoreTeamB = 6,
+                PredictionMakerId = 1,
+                EventId = 1
+            }
+        );
+
+    }
+
+    
 }

@@ -10,13 +10,12 @@
     </button>
     <AddGameEvent 
       v-if="showModal" 
-      :predictionGameId="props.predictionGameId" 
+      :predictionGameId="parseInt(props.predictionGameId.toString())" 
       @close="closeModal" 
     />
-
-    <div v-if="gameEvents.length === 0">
-      <h2 class="text-x1 text-center">No events have been added</h2>
-    </div>
+      <div v-if="gameEvents.length === 0">
+        <h2 class="text-x1 text-center">No events have been added</h2>
+      </div>
     <div v-else class="mt-8">
       <h1 class="text-3xl font-bold text-center mb-6 text-black">{{ title }}</h1>
       <UTable :rows="gameEvents" :columns="columns">
@@ -30,26 +29,44 @@
           <button @click="goToPredictionGameEventDetails(row)" class="bg-blue-500 text-white rounded px-4 py-2 hover:bg-blue-600">
             Details
           </button>
+          <div v-if="hasMadePredictionMap[row.id] === true">
+            <button class="bg-gray-500 text-black rounded px-4 py-2">
+              Cant make prediction
+            </button>
+          </div>
+          <div v-else>
+            <button @click="goToMakingAPrediction(row)" class="bg-blue-500 text-white rounded px-4 py-2 hover:bg-blue-600">
+                Make a prediction
+            </button>
+          </div>
+          <button @click="goPredictionsList(row)" class="bg-blue-500 text-white rounded px-4 py-2 hover:bg-blue-600">
+            View predictions
+          </button>
           <span v-if="row.isCompleted && row.teamAScore !== null && row.teamBScore !== null" class="text-green-500">
               ✔️
             </span>
         </template>
       </UTable>
     </div>
-  </div>
-  </div>
-</template>
-
+    </div>
+    </div>
+  </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import AddGameEvent from '@/components/AddGameEvent.vue';
 import { useGameEventsStore } from '@/stores/stores';
 const showModal = ref(false);
+const gameEventStore = useGameEventsStore();
+const { gameEvents } = storeToRefs(gameEventStore);
+const router = useRouter();
+const userStore = useUserStore();
+const predictionStore = usePredictionsStore();
+
 const props = defineProps<{
   title: string;
   predictionGameId: string | string[];
-  }>();
+}>();
 
 const columns = [
   {
@@ -78,14 +95,27 @@ const columns = [
   }
 ];
 
-const gameEventStore = useGameEventsStore();
-const { gameEvents } = storeToRefs(gameEventStore);
-const route = useRoute();
-const router = useRouter();
+const hasMadePredictionMap = ref<{ [key: number]: boolean }>({});
 
-const goToCreateNewPredictionGameEvent = (predictionGameId: string | string[]) => {
-  router.push(`/add-gameevents/${predictionGameId}`);
-};
+onMounted(async () => {
+  await gameEventStore.loadGameEvents(props.predictionGameId);
+  
+  // Check if the user has made a prediction for each game event
+  const userId = userStore.user?.id;
+  if (userId) {
+    for (const event of gameEvents.value) {
+      const hasMadePrediction = await userHasMadePrediction(event, userId);
+      hasMadePredictionMap.value[event.id] = hasMadePrediction;
+    }
+  }
+});
+
+
+async function userHasMadePrediction(gameEvent: GameEvent, userId: number): Promise<boolean> {
+  const predictions = await predictionStore.getPredictions(gameEvent.id);
+  return predictions.some(element => element.predictionMakerId === userId);
+}
+
 
 onMounted(() => {
   gameEventStore.loadGameEvents(props.predictionGameId);
@@ -98,10 +128,22 @@ const deletePredictionGameEvent = (gameEvent: GameEvent) => {
 const goToEditPredictionGameEvent = (gameEvent: GameEvent) => {
   router.push(`/edit-gameevent/${props.predictionGameId}/${gameEvent.id}`)
 }
+
 const goToPredictionGameEventDetails = (gameEvent: GameEvent) => {
   router.push(`/gameevent-details/${props.predictionGameId}/${gameEvent.id}`)
 }
+
 const closeModal = () => {
   showModal.value = false; // Sulge modaal
 };
+
+const goToMakingAPrediction = (gameEvent: GameEvent) => {
+  router.push(`/add-prediction/${props.predictionGameId}/${gameEvent.id}`)
+}
+
+const goPredictionsList = (gameEvent: GameEvent) => {
+  router.push(`/predictions/${props.predictionGameId}/${gameEvent.id}`)
+}
+
+
 </script>

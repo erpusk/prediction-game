@@ -64,7 +64,6 @@
   
   const predictionGameStore = usePredictionGameStore();
   const { predictionGames } = storeToRefs(predictionGameStore);
-  const gameEventStore = useGameEventsStore();
   const router = useRouter();
   
   const goToCreateNewPredictionGame = () => {
