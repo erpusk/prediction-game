@@ -14,8 +14,8 @@ namespace BackEnd.DTOs.Event
         [DataType(DataType.DateTime)]
         public DateTime EventDate { get; set; } = DateTime.Now.ToUniversalTime();
         public int PredictionGameId { get; set; }
-        public int? TeamAScore { get; set; } 
-        public int? TeamBScore { get; set; } 
+        public int? TeamAScore { get; set; } = null;
+        public int? TeamBScore { get; set; } = null;
         public bool IsCompleted { get; set; }
     }
 }

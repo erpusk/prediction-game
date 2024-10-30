@@ -1,43 +1,53 @@
 <template>
+  <div class="min-h-screen bg-white flex justify-center items-center">
     <UForm
       :validate="validate"
       :state="state"
-      class="space-y-6 p-6 bg-white rounded-lg shadow-lg"
+      class="space-y-7 p-20 bg-white rounded-lg shadow-lg max-w-lg w-full text-black"
       @submit="onSubmit"
       @error="onError"
     >
-      <h2 class="text-2xl font-semibold text-center mb-4 text-black">Create a Prediction Game</h2>
+      <h2 class="text-2xl font-semibold text-center mb-6 drop-shadow-lg text-black">Create a Prediction Game</h2>
       
-      <UFormGroup label="Prediction game title" name="predictionGameTitle">
-        <UInput v-model="state.predictionGameTitle" placeholder="Enter game title" class="border rounded-md p-2" />
+      <UFormGroup label="Prediction game title" name="predictionGameTitle" class="!text-black">
+        <UInput v-model="state.predictionGameTitle" placeholder="Enter game title" 
+         class="border rounded-md p-2"/>
       </UFormGroup>
   
-      <UFormGroup label="Start date" name="startDate">
-        <UInput v-model="startDateStr" type="date" class="border rounded-md p-2" />
+      <UFormGroup label="Start date" name="startDate" class="!text-black">
+        <UInput v-model="startDateStr" type="date"  class="border rounded-md p-2" />
       </UFormGroup>
   
-      <UFormGroup label="End date" name="endDate">
-        <UInput v-model="endDateStr" type="date" class="border rounded-md p-2" />
+      <UFormGroup label="End date" name="endDate" class="!text-black">
+        <UInput v-model="endDateStr" type="date"  class="border rounded-md p-2" />
       </UFormGroup>
   
-      <UFormGroup label="Game privacy" name="privacy">
-        <USelect v-model="state.privacy" :options="['Private game', 'Public game']" />
+      <UFormGroup label="Game privacy" name="privacy" class="!text-black">
+        <USelect v-model="state.privacy" :options="['Private game', 'Public game']"  />
       </UFormGroup>
   
       <div class="flex justify-center space-x-4 mt-6">
-        <UButton type="button" @click="navigateToListOfPredictionGames" class="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-md transition duration-300">
-            Back to List
+        <UButton type="button" @click="navigateToListOfPredictionGames" class="bg-gray-300 
+        hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-md transition duration-300">
+            To Games List
         </UButton>
         <UButton type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition duration-300">
             Create a Game
         </UButton>
       </div>
     </UForm>
+  </div>
   </template>
-  
+<style scoped>
+div :deep(label) {
+  color: black !important;
+}
+</style>
+
   
   <script setup lang="ts">
-    import type { FormError, FormErrorEvent, FormSubmitEvent } from "#ui/types";
+    import { _colors } from "#tailwind-config/theme";
+import type { FormError, FormErrorEvent, FormSubmitEvent } from "#ui/types";
     import { useRouter } from 'vue-router';
 
   

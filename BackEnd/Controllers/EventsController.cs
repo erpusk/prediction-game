@@ -1,12 +1,14 @@
 using BackEnd.Data.Repos;
 using BackEnd.DTOs.Event;
 using BackEnd.Mappers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BackEnd.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class EventController: ControllerBase
     {
         private readonly EventRepo _repo;
@@ -51,6 +53,9 @@ namespace BackEnd.Controllers
             if (eventModel == null) {
                 return NotFound();
             }
+            if (eventDto.EventDate > DateTime.UtcNow) {
+                return BadRequest("Cannot add scores until the event has passed");
+            }  
 
             eventModel.TeamA = eventDto.TeamA;
             eventModel.TeamB = eventDto.TeamB;

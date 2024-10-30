@@ -2,12 +2,14 @@ using BackEnd.Data.Repos;
 using BackEnd.DTOs.PredictionGame;
 using BackEnd.Mappers;
 using itb2203_2024_predictiongame.Backend.Data.Repos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace itb2203_2024_predictiongame.Backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class PredictionGamesController(PredictionGamesRepo repo) : ControllerBase()
     {
         private readonly PredictionGamesRepo repo = repo;
@@ -20,6 +22,8 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
             return Ok(resultAsDto);
         }
 
+        
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPredictionGame(int id)
         {
@@ -30,6 +34,8 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
             }
             return Ok(predictionGame.ToPredictionGameDto());
         }
+
+        
 
         [HttpPost]
         public async Task<IActionResult> CreatePredictionGame([FromBody] CreatePredictionGameRequestDto predictionGameDto, [FromHeader(Name = "UserId")] int userId)

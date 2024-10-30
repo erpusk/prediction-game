@@ -8,32 +8,46 @@
         <button class="btn-primary">Join Game</button>
         <button class="btn-primary" @click="ToMyGames">Games</button>
       </div>
-      <div class="absolute top-10 right-4 flex space-x-2">
-        <button class="btn-secondary">Login</button>
-        <button class="btn-secondary">Sign Up</button>
+      <div v-if="!userStore.isAuthenticated" class="absolute top-10 right-4 flex space-x-2">
+        <button class="btn-secondary" @click="ToLogin">Login</button>
+        <button class="btn-secondary" @click="ToRegister">Sign Up</button>
+      </div>
+      <div v-else class="absolute top-10 right-4 flex space-x-2">
+        <button class="btn-secondary" @click="userStore.logout()">Logout</button>
+        <textarea>Hello!, {{ userStore.user?.name }}</textarea>
       </div>
     </div>
   </template>
   
+<script setup lang="ts">
+import { useRouter } from 'vue-router';
+import { useUserStore } from '#imports';
 
-  <script setup lang="ts">
-  import { useRouter } from 'vue-router';
-  const router = useRouter();
-  const ToCreateGame = () => {
-    router.push('/add-predictiongame');
-  };
-  const ToMyGames = () => {
+
+const userStore = useUserStore();
+const router = useRouter();
+
+const ToCreateGame = () => {
+  router.push('/add-predictiongame');
+};
+const ToMyGames = () => {
   router.push('/predictiongames');
 };
-  </script>
+const ToLogin = () => {
+  router.push('/login')
+};
+const ToRegister = () => {
+  router.push('/register')
+}
+</script>
 
   
   <style scoped>
   .logo-text {
-  font-family: 'Poppins', sans-serif; /* Lisa Google Fonts lingiga */
-  font-size: 3rem; /* Suurem tekst */
-  font-weight: 700; /* Rasvane font */
-  color: #2e3747; /* Veidi tumedam hall toon */
+  font-family: 'Poppins', sans-serif;
+  font-size: 3rem;
+  font-weight: 700;
+  color: #2e3747;
   text-shadow: 2px 2px 5px rgba(67, 107, 194, 0.2);
   
 

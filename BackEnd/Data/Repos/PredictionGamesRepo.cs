@@ -24,7 +24,6 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
             .Include(m => m.Events)
             .Include(m => m.GameCreator)
             .AsQueryable();
-
             return await query.ToListAsync();
         }
 
