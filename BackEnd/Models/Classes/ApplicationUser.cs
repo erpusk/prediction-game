@@ -12,5 +12,6 @@ namespace BackEnd.Models.Classes
         public DateTime DateOfBirth { get; set; } = DateTime.Now.ToUniversalTime();
         public List<PredictionGame> CreatedPredictionGames { get; set; } = new List<PredictionGame>();
         //public List<PredictionGame> JoinedPredictionGames { get; set; } = new List<PredictionGame>();
+        public List<PredictionGameParticipant> Games { get; set; } = new List<PredictionGameParticipant>();
     }
 }

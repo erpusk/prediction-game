@@ -5,7 +5,7 @@
         </div>
       <div class="button-group flex flex-col space-y-10 items-center">
         <button class="btn-primary" @click="ToCreateGame">Create Game</button>
-        <button class="btn-primary">Join Game</button>
+        <button class="btn-primary" @click="ToJoinGame">Join Game</button>
         <button class="btn-primary" @click="ToMyGames">Games</button>
       </div>
       <div v-if="userStore.isAuthenticated" class="absolute top-10 right-4 flex items-center space-x-2">
@@ -37,6 +37,9 @@ const ToLogin = () => {
 const ToRegister = () => {
   router.push('/register')
 }
+const ToJoinGame = () => {
+  router.push('/joingame/join-game');
+};
 </script>
 
   
