@@ -92,19 +92,20 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
             return result ? NoContent() : NotFound();
         }
         [HttpPost("{gameId}/join")]
-        public async Task<IActionResult> JoinGame(int gameId, [FromBody] int userId)
+        public async Task<IActionResult> JoinGame(int gameId, [FromBody] JoinGameRequestDto request)
         {
+            int requestUserId = request.UserId;
             var gameExists = await repo.PredictionGameExistsInDb(gameId);
             if (!gameExists)
             {
                 return NotFound("Game not found.");
             }
-            var user = await repo.GetUserById(userId);
+            var user = await repo.GetUserById(requestUserId);
             if (user == null)
             {
                 return NotFound("User not found.");
             }
-            var isAlreadyParticipant = await repo.IsUserAlreadyInGame(userId, gameId);
+            var isAlreadyParticipant = await repo.IsUserAlreadyInGame(requestUserId, gameId);
             if (isAlreadyParticipant)
             {
                 return BadRequest("User is already a participant in this game.");
