@@ -18,7 +18,7 @@
       </div>
     <div v-else class="mt-8">
       <h1 class="text-3xl font-bold text-center mb-6 text-black">{{ title }}</h1>
-      <UTable :rows="gameEvents" :columns="columns">
+      <UTable :rows="formattedGameEvents" :columns="columns">
         <template #actions-data="{ row }">
           <button @click="deletePredictionGameEvent(row)" class="flex items-center text-red-500 hover:text-red-700">
             <DeleteIconComponent />
@@ -56,6 +56,7 @@
 import { ref, onMounted } from 'vue';
 import AddGameEvent from '@/components/AddGameEvent.vue';
 import { useGameEventsStore } from '@/stores/stores';
+import { format } from 'date-fns';
 const showModal = ref(false);
 const gameEventStore = useGameEventsStore();
 const { gameEvents } = storeToRefs(gameEventStore);
@@ -116,6 +117,12 @@ async function userHasMadePrediction(gameEvent: GameEvent, userId: number): Prom
   return predictions.some(element => element.predictionMakerId === userId);
 }
 
+const formattedGameEvents = computed(() => {
+  return gameEvents.value.map(event => ({
+    ...event,
+    eventDate : event.eventDate ? format(new Date(event.eventDate), 'dd.MM.yyyy HH:mm') : '',
+  }));
+});
 
 onMounted(() => {
   gameEventStore.loadGameEvents(props.predictionGameId);

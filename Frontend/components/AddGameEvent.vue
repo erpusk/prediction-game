@@ -79,9 +79,30 @@ div :deep(label) {
   
     const validate = (state: any): FormError[] => {
       const errors = [];
+      const currentDate = new Date();
+      // Check for required fields
       if (!state.teamA) errors.push({ path: "teamA", message: "Required" });
       if (!state.teamB) errors.push({ path: "teamB", message: "Required" });
       if (!state.eventDate) errors.push({ path: "eventDate", message: "Required" });
+      
+      // Check team name length
+      if (state.teamA.length < 3 || state.teamA.length > 30) {
+        errors.push({ path: "teamA", message: "Team A name must be between 3 and 30 characters." });
+      }
+      if (state.teamB.length < 3 || state.teamB.length > 30) {
+        errors.push({ path: "teamB", message: "Team B name must be between 3 and 30 characters." });
+      }
+
+      // Check for future date
+      if (state.eventDate && new Date(state.eventDate) <= currentDate) {
+        errors.push({ path: "eventDate", message: "Event date must be in the future." });
+      }
+
+      // Check for duplicate teams
+      if (state.teamA === state.teamB) {
+        errors.push({ path: "teamA", message: "Teams must have different names." });
+        errors.push({ path: "teamB", message: "Teams must have different names." });
+      }
       return errors;
     };
   
