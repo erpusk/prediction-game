@@ -60,8 +60,6 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
             var result = await repo.CreatePredictionGameToDb(predictionGameModel);
             return CreatedAtAction(nameof(GetPredictionGame), new { id = predictionGameModel.Id }, result.ToPredictionGameDto());
         }
-        [HttpPost("join")]
-        // PredictionGamesController.cs
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdatePredictionGame(int id, [FromBody] UpdatePredictionGameDto predictionGameDto)
@@ -91,15 +89,16 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
             bool result = await repo.DeletePredictionGameById(id);
             return result ? NoContent() : NotFound();
         }
-        [HttpPost("{gameId}/join")]
-        public async Task<IActionResult> JoinGame(int gameId, [FromBody] JoinGameRequestDto request)
+        [HttpPost("{uniqueCode}/join")]
+        public async Task<IActionResult> JoinGame(string uniqueCode, [FromBody] JoinGameRequestDto request)
         {
             int requestUserId = request.UserId;
-            var gameExists = await repo.PredictionGameExistsInDb(gameId);
-            if (!gameExists)
+            var game = await repo.GetPredictionGameByCode(uniqueCode);
+            if (game == null)
             {
                 return NotFound("Game not found.");
             }
+            int gameId = game.Id;
             var user = await repo.GetUserById(requestUserId);
             if (user == null)
             {

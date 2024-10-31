@@ -82,6 +82,10 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
         {
             return await context.PredictionGameParticipants.AnyAsync(p => p.UserId == userId && p.GameId == gameId);
         }
+        public async Task<PredictionGame?> GetPredictionGameByCode(string uniqueCode)
+        {
+            return await context.PredictionGames.FirstOrDefaultAsync(g => g.UniqueCode == uniqueCode);
+        }
 
     }
 }
