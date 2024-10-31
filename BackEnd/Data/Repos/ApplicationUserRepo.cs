@@ -16,11 +16,11 @@ namespace BackEnd.Data.Repos
         }
         public async Task<List<ApplicationUser>> GetAllUsers() 
         {
-             IQueryable<ApplicationUser> query = context.ApplicationUsers.Include(m => m.CreatedPredictionGames).AsQueryable();
+             IQueryable<ApplicationUser> query = context.ApplicationUsers.Include(u => u.CreatedPredictionGames).ThenInclude(pg => pg.Events).AsQueryable();
              
              return await query.ToListAsync();
         }
-        public async Task<ApplicationUser?> GetUserById(int id) => await context.ApplicationUsers.FindAsync(id);
+        public async Task<ApplicationUser?> GetUserById(int id) => await context.ApplicationUsers.Include(u => u.CreatedPredictionGames).ThenInclude(pg => pg.Events).FirstOrDefaultAsync(u => u.Id == id);
         public async Task<bool> IsUserExistsInDB(int id) => await context.ApplicationUsers.AnyAsync(x => x.Id == id);
         public async Task<bool> UpdateApplicationUser(int id, ApplicationUser user){
             bool isIdsMatch = id == user.Id;

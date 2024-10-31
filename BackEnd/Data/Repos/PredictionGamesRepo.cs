@@ -9,11 +9,18 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
     {
         private readonly DataContext context = context;
 
-
         //CREATE
         public async Task<PredictionGame> CreatePredictionGameToDb(PredictionGame predictionGame)
-        {           
-            context.Add(predictionGame);
+        {
+            var gameCreator = await context.ApplicationUsers.Include(u => u.CreatedPredictionGames)
+                .FirstOrDefaultAsync(u => u.Id == predictionGame.GameCreatorId);
+
+            if (gameCreator == null) {
+                throw new InvalidOperationException("User not found");
+            }
+
+            gameCreator.CreatedPredictionGames.Add(predictionGame);
+            await context.PredictionGames.AddAsync(predictionGame);
             await context.SaveChangesAsync();
             return predictionGame;
         }
@@ -35,11 +42,11 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
             .Include(m => m.Events)
             .Include(m => m.GameCreator)
             .AsQueryable();
-
             return await query.ToListAsync();
         }
 
-        public async Task<PredictionGame?> GetPredictionGameById(int id) => await context.PredictionGames.Include(m => m.Events).FirstOrDefaultAsync(x => x.Id == id);
+        public async Task<PredictionGame?> GetPredictionGameById(int id) => 
+            await context.PredictionGames.Include(m => m.Events).Include(pg => pg.GameCreator).FirstOrDefaultAsync(x => x.Id == id);
         public async Task<bool> PredictionGameExistsInDb(int id) => await context.PredictionGames.AnyAsync(x => x.Id == id);
 
         //UPDATE

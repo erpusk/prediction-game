@@ -16,6 +16,18 @@ namespace BackEnd.Mappers
             {
                 Id = applicationUserModel.Id,
                 UserName = applicationUserModel.UserName,
+                CreatedPredictionGames = applicationUserModel.CreatedPredictionGames
+                    .Select(x => new PredictionGameDto {
+                        Id = x.Id,
+                        PredictionGameTitle = x.PredictionGameTitle,
+                        StartDate = x.StartDate,
+                        EndDate = x.EndDate,
+                        Privacy = x.Privacy,
+                        GameCreatorId = x.GameCreatorId,
+                        Events = x.Events?.Select(x => x.ToEventDto()).ToList(),
+                        UniqueCode = x.UniqueCode
+                    })
+                    .ToList(),
             };
         }
         public static ApplicationUser ToApplicationUserFromDto(this ApplicationUserDto applicationUserDto)
