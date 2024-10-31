@@ -15,6 +15,8 @@ public class DataContext : IdentityDbContext<ApplicationUser, IdentityRole<int>,
     public DbSet<Event> Events { get; set; }
     public DbSet<ApplicationUser> ApplicationUsers{ get; set; }
     public DbSet<Prediction> Predictions { get; set; }
+    public DbSet<PredictionGameParticipant> PredictionGameParticipants { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -25,6 +27,8 @@ public class DataContext : IdentityDbContext<ApplicationUser, IdentityRole<int>,
         ConfigureApplicationUserEntity(modelBuilder.Entity<ApplicationUser>());
         ConfigurePredictionEntity(modelBuilder.Entity<Prediction>());
         ConfigureAccountEntity(modelBuilder.Entity<IdentityRole<int>>());
+        ConfigurePredictionGameParticipantEntity(modelBuilder.Entity<PredictionGameParticipant>());
+    ConfigureAccountEntity(modelBuilder.Entity<IdentityRole<int>>());
     }
 
     private void ConfigureAccountEntity(EntityTypeBuilder<IdentityRole<int>> roleBuilder)
@@ -111,6 +115,22 @@ public class DataContext : IdentityDbContext<ApplicationUser, IdentityRole<int>,
 
         user.HasData(applicationUser, applicationUser2);
     }
+    private static void ConfigurePredictionGameParticipantEntity(EntityTypeBuilder<PredictionGameParticipant> participant)
+{
+    participant.HasKey(p => p.Id);
+
+    // Määra seos PredictionGame'iga
+    participant.HasOne(p => p.Game)
+               .WithMany(g => g.Participants)
+               .HasForeignKey(p => p.GameId)
+               .OnDelete(DeleteBehavior.Cascade);
+
+    // Määra seos ApplicationUser'iga
+    participant.HasOne(p => p.User)
+               .WithMany(u => u.Games)
+               .HasForeignKey(p => p.UserId)
+               .OnDelete(DeleteBehavior.Cascade);    
+}
 
     private static void ConfigurePredictionEntity(EntityTypeBuilder<Prediction> prediction){
         prediction.Property(x => x.Id).ValueGeneratedOnAdd();

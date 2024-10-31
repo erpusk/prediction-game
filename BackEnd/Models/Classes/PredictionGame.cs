@@ -16,5 +16,6 @@ namespace itb2203_2024_predictiongame.Backend.Models.Classes
         public List<Event>? Events { get; set; } = new List<Event>();
         // public List<GameParticipant> Participants { get; set; } = new List<GameParticipant>();
         public string? UniqueCode { get; set; } = RandomString.GetString(Types.ALPHABET_LOWERCASE, 6);
+        public List<PredictionGameParticipant> Participants { get; set; } = new List<PredictionGameParticipant>();
     }
 }
