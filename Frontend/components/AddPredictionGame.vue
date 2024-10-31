@@ -52,6 +52,7 @@ import type { FormError, FormErrorEvent, FormSubmitEvent } from "#ui/types";
 
   
     const { addPredictionGame } = usePredictionGameStore();
+    const userStore = useUserStore();
   
     const state = reactive<PredictionGame>({
       id: 0,
@@ -59,7 +60,7 @@ import type { FormError, FormErrorEvent, FormSubmitEvent } from "#ui/types";
       creationDate: new Date(),
       startDate: '', 
       endDate: '', 
-      gameCreatorId: 1, 
+      gameCreatorId: userStore.user?.id || 0, 
       privacy: 'Private game'
     });
   

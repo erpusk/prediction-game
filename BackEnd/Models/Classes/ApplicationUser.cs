@@ -10,7 +10,7 @@ namespace BackEnd.Models.Classes
         public string LastName { get; set;} = string.Empty;
         public string FullName => $"{FirstName} {LastName}";
         public DateTime DateOfBirth { get; set; } = DateTime.Now.ToUniversalTime();
-        public List<PredictionGame>? CreatedPredictionGames { get; set; } = new List<PredictionGame>();
+        public List<PredictionGame> CreatedPredictionGames { get; set; } = new List<PredictionGame>();
         //public List<PredictionGame> JoinedPredictionGames { get; set; } = new List<PredictionGame>();
     }
 }
