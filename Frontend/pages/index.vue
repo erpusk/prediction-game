@@ -8,13 +8,9 @@
         <button class="btn-primary">Join Game</button>
         <button class="btn-primary" @click="ToMyGames">Games</button>
       </div>
-      <div v-if="!userStore.isAuthenticated" class="absolute top-10 right-4 flex space-x-2">
-        <button class="btn-secondary" @click="ToLogin">Login</button>
-        <button class="btn-secondary" @click="ToRegister">Sign Up</button>
-      </div>
-      <div v-else class="absolute top-10 right-4 flex space-x-2">
-        <button class="btn-secondary" @click="userStore.logout()">Logout</button>
-        <textarea>Hello!, {{ userStore.user?.name }}</textarea>
+      <div v-if="userStore.isAuthenticated" class="absolute top-10 right-4 flex items-center space-x-2">
+      <span class="user-greeting">Hello, {{ userName }}!</span>
+      <button class="btn-secondary" @click="userStore.logout()">Logout</button>
       </div>
     </div>
   </template>
@@ -26,6 +22,8 @@ import { useUserStore } from '#imports';
 
 const userStore = useUserStore();
 const router = useRouter();
+
+const userName = computed(() => userStore.user?.userName);
 
 const ToCreateGame = () => {
   router.push('/add-predictiongame');
@@ -89,6 +87,11 @@ const ToRegister = () => {
     background-color: #4d4a4a;
   }
 
+  .user-greeting {
+  font-size: 1.2rem;
+  color: #333;
+  margin-left: 10px;
+  }
   </style>
 
   

@@ -22,8 +22,6 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
             return Ok(resultAsDto);
         }
 
-        
-
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPredictionGame(int id)
         {
@@ -35,11 +33,13 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
             return Ok(predictionGame.ToPredictionGameDto());
         }
 
-        
-
         [HttpPost]
-        public async Task<IActionResult> CreatePredictionGame([FromBody] CreatePredictionGameRequestDto predictionGameDto, [FromHeader(Name = "UserId")] int userId)
+        public async Task<IActionResult> CreatePredictionGame([FromBody] CreatePredictionGameRequestDto predictionGameDto)
         {
+            var userIdClaim = User.FindFirst("id")?.Value;
+            if (userIdClaim == null || !int.TryParse(userIdClaim, out int userId)) {
+                return Unauthorized();
+            }
             var gameCreator = await repo.GetUserById(userId);
             if (gameCreator == null)
             {
@@ -54,9 +54,8 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
                 return Conflict();
             }
 
-
-
             var result = await repo.CreatePredictionGameToDb(predictionGameModel);
+
             return CreatedAtAction(nameof(GetPredictionGame), new { id = predictionGameModel.Id }, result.ToPredictionGameDto());
         }
 
