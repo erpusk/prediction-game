@@ -81,5 +81,30 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
         }
 
         public async Task<ApplicationUser?> GetUserById(int userId) => await context.ApplicationUsers.FindAsync(userId); //abimeetod Kasutaja saamiseks.
+        public async Task<bool> JoinGameAsync(ApplicationUser user, int gameId){
+
+            bool gameExists = await PredictionGameExistsInDb(gameId);
+            if (!gameExists) return false;
+            bool isAlreadyInGame = await IsUserAlreadyInGame(user.Id, gameId);
+            if (isAlreadyInGame) return false;
+
+            var participant = new PredictionGameParticipant{
+                GameId = gameId,
+                UserId = user.Id,
+                Role = "Player"
+            };
+            context.PredictionGameParticipants.Add(participant);
+            await context.SaveChangesAsync();
+            return true;
+        }
+        public async Task<bool> IsUserAlreadyInGame(int userId, int gameId)
+        {
+            return await context.PredictionGameParticipants.AnyAsync(p => p.UserId == userId && p.GameId == gameId);
+        }
+        public async Task<PredictionGame?> GetPredictionGameByCode(string uniqueCode)
+        {
+            return await context.PredictionGames.FirstOrDefaultAsync(g => g.UniqueCode == uniqueCode);
+        }
+
     }
 }

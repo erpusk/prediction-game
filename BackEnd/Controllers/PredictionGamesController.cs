@@ -1,5 +1,6 @@
 using BackEnd.Data.Repos;
 using BackEnd.DTOs.PredictionGame;
+using BackEnd.DTOs.PredictionGameDTO;
 using BackEnd.Mappers;
 using itb2203_2024_predictiongame.Backend.Data.Repos;
 using Microsoft.AspNetCore.Authorization;
@@ -104,5 +105,30 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
             bool result = await repo.DeletePredictionGameById(id);
             return result ? NoContent() : NotFound();
         }
+        [HttpPost("{uniqueCode}/join")]
+        public async Task<IActionResult> JoinGame(string uniqueCode, [FromBody] JoinGameRequestDto request)
+        {
+            int requestUserId = request.UserId;
+            var game = await repo.GetPredictionGameByCode(uniqueCode);
+            if (game == null)
+            {
+                return NotFound("Game not found.");
+            }
+            int gameId = game.Id;
+            var user = await repo.GetUserById(requestUserId);
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+            var isAlreadyParticipant = await repo.IsUserAlreadyInGame(requestUserId, gameId);
+            if (isAlreadyParticipant)
+            {
+                return BadRequest("User is already a participant in this game.");
+            }
+            await repo.JoinGameAsync(user, gameId);
+
+            return Ok("Successfully joined the game.");
+        }
+
     }
 }
