@@ -28,7 +28,6 @@ public class DataContext : IdentityDbContext<ApplicationUser, IdentityRole<int>,
         ConfigurePredictionEntity(modelBuilder.Entity<Prediction>());
         ConfigureAccountEntity(modelBuilder.Entity<IdentityRole<int>>());
         ConfigurePredictionGameParticipantEntity(modelBuilder.Entity<PredictionGameParticipant>());
-    ConfigureAccountEntity(modelBuilder.Entity<IdentityRole<int>>());
     }
 
     private void ConfigureAccountEntity(EntityTypeBuilder<IdentityRole<int>> roleBuilder)
