@@ -4,6 +4,7 @@ using BackEnd.Mappers;
 using itb2203_2024_predictiongame.Backend.Data.Repos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 
 namespace itb2203_2024_predictiongame.Backend.Controllers
 {
@@ -14,13 +15,29 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
     {
         private readonly PredictionGamesRepo repo = repo;
 
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            var result = await repo.GetAllPredictionGames();
-            var resultAsDto = result.Select(s => s.ToPredictionGameDto()).ToList();
-            return Ok(resultAsDto);
-        }
+            [HttpGet]
+            public async Task<IActionResult> GetOnlyRelatedGames() {
+
+                var userIdClaim = User.FindFirst("id");
+                if (userIdClaim == null) {
+                    return Unauthorized("User id not found");
+                }
+
+                int userId = int.Parse(userIdClaim.Value);
+
+
+                var result = await repo.GetPredictionGamesRelatedWithUser(userId);
+                var resultAsDto = result.Select(s => s.ToPredictionGameDto()).ToList();
+                return Ok(resultAsDto);
+            }
+
+        //[HttpGet]
+        //public async Task<IActionResult> GetAll()
+        //{
+        //    var result = await repo.GetAllPredictionGames();
+        //    var resultAsDto = result.Select(s => s.ToPredictionGameDto()).ToList();
+        //    return Ok(resultAsDto);
+        //}
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPredictionGame(int id)

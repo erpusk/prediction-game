@@ -14,7 +14,6 @@ namespace BackEnd.Data.Repos
             await context.SaveChangesAsync();
             return user;
         }
-
         public async Task<List<ApplicationUser>> GetAllUsers() 
         {
              IQueryable<ApplicationUser> query = context.ApplicationUsers.Include(m => m.CreatedPredictionGames).AsQueryable();

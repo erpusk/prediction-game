@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BackEnd.DTOs.ApplicationUser;
+using BackEnd.DTOs.PredictionGame;
 using BackEnd.Models.Classes;
 
 namespace BackEnd.Mappers
@@ -14,7 +15,7 @@ namespace BackEnd.Mappers
             return new ApplicationUserDto
             {
                 Id = applicationUserModel.Id,
-                UserName = applicationUserModel.UserName
+                UserName = applicationUserModel.UserName,
             };
         }
         public static ApplicationUser ToApplicationUserFromDto(this ApplicationUserDto applicationUserDto)
@@ -22,7 +23,7 @@ namespace BackEnd.Mappers
             return new ApplicationUser
             {
                 Id = applicationUserDto.Id,
-                UserName = applicationUserDto.UserName
+                UserName = applicationUserDto.UserName,
             };
         }
         public static ApplicationUser ToApplicationUserFromCreateDto(this CreateApplicationUserRequestDto applicationUserDto)
