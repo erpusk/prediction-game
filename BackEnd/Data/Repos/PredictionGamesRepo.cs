@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using itb2203_2024_predictiongame.Backend.Models.Classes;
 using BackEnd.Models.Classes;
+using System.Runtime.CompilerServices;
+using System.IO.Compression;
 
 namespace itb2203_2024_predictiongame.Backend.Data.Repos
 {
@@ -22,6 +24,16 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
             await context.PredictionGames.AddAsync(predictionGame);
             await context.SaveChangesAsync();
             return predictionGame;
+        }
+        //Kuva kasutajaga seotud (created/joined) mänge)
+        public async Task<List<PredictionGame>> GetPredictionGamesRelatedWithUser(int userId) {
+            IQueryable<PredictionGame> query = context.PredictionGames
+            .Where(x => x.Participants.Any(p => p.UserId == userId) || x.GameCreatorId == userId)
+            .Include(m => m.Events)
+            .Include(t => t.GameCreator)
+            .AsQueryable();
+
+            return await query.ToListAsync();
         }
 
         //READ

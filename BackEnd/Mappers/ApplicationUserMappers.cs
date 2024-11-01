@@ -35,7 +35,7 @@ namespace BackEnd.Mappers
             return new ApplicationUser
             {
                 Id = applicationUserDto.Id,
-                UserName = applicationUserDto.UserName
+                UserName = applicationUserDto.UserName,
             };
         }
         public static ApplicationUser ToApplicationUserFromCreateDto(this CreateApplicationUserRequestDto applicationUserDto)
