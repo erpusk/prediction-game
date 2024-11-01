@@ -20,8 +20,18 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
                 throw new InvalidOperationException("User not found");
             }
 
-            gameCreator.CreatedPredictionGames.Add(predictionGame);
             await context.PredictionGames.AddAsync(predictionGame);
+            await context.SaveChangesAsync();
+
+            gameCreator.CreatedPredictionGames.Add(predictionGame);
+
+            var gameCreatorAsParticipant = new PredictionGameParticipant {
+                UserId = gameCreator.Id,
+                GameId = predictionGame.Id,
+                Role = "GameCreator"
+            };
+
+            await context.PredictionGameParticipants.AddAsync(gameCreatorAsParticipant);
             await context.SaveChangesAsync();
             return predictionGame;
         }
