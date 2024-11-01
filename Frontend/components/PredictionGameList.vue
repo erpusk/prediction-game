@@ -36,7 +36,7 @@
   import { usePredictionGameStore } from '@/stores/stores';
   import DeleteIconComponent from '@/components/DeleteIconComponent.vue';
   import { useRouter } from 'vue-router';
-import { format } from 'date-fns';
+  import { format } from 'date-fns';
   
   defineProps<{ title: string }>();
   
