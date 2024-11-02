@@ -20,12 +20,14 @@
       <h1 class="text-3xl font-bold text-center mb-6 text-black">{{ title }}</h1>
       <UTable :rows="formattedGameEvents" :columns="columns">
         <template #actions-data="{ row }">
-          <button @click="deletePredictionGameEvent(row)" class="flex items-center text-red-500 hover:text-red-700">
-            <DeleteIconComponent />
-          </button>
-          <button @click="goToEditPredictionGameEvent(row)" class="bg-blue-500 text-white rounded px-4 py-2 hover:bg-blue-600">
-            Edit
-          </button>
+          <template v-if="isGameCreator">
+              <button @click="deletePredictionGameEvent(row)" class="flex items-center text-red-500 hover:text-red-700">
+                <DeleteIconComponent />
+              </button>
+              <button @click="goToEditPredictionGameEvent(row)" class="bg-blue-500 text-white rounded px-4 py-2 hover:bg-blue-600">
+                Edit
+              </button>
+          </template>
           <button @click="goToPredictionGameEventDetails(row)" class="bg-blue-500 text-white rounded px-4 py-2 hover:bg-blue-600">
             Details
           </button>
@@ -63,10 +65,11 @@ const { gameEvents } = storeToRefs(gameEventStore);
 const router = useRouter();
 const userStore = useUserStore();
 const predictionStore = usePredictionsStore();
+const predictionGameStore = usePredictionGameStore();
 
 const props = defineProps<{
   title: string;
-  predictionGameId: string | string[];
+  predictionGameId: string;
 }>();
 
 const columns = [
@@ -97,19 +100,27 @@ const columns = [
 ];
 
 const hasMadePredictionMap = ref<{ [key: number]: boolean }>({});
+const isGameCreator = ref(false);
+const predictionGameCreatorId = ref<number | null>(null);
 
 onMounted(async () => {
   await gameEventStore.loadGameEvents(props.predictionGameId);
+
+  const predictionGame = await predictionGameStore.getPredictionGameById(parseInt(props.predictionGameId));
+  if (predictionGame) {
+    predictionGameCreatorId.value = predictionGame.gameCreatorId; // Assuming this exists
+    const userId = userStore.user?.id;
+    isGameCreator.value = userId === predictionGameCreatorId.value;
   
   // Check if the user has made a prediction for each game event
-  const userId = userStore.user?.id;
   if (userId) {
     for (const event of gameEvents.value) {
       const hasMadePrediction = await userHasMadePrediction(event, userId);
       hasMadePredictionMap.value[event.id] = hasMadePrediction;
     }
   }
-});
+}});
+
 
 
 async function userHasMadePrediction(gameEvent: GameEvent, userId: number): Promise<boolean> {

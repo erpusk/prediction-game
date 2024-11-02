@@ -33,7 +33,12 @@ export const usePredictionGameStore = defineStore("predictionGame", () => {
     loadPredictionGames()
   }
 
-  return { predictionGames, loadPredictionGames, addPredictionGame, deletePredictionGame};
+  const getPredictionGameById = async (id: number): Promise<PredictionGame | null> => {
+    const predictionGame = await api.customFetch<PredictionGame>(`PredictionGames/${id}`);
+    return predictionGame || null;
+  };
+
+  return { predictionGames, loadPredictionGames, addPredictionGame, deletePredictionGame, getPredictionGameById};
 });
 
 export const useGameEventsStore = defineStore("gameEvent", () => {
