@@ -30,12 +30,12 @@ namespace BackEnd.Mappers
             };
         }
 
-        public static Event ToEventFromCreateDTO(this CreateEventRequestDto eventDto) {
+        public static Event ToEventFromCreateDTO(this CreateEventRequestDto eventDto, int predictinoGameId) {
             return new Event {
                 TeamA = eventDto.TeamA,
                 TeamB = eventDto.TeamB,
                 EventDate = eventDto.EventDate,
-                PredictionGameId = eventDto.PredictionGameId,
+                PredictionGameId = predictinoGameId,
                 TeamAScore = eventDto.TeamAScore,
                 TeamBScore = eventDto.TeamBScore,
                 IsCompleted = eventDto.IsCompleted
@@ -47,7 +47,7 @@ namespace BackEnd.Mappers
                 TeamA = eventDto.TeamA,
                 TeamB = eventDto.TeamB,
                 EventDate = eventDto.EventDate,
-                PredictionGameId = eventDto.PredictionGameId,
+                //PredictionGameId = eventDto.PredictionGameId,
                 TeamAScore = eventDto.TeamAScore,
                 TeamBScore = eventDto.TeamBScore,
                 IsCompleted = eventDto.IsCompleted

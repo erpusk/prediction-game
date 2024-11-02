@@ -20,8 +20,8 @@ export const useUserStore = defineStore('user', () => {
       }
       token.value = storedToken;
 
-      const decodedToken = jwtDecode<{ id: number }>(storedToken);
-      const userId = decodedToken.id;
+      const decodedToken = jwtDecode<{ userId: number }>(storedToken);
+      const userId = decodedToken.userId;
 
       try {
           const userData = await api.customFetch<AppUser>(`ApplicationUser/${userId}`, {

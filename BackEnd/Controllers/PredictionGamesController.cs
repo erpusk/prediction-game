@@ -19,13 +19,10 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
             [HttpGet]
             public async Task<IActionResult> GetOnlyRelatedGames() {
 
-                var userIdClaim = User.FindFirst("id");
-                if (userIdClaim == null) {
+                var userIdClaim = User.FindFirst("userId")?.Value;
+                if (userIdClaim == null || !int.TryParse(userIdClaim, out int userId)) {
                     return Unauthorized("User id not found");
                 }
-
-                int userId = int.Parse(userIdClaim.Value);
-
 
                 var result = await repo.GetPredictionGamesRelatedWithUser(userId);
                 var resultAsDto = result.Select(s => s.ToPredictionGameDto()).ToList();
@@ -40,10 +37,10 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
         //    return Ok(resultAsDto);
         //}
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetPredictionGame(int id)
+        [HttpGet("{predictionGameId:int}")]
+        public async Task<IActionResult> GetPredictionGame(int predictionGameId)
         {
-            var predictionGame = await repo.GetPredictionGameById(id);
+            var predictionGame = await repo.GetPredictionGameById(predictionGameId);
             if (predictionGame == null)
             {
                 return NotFound();
@@ -54,7 +51,7 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
         [HttpPost]
         public async Task<IActionResult> CreatePredictionGame([FromBody] CreatePredictionGameRequestDto predictionGameDto)
         {
-            var userIdClaim = User.FindFirst("id")?.Value;
+            var userIdClaim = User.FindFirst("userId")?.Value;
             if (userIdClaim == null || !int.TryParse(userIdClaim, out int userId)) {
                 return Unauthorized();
             }
@@ -74,13 +71,14 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
 
             var result = await repo.CreatePredictionGameToDb(predictionGameModel);
 
-            return CreatedAtAction(nameof(GetPredictionGame), new { id = predictionGameModel.Id }, result.ToPredictionGameDto());
+            return CreatedAtAction(nameof(GetPredictionGame), new { predictionGameId = predictionGameModel.Id }, result.ToPredictionGameDto());
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePredictionGame(int id, [FromBody] UpdatePredictionGameDto predictionGameDto)
+        [HttpPut("{predictionGameId:int}")]
+        [Authorize(Policy = "UserIsGameCreator")]
+        public async Task<IActionResult> UpdatePredictionGame(int predictionGameId, [FromBody] UpdatePredictionGameDto predictionGameDto)
         {
-            var predictionGameModel = await repo.GetPredictionGameById(id);
+            var predictionGameModel = await repo.GetPredictionGameById(predictionGameId);
             if (predictionGameModel == null) {
                 return NotFound();
             }
@@ -95,14 +93,15 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
             //                     ? ApplicationUserMappers.ToApplicationUserFromDto(updateDto.GameCreator)
             //                     : null;
             
-            bool result = await repo.UpdatePredictionGame(id, predictionGameModel);
+            bool result = await repo.UpdatePredictionGame(predictionGameId, predictionGameModel);
             return result ? NoContent() : NotFound();
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePredictionGame(int id)
+        [HttpDelete("{predictionGameId:int}")]
+        [Authorize(Policy = "UserIsGameCreator")]
+        public async Task<IActionResult> DeletePredictionGame(int predictionGameId)
         {
-            bool result = await repo.DeletePredictionGameById(id);
+            bool result = await repo.DeletePredictionGameById(predictionGameId);
             return result ? NoContent() : NotFound();
         }
         [HttpPost("{uniqueCode}/join")]
