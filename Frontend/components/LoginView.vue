@@ -1,25 +1,40 @@
 <template>
-    <form name="login-form" @submit.prevent="handleLogin">
-        <UFormGroup label="Email">
-            <UInput v-model="email" class="border rounded-md p-2" type="email" required/>
-        </UFormGroup>
+  <div class="min-h-screen bg-white flex justify-center items-center">
+    <form name="login-form" @submit.prevent="handleLogin"
+      class="space-y-8 p-16 bg-white rounded-lg shadow-lg max-w-md w-full border rounded-md p-4">
+      <h2 class="text-3xl font-semibold text-center mb-6 drop-shadow-lg text-black">Login</h2>
 
-        <UFormGroup label="Password">
-            <UInput v-model="password" class="border rounded-md p-2" type="password" required/>
-        </UFormGroup>
-        
-        <div class="flex space-x-4">
-            <UButton type="submit">
-                Login
-            </UButton>
-            <UButton @click="goToRegister" type="button">
-                Register
-            </UButton>
-        </div>
+      <UFormGroup label="Email" class="!text-black">
+        <UInput v-model="email" class="border rounded-md p-4 text-lg" type="email" required />
+      </UFormGroup>
 
-        <p v-if="errorMessage" class="text-red-500">{{ errorMessage }}</p>
+      <UFormGroup label="Password" class="!text-black">
+        <UInput v-model="password" class="border rounded-md p-4 text-lg" type="password" required />
+      </UFormGroup>
+
+      <div class="flex justify-center space-x-4 mt-6">
+        <UButton type="submit"
+          class="bg-green-500 hover:bg-gray-400 text-black font-bold py-3 px-6 rounded-lg transition duration-300">
+          Login
+        </UButton>
+      </div>
+      <div>
+        <p class="text-center mt-6 text-gray-600">
+          Don´t have an account?
+          <a @click="goToRegister" class="text-blue-500 hover:underline cursor-pointer">Register</a>
+        </p>
+      </div>
+       
+        <p v-if="errorMessage" class="text-red-500 text-center mt-4">{{ errorMessage }}</p>
     </form>
+  </div>
 </template>
+
+<style scoped>
+div :deep(label) {
+  color: black !important;
+}
+</style>
 
 
 <script setup>
@@ -53,3 +68,4 @@ const goToRegister = () => {
   router.push('/register');
 };
 </script>
+
