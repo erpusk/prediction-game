@@ -5,6 +5,7 @@
       @submit.prevent="registerUser"
       class="space-y-8 p-16 bg-white rounded-lg shadow-lg max-w-md w-full border rounded-md p-2"
     >
+    <h2 class="text-3xl font-semibold text-center mb-6 drop-shadow-lg text-black">Register</h2>
 
         <UFormGroup label="Username" class="!text-black">
             <UInput v-model="username" class="border rounded-md p-2" type="text" required/>
