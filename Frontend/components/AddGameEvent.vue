@@ -14,15 +14,15 @@
         @submit="onSubmit"
         @error="onError"
       >
-        <UFormGroup label="Esimene meeskond" name="teamA" >
+        <UFormGroup label="Team A" name="teamA" >
           <UInput v-model="state.teamA" class="border rounded-md p-2 w-full"/>
         </UFormGroup>
     
-        <UFormGroup label="Teine meeskond" name="teamB">
+        <UFormGroup label="Team B" name="teamB">
           <UInput v-model="state.teamB" class="border rounded-md p-2 w-full"/>
         </UFormGroup>
     
-        <UFormGroup label="Toimumisaeg" name="eventDate">
+        <UFormGroup label="Event date" name="eventDate">
           <UInput v-model="eventDateStr" type="date" class="border rounded-md p-2 w-full"/>
         </UFormGroup>
 
