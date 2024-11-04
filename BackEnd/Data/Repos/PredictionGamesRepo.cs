@@ -20,15 +20,25 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
                 throw new InvalidOperationException("User not found");
             }
 
-            gameCreator.CreatedPredictionGames.Add(predictionGame);
             await context.PredictionGames.AddAsync(predictionGame);
+            await context.SaveChangesAsync();
+
+            gameCreator.CreatedPredictionGames.Add(predictionGame);
+
+            var gameCreatorAsParticipant = new PredictionGameParticipant {
+                UserId = gameCreator.Id,
+                GameId = predictionGame.Id,
+                Role = "GameCreator"
+            };
+
+            await context.PredictionGameParticipants.AddAsync(gameCreatorAsParticipant);
             await context.SaveChangesAsync();
             return predictionGame;
         }
         //Kuva kasutajaga seotud (created/joined) mänge)
         public async Task<List<PredictionGame>> GetPredictionGamesRelatedWithUser(int userId) {
             IQueryable<PredictionGame> query = context.PredictionGames
-            .Where(x => x.Participants.Any(p => p.UserId == userId) || x.GameCreatorId == userId)
+            .Where(x => x.Participants.Any(p => p.UserId == userId))
             .Include(m => m.Events)
             .Include(t => t.GameCreator)
             .AsQueryable();

@@ -10,6 +10,8 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using itb2203_2024_predictiongame.Service;
 using Microsoft.OpenApi.Models;
+using BackEnd.Authorization;
+using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -108,6 +110,14 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(key)
     };
 });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("UserIsGameCreator", policy =>
+        policy.Requirements.Add(new GameCreatorRequirement()));
+});
+
+builder.Services.AddScoped<IAuthorizationHandler, GameCreatorHandler>();
 
 var app = builder.Build();
 
