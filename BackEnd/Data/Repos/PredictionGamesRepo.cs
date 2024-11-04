@@ -106,6 +106,9 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
         {
             return await context.PredictionGames.FirstOrDefaultAsync(g => g.UniqueCode == uniqueCode);
         }
-
+        public async Task<bool> PredictionGameExistsWithCode(string uniqueCode)
+        {
+            return await context.PredictionGames.AnyAsync(pg => pg.UniqueCode == uniqueCode);
+        }
     }
 }

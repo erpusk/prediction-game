@@ -13,7 +13,7 @@
       :predictionGameId="parseInt(props.predictionGameId.toString())" 
       @close="closeModal" 
     />
-    <div v-if="uniqueCode" class="unique-code-box mt-4 p-4 bg-gray-100 rounded text-center">
+    <div v-if="uniqueCode && uniqueCode !== 'Not available'" class="unique-code-box mt-4 p-4 bg-gray-500 rounded text-center">
         <p class="text-lg font-semibold">Unique Code:</p>
         <p class="text-2xl font-bold text-blue-600">{{ uniqueCode }}</p>
       </div>
@@ -63,7 +63,7 @@ import { useGameEventsStore } from '@/stores/stores';
 import { format } from 'date-fns';
 import { usePredictionGameStore } from '@/stores/stores';
 const predictionGameStore = usePredictionGameStore();
-const uniqueCode = ref<string | null>(null);
+const uniqueCode = ref('');
 const showModal = ref(false);
 const gameEventStore = useGameEventsStore();
 const { gameEvents } = storeToRefs(gameEventStore);
@@ -106,8 +106,12 @@ const columns = [
 const hasMadePredictionMap = ref<{ [key: number]: boolean }>({});
 
 onMounted(async () => {
-  const gameData = await predictionGameStore.loadPredictionGame(props.predictionGameId);
+  console.log("onMounted triggered");
+  const gameData = await predictionGameStore.loadPredictionGame(Array.isArray(props.predictionGameId)
+   ? props.predictionGameId[0] : props.predictionGameId);
+   console.log("Game Data:", gameData);
   uniqueCode.value = gameData?.uniqueCode || "Not available";
+  console.log("Unique Code:", uniqueCode.value);
   await gameEventStore.loadGameEvents(props.predictionGameId);
   const userId = userStore.user?.id;
   if (userId) {
@@ -127,10 +131,6 @@ const formattedGameEvents = computed(() => {
     ...event,
     eventDate : event.eventDate ? format(new Date(event.eventDate), 'dd.MM.yyyy HH:mm') : '',
   }));
-});
-
-onMounted(() => {
-  gameEventStore.loadGameEvents(props.predictionGameId);
 });
 
 const deletePredictionGameEvent = (gameEvent: GameEvent) => {
@@ -158,11 +158,3 @@ const goPredictionsList = (gameEvent: GameEvent) => {
 }
 
 </script>
-
-<style scoped>
-.unique-code-display {
-  margin-bottom: 1em;
-  font-size: 1.2em;
-  color: #333;
-}
-</style>

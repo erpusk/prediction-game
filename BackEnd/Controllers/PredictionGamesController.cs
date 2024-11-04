@@ -6,6 +6,7 @@ using itb2203_2024_predictiongame.Backend.Data.Repos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+using RandomString4Net;
 
 namespace itb2203_2024_predictiongame.Backend.Controllers
 {
@@ -71,6 +72,10 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
             {
                 return Conflict();
             }
+            do
+            {
+                predictionGameModel.UniqueCode = RandomString.GetString(Types.ALPHABET_LOWERCASE, 6);
+            } while (await repo.PredictionGameExistsWithCode(predictionGameModel.UniqueCode));
 
             var result = await repo.CreatePredictionGameToDb(predictionGameModel);
 
