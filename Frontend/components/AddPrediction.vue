@@ -1,17 +1,18 @@
 <template>
+  <div class="min-h-screen flex justify-center items-center bg-white">
     <UForm
       :validate="validate"
       :state="state"
-      class="p-6 bg-white rounded-lg shadow-lg"
+      class="p-6 bg-white rounded-lg shadow-lg max-w-lg w-full"
       @submit="onSubmit"
       @error="onError"
     >
-      <h2 class="text-2xl font-semibold text-center mb-4 text-black">Add an event</h2>
-      <UFormGroup label="Esimese meeskonna lõpu punktid" name="endScoreTeamA">
+      <h2 class="text-2xl font-semibold text-center mb-4 text-black">Add a prediction</h2>
+      <UFormGroup :label="teamALabel" name="endScoreTeamA">
         <UInput v-model="state.endScoreTeamA" class="border rounded-md p-2"/>
       </UFormGroup>
   
-      <UFormGroup label="Teise meeskonna lõpu punktid" name="endScoreTeamB">
+      <UFormGroup :label="teamBLabel" name="endScoreTeamB">
         <UInput v-model="state.endScoreTeamB" class="border rounded-md p-2"/>
       </UFormGroup>
       
@@ -25,19 +26,29 @@
       </div>
       
     </UForm>
+  </div>
   </template>
+   <style scoped>
+   div :deep(label) {
+     color: black !important;
+   }
+   </style>
   
   <script setup lang="ts">
     import type { FormError, FormErrorEvent, FormSubmitEvent } from "#ui/types";
-import { stringifyQuery } from "vue-router";
-import type { Prediction } from "~/types/prediction";
+    import type { Prediction } from "~/types/prediction";
 
     const { addPrediction } = usePredictionsStore();
+    const gameEventStore = useGameEventsStore();
 
     const props = defineProps<{
       gameEventId: number;
       predictionGameId: number
     }>();
+
+    const event = await gameEventStore.loadSingleEvent(props.gameEventId)
+    const teamALabel = event.teamA + " end score"
+    const teamBLabel = event.teamB + " end score"
 
     const state = reactive<Prediction>({
         id: 0,
