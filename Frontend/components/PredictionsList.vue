@@ -31,11 +31,11 @@ const event = await gameEventStore.loadSingleEvent(parseInt(props.eventId.toStri
 const columns = [
   {
     key: "endScoreTeamA",
-    label: event.teamA,
+    label: event.teamA + " end score",
   },
   {
     key: "endScoreTeamB",
-    label: event.teamB,
+    label: event.teamB + " end score",
   }
 ];
 
