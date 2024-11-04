@@ -162,7 +162,7 @@
             teamA: state.teamA,
             teamB: state.teamB,
             eventDate: state.eventDate,
-            predictionGameId: parseInt(props.predictionGameId.toString()),
+            predictionGameId: props.predictionGameId,
             teamAScore: state.teamAScore,
             teamBScore: state.teamBScore,
             isCompleted: state.isCompleted

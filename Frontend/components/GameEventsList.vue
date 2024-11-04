@@ -2,6 +2,7 @@
   <div class="min-h-screen bg-white flex justify-center items-center p-6">
   <div class="p-20 bg-white rounded-lg shadow-lg max-w-5x1">
     <button 
+      v-if="isGameCreator"
       @click="showModal = true" 
       class="absolute top-20 right-10 bg-gradient-to-r from-blue-500 to-blue-700 
       hover:from-blue-600 hover:to-blue-800 text-white font-semibold py-3 px-6 rounded-md shadow-md 
@@ -69,7 +70,7 @@ const predictionGameStore = usePredictionGameStore();
 
 const props = defineProps<{
   title: string;
-  predictionGameId: string;
+  predictionGameId: number;
 }>();
 
 const columns = [
@@ -106,7 +107,7 @@ const predictionGameCreatorId = ref<number | null>(null);
 onMounted(async () => {
   await gameEventStore.loadGameEvents(props.predictionGameId);
 
-  const predictionGame = await predictionGameStore.getPredictionGameById(parseInt(props.predictionGameId));
+  const predictionGame = await predictionGameStore.getPredictionGameById(props.predictionGameId);
   if (predictionGame) {
     predictionGameCreatorId.value = predictionGame.gameCreatorId; // Assuming this exists
     const userId = userStore.user?.id;
