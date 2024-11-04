@@ -13,6 +13,10 @@
       :predictionGameId="parseInt(props.predictionGameId.toString())" 
       @close="closeModal" 
     />
+    <div v-if="uniqueCode" class="unique-code-box mt-4 p-4 bg-gray-100 rounded text-center">
+        <p class="text-lg font-semibold">Unique Code:</p>
+        <p class="text-2xl font-bold text-blue-600">{{ uniqueCode }}</p>
+      </div>
       <div v-if="gameEvents.length === 0">
         <h2 class="text-x1 text-center">No events have been added</h2>
       </div>
@@ -57,6 +61,9 @@ import { ref, onMounted } from 'vue';
 import AddGameEvent from '@/components/AddGameEvent.vue';
 import { useGameEventsStore } from '@/stores/stores';
 import { format } from 'date-fns';
+import { usePredictionGameStore } from '@/stores/stores';
+const predictionGameStore = usePredictionGameStore();
+const uniqueCode = ref<string | null>(null);
 const showModal = ref(false);
 const gameEventStore = useGameEventsStore();
 const { gameEvents } = storeToRefs(gameEventStore);
@@ -99,9 +106,9 @@ const columns = [
 const hasMadePredictionMap = ref<{ [key: number]: boolean }>({});
 
 onMounted(async () => {
+  const gameData = await predictionGameStore.loadPredictionGame(props.predictionGameId);
+  uniqueCode.value = gameData?.uniqueCode || "Not available";
   await gameEventStore.loadGameEvents(props.predictionGameId);
-  
-  // Check if the user has made a prediction for each game event
   const userId = userStore.user?.id;
   if (userId) {
     for (const event of gameEvents.value) {
@@ -110,8 +117,6 @@ onMounted(async () => {
     }
   }
 });
-
-
 async function userHasMadePrediction(gameEvent: GameEvent, userId: number): Promise<boolean> {
   const predictions = await predictionStore.getPredictions(gameEvent.id);
   return predictions.some(element => element.predictionMakerId === userId);
@@ -152,5 +157,12 @@ const goPredictionsList = (gameEvent: GameEvent) => {
   router.push(`/predictions/${props.predictionGameId}/${gameEvent.id}`)
 }
 
-
 </script>
+
+<style scoped>
+.unique-code-display {
+  margin-bottom: 1em;
+  font-size: 1.2em;
+  color: #333;
+}
+</style>
