@@ -1,28 +1,43 @@
 <template>
-    <form name="register-form" @submit.prevent="registerUser">
+    <div class="min-h-screen bg-white flex justify-center items-center">
+    <form
+      name="register-form"
+      @submit.prevent="registerUser"
+      class="space-y-8 p-16 bg-white rounded-lg shadow-lg max-w-md w-full border rounded-md p-2"
+    >
+    <h2 class="text-3xl font-semibold text-center mb-6 drop-shadow-lg text-black">Register</h2>
 
-        <UFormGroup label="Username">
-            <UInput v-model="username" class="border rounded-md p-2" type="text" />
+        <UFormGroup label="Username" class="!text-black">
+            <UInput v-model="username" class="border rounded-md p-2" type="text" required/>
         </UFormGroup>
         
         <UFormGroup label="Email">
-            <UInput v-model="email" class="border rounded-md p-2" type="email" />
+            <UInput v-model="email" class="border rounded-md p-2" type="email" required/>
         </UFormGroup>
         
         <UFormGroup label="Password">
-            <UInput v-model="password" class="border rounded-md p-2" type="password" />
+            <UInput v-model="password" class="border rounded-md p-2" type="password" required/>
         </UFormGroup>
         
         <UFormGroup label="Confirm password">
-            <UInput v-model="confirmpassword" class="border rounded-md p-2" type="password" />
+            <UInput v-model="confirmpassword" class="border rounded-md p-2" type="password" required/>
         </UFormGroup>
 
-        <UButton type="submit">
+        <div class="flex justify-center space-x-4 mt-6">
+        <UButton type="submit"
+        class="bg-green-500 hover:bg-gray-400 text-black font-bold py-3 px-6 rounded-lg transition duration-300 mx-auto">
             Register
         </UButton>
-        
+    </div>
+    <div>
+        <p class="text-center mt-6 text-gray-600">
+          Already have an account?
+          <a @click="goToLogin" class="text-blue-500 hover:underline cursor-pointer">Login</a>
+        </p>
+      </div>
         <p v-if="errorMessage" class="text-red-500">{{ errorMessage }}</p>
     </form>
+    </div>
 </template>
 
 <script setup>
@@ -59,4 +74,8 @@ const registerUser = async () => {
         errorMessage.value = "Registration failed, try again.";
     }
 };
+
+const goToLogin = () => {
+    router.push('/login')
+}
 </script>
