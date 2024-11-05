@@ -29,7 +29,7 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
 
 
                 var result = await repo.GetPredictionGamesRelatedWithUser(userId);
-                var resultAsDto = result.Select(s => s.ToPredictionGameDto()).ToList();
+                var resultAsDto = result.Select(s => s.ToPredictionGameDto(userId)).ToList();
                 return Ok(resultAsDto);
             }
 
@@ -49,7 +49,9 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
             {
                 return NotFound();
             }
-            return Ok(predictionGame.ToPredictionGameDto());
+            var userIdClaim = User.FindFirst("id")?.Value;
+            int? userId = userIdClaim != null ? int.Parse(userIdClaim) : (int?)null;
+            return Ok(predictionGame.ToPredictionGameDto(userId));
         }
 
         [HttpPost]
@@ -79,7 +81,7 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
 
             var result = await repo.CreatePredictionGameToDb(predictionGameModel);
 
-            return CreatedAtAction(nameof(GetPredictionGame), new { id = predictionGameModel.Id }, result.ToPredictionGameDto());
+            return CreatedAtAction(nameof(GetPredictionGame), new { id = predictionGameModel.Id }, result.ToPredictionGameDto(userId));
         }
 
         [HttpPut("{id}")]
@@ -99,7 +101,10 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
             // predictionGameModel.GameCreator = updateDto.GameCreator != null
             //                     ? ApplicationUserMappers.ToApplicationUserFromDto(updateDto.GameCreator)
             //                     : null;
-            
+            if (predictionGameDto.UniqueCode != null && predictionGameDto.UniqueCode != predictionGameModel.UniqueCode)
+            {
+                return BadRequest("UniqueCode cannot be modified.");
+            }
             bool result = await repo.UpdatePredictionGame(id, predictionGameModel);
             return result ? NoContent() : NotFound();
         }
