@@ -37,31 +37,33 @@ export const usePredictionGameStore = defineStore("predictionGame", () => {
     return gameData;
   };
 
-  return { predictionGames, loadPredictionGames, addPredictionGame, deletePredictionGame, loadPredictionGame};
+  const getPredictionGameById = async (id: number): Promise<PredictionGame | null> => {
+    const predictionGame = await api.customFetch<PredictionGame>(`PredictionGames/${id}`);
+    return predictionGame || null;
+  };
+
+  return { predictionGames, loadPredictionGames, addPredictionGame, deletePredictionGame, getPredictionGameById, loadPredictionGame};
 });
 
 export const useGameEventsStore = defineStore("gameEvent", () => {
   const api = useApi();
   const gameEvents = ref<GameEvent[]>([]);
   
-
-  
-  
-  const loadGameEvents = async (predictionGameId: string | string[]) => {
-    const url = predictionGameId ? `Event?predictionGameId=${predictionGameId}` : 'Event';
+  const loadGameEvents = async (predictionGameId: number) => {
+    const url = `PredictionGames/${predictionGameId}/Event`;
       gameEvents.value = await api.customFetch<GameEvent[]>(url);
   };
 
   const addGameEvent = async (gameEvent: GameEvent) => {
-    const res = await api.customFetch("Event", {
+    const res = await api.customFetch(`PredictionGames/${gameEvent.predictionGameId}/Event`, {
       method: "POST",
       body: gameEvent,
     });
-    loadGameEvents
+    loadGameEvents(gameEvent.predictionGameId);
   };
 
   const deletePredictionGameEvent = async (gameEvent: GameEvent) => {
-    await api.customFetch(`Event/${gameEvent.id}`, {
+    await api.customFetch(`PredictionGames/${gameEvent.predictionGameId}/Event/${gameEvent.id}`, {
       method: "DELETE",
     });
     const index = gameEvents.value.findIndex(g => g.id === gameEvent.id);
@@ -69,19 +71,20 @@ export const useGameEventsStore = defineStore("gameEvent", () => {
     if (index !== -1) {
       gameEvents.value.splice(index, 1);
     }
-    loadGameEvents
+    loadGameEvents(gameEvent.predictionGameId);
   }
 
   const editPredictionGameEvent = async (gameEvent: GameEvent) => {
-    await api.customFetch(`Event/${gameEvent.id}`, {
+    await api.customFetch(`PredictionGames/${gameEvent.predictionGameId}/Event/${gameEvent.id}`, {
       method: "PUT",
       body: gameEvent
     })
-    loadGameEvents(gameEvent.predictionGameId.toString())
+    loadGameEvents(gameEvent.predictionGameId)
   }
 
   const loadSingleEvent = async (id: Number) => {
-    const event = await api.customFetch<GameEvent>(`Event/${id}`)
+    const eventModel = gameEvents.value.find(g => g.id == id)
+    const event = await api.customFetch<GameEvent>(`PredictionGames/${eventModel?.predictionGameId}/Event/${id}`)
     return event;
   }
 

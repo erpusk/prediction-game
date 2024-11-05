@@ -19,7 +19,10 @@
         <h1 class="text-3xl font-bold text-center mb-6 text-black" >{{ title }}</h1>
         <UTable :rows="formattedPredictionGames" :columns="columns">
           <template #actions-data="{ row }">
-            <button @click="deletePredictionGame(row)" class="flex items-center text-red-500 hover:text-red-700">
+            <button 
+              v-if="isGameCreator(row)" 
+              @click="deletePredictionGame(row)" 
+              class="flex items-center text-red-500 hover:text-red-700">
               <DeleteIconComponent />
             </button>
             <button @click="showEvents(row)" class="bg-blue-500 text-white rounded px-4 py-2 hover:bg-blue-600">
@@ -66,6 +69,8 @@
   const predictionGameStore = usePredictionGameStore();
   const { predictionGames } = storeToRefs(predictionGameStore);
   const router = useRouter();
+  const userStore = useUserStore();
+  const { user } = storeToRefs(userStore);
 
   const formattedPredictionGames = computed(() => {
   return predictionGames.value.map(game => ({
@@ -75,12 +80,16 @@
   }));
 });
   
+  const isGameCreator = (game: PredictionGame) => {
+    return game.gameCreatorId === user.value?.id;
+  };
+
   const goToCreateNewPredictionGame = () => {
     router.push('/add-predictionGame');
   };
   
-  onMounted(() => {
-    predictionGameStore.loadPredictionGames();
+  onMounted(async () => {
+  await predictionGameStore.loadPredictionGames();
   });
   
   const deletePredictionGame = (game: PredictionGame) => {

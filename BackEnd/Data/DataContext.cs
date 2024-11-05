@@ -129,6 +129,16 @@ public class DataContext : IdentityDbContext<ApplicationUser, IdentityRole<int>,
                .WithMany(u => u.Games)
                .HasForeignKey(p => p.UserId)
                .OnDelete(DeleteBehavior.Cascade);    
+
+    participant.HasData(
+        new PredictionGameParticipant
+        {
+            Id = 1,
+            GameId = 1,
+            UserId = 1,
+            Role = "GameCreator"
+        }
+    );
 }
 
     private static void ConfigurePredictionEntity(EntityTypeBuilder<Prediction> prediction){

@@ -7,7 +7,7 @@
       <i class="fas fa-home text-gray-500" style="font-size: 28px"></i>
     </button>
     
-    <div v-if="$route.path !== '/' && $route.path !== '/login'" class="button-group fixed bottom-4 left-4">
+    <div v-if="$route.path !== '/' && $route.path !== '/login' && $route.path !== '/register'" class="button-group fixed bottom-4 left-4">
       <button class="btn-primary" @click="goBack">Back</button>
     </div>
 

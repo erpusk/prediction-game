@@ -40,15 +40,15 @@ namespace BackEnd.Controllers
         }
         [HttpPost]
         public async Task<IActionResult> CreatePrediction([FromBody] CreatePredictionRequestDto predictioDto){
-            var userId = User.FindFirst("id")?.Value;
-            if (userId == null) {
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            if (userIdClaim == null || !int.TryParse(userIdClaim, out int userId)) {
                 return Unauthorized("User ID claim not found.");
             }
 
             var predictionModel = predictioDto.toPredictionFromCreateDto();
-            predictionModel.PredictionMakerId = int.Parse(userId);
+            predictionModel.PredictionMakerId = userId;
 
-            bool predictionExists = (await _repo.GetAll(predictionModel.EventId, int.Parse(userId))).Any();
+            bool predictionExists = (await _repo.GetAll(predictionModel.EventId, userId)).Any();
             if (predictionExists){
                 return Conflict("User has already made a prediction for this event");
             }
@@ -65,7 +65,5 @@ namespace BackEnd.Controllers
             var result = await _repo.CreatePrediction(predictionModel);
             return CreatedAtAction(nameof(GetById), new {id = predictionModel.Id}, result.toPredictionDto());
         }
-
-        
     }
 }

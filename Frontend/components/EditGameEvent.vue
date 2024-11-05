@@ -8,15 +8,15 @@
       @error="onError"
     >
       <h2 class="text-2xl font-semibold text-center mb-4 text-black">Edit an event</h2>
-      <UFormGroup label="Esimene meeskond" name="teamA" class="!text-black">
+      <UFormGroup label="Team A" name="teamA" class="!text-black">
         <UInput v-model="state.teamA" class="border rounded-md p-2"/>
       </UFormGroup>
   
-      <UFormGroup label="Teine meeskond" name="teamB" class="!text-black">
+      <UFormGroup label="Team B" name="teamB" class="!text-black">
         <UInput v-model="state.teamB" class="border rounded-md p-2"/>
       </UFormGroup>
   
-      <UFormGroup label="Toimumisaeg" name="eventDate" class="!text-black">
+      <UFormGroup label="Event date" name="eventDate" class="!text-black">
         <UInput v-model="eventDateStr" type="date" class="border rounded-md p-2"/>
       </UFormGroup>
 
@@ -162,7 +162,7 @@
             teamA: state.teamA,
             teamB: state.teamB,
             eventDate: state.eventDate,
-            predictionGameId: parseInt(props.predictionGameId.toString()),
+            predictionGameId: props.predictionGameId,
             teamAScore: state.teamAScore,
             teamBScore: state.teamBScore,
             isCompleted: state.isCompleted

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BackEnd.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/PredictionGames/{predictionGameId}/[controller]")]
     [Authorize]
     public class EventController: ControllerBase
     {
@@ -19,7 +19,7 @@ namespace BackEnd.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] int? predictionGameId){
+        public async Task<IActionResult> GetAll(int predictionGameId){
             var events = await _repo.GetAll(predictionGameId);
             var eventsAsDto = events.Select(e => e.ToEventDto()).ToList();
             return Ok(eventsAsDto);
@@ -35,19 +35,21 @@ namespace BackEnd.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddEvent([FromBody] CreateEventRequestDto eventDto){
-            var eventModel = eventDto.ToEventFromCreateDTO();
+        [Authorize(Policy = "UserIsGameCreator")]
+        public async Task<IActionResult> AddEvent([FromBody] CreateEventRequestDto eventDto, int predictionGameId){
+            var eventModel = eventDto.ToEventFromCreateDTO(predictionGameId);
 
             var eventExists = await _repo.GetById(eventModel.Id);
             if (eventExists != null){
                 return Conflict();
             }
             var result = await _repo.AddEvent(eventModel);
-            return CreatedAtAction(nameof(GetEventById), new {id = eventModel.Id}, eventModel.ToEventDto());
+            return CreatedAtAction(nameof(GetEventById), new {predictionGameId = predictionGameId, id = eventModel.Id}, eventModel.ToEventDto());
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateEvent(int id, [FromBody] UpdateEventRequestDto eventDto){
+        [Authorize(Policy = "UserIsGameCreator")]
+        public async Task<IActionResult> UpdateEvent(int predictionGameId, int id, [FromBody] UpdateEventRequestDto eventDto){
             var eventModel = await _repo.GetById(id);
             
             if (eventModel == null) {
@@ -59,7 +61,7 @@ namespace BackEnd.Controllers
 
             eventModel.TeamA = eventDto.TeamA;
             eventModel.TeamB = eventDto.TeamB;
-            eventModel.PredictionGameId = eventDto.PredictionGameId;
+            eventModel.PredictionGameId = predictionGameId;
             eventModel.EventDate = eventDto.EventDate;
             eventModel.TeamAScore = eventDto.TeamAScore;
             eventModel.TeamBScore = eventDto.TeamBScore;
@@ -70,6 +72,7 @@ namespace BackEnd.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = "UserIsGameCreator")]
         public async Task<IActionResult> DeleteEvent([FromRoute]int id){
             var result = await _repo.DeleteEvent(id);
             return result ? NoContent() : NotFound();
