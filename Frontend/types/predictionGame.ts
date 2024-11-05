@@ -6,6 +6,7 @@ export interface PredictionGame {
     endDate: string | Date | undefined;
     gameCreatorId: number;
     privacy: string;
+    uniqueCode: string;
     //Events: GameEvent[];
     // participants?: GameParticipant[];  // Uncomment when implementing participants
   }

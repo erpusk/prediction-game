@@ -14,6 +14,15 @@
       :predictionGameId="parseInt(props.predictionGameId.toString())" 
       @close="closeModal" 
     />
+    <div v-if="uniqueCode && uniqueCode !== 'Not available'"
+     class="unique-code-box absolute top-32 right-10 mt-4 p-2 bg-gradient-to-r from-blue-500 to-blue-700 rounded text-center shadow-md">
+     <div class="flex items-center justify-center"> 
+     <p class="text-2xl font-bold mr-2">{{ uniqueCode }}</p>
+        <button @click="copyToClipboard" class="copy-button flex items-center">
+            <i class="fas fa-copy mr-1"></i>
+          </button>
+        </div>  
+      </div>
       <div v-if="gameEvents.length === 0">
         <h2 class="text-x1 text-center">No events have been added</h2>
       </div>
@@ -60,13 +69,25 @@ import { ref, onMounted } from 'vue';
 import AddGameEvent from '@/components/AddGameEvent.vue';
 import { useGameEventsStore } from '@/stores/stores';
 import { format } from 'date-fns';
+import { usePredictionGameStore } from '@/stores/stores';
+const predictionGameStore = usePredictionGameStore();
+const uniqueCode = ref('');
 const showModal = ref(false);
 const gameEventStore = useGameEventsStore();
 const { gameEvents } = storeToRefs(gameEventStore);
 const router = useRouter();
 const userStore = useUserStore();
 const predictionStore = usePredictionsStore();
-const predictionGameStore = usePredictionGameStore();
+const copySuccess = ref(false);
+const copyToClipboard = async () => {
+  try {
+    await navigator.clipboard.writeText(uniqueCode.value);
+    copySuccess.value = true;
+    setTimeout(() => (copySuccess.value = false), 2000);
+  } catch (err) {
+    console.error('Failed to copy: ', err);
+  }
+};
 
 const props = defineProps<{
   title: string;
@@ -105,13 +126,21 @@ const isGameCreator = ref(false);
 const predictionGameCreatorId = ref<number | null>(null);
 
 onMounted(async () => {
+  console.log("onMounted triggered");
+  const gameData = await predictionGameStore.loadPredictionGame(Array.isArray(props.predictionGameId)
+   ? props.predictionGameId[0] : props.predictionGameId);
+   console.log("Game Data:", gameData);
+  uniqueCode.value = gameData?.uniqueCode || "Not available";
+  console.log("Unique Code:", uniqueCode.value);
   await gameEventStore.loadGameEvents(props.predictionGameId);
+  const userId = userStore.user?.id;
 
   const predictionGame = await predictionGameStore.getPredictionGameById(props.predictionGameId);
   if (predictionGame) {
     predictionGameCreatorId.value = predictionGame.gameCreatorId; // Assuming this exists
     const userId = userStore.user?.id;
     isGameCreator.value = userId === predictionGameCreatorId.value;
+  }
   
   // Check if the user has made a prediction for each game event
   if (userId) {
@@ -120,9 +149,7 @@ onMounted(async () => {
       hasMadePredictionMap.value[event.id] = hasMadePrediction;
     }
   }
-}});
-
-
+});
 
 async function userHasMadePrediction(gameEvent: GameEvent, userId: number): Promise<boolean> {
   const predictions = await predictionStore.getPredictions(gameEvent.id);
@@ -134,10 +161,6 @@ const formattedGameEvents = computed(() => {
     ...event,
     eventDate : event.eventDate ? format(new Date(event.eventDate), 'dd.MM.yyyy HH:mm') : '',
   }));
-});
-
-onMounted(() => {
-  gameEventStore.loadGameEvents(props.predictionGameId);
 });
 
 const deletePredictionGameEvent = (gameEvent: GameEvent) => {
@@ -164,5 +187,19 @@ const goPredictionsList = (gameEvent: GameEvent) => {
   router.push(`/predictions/${props.predictionGameId}/${gameEvent.id}`)
 }
 
-
 </script>
+
+<style scoped>
+.unique-code-box {
+  width: 185px;
+  padding: 1rem;
+}
+.copy-button:hover {
+  background: linear-gradient(to right, #444242, #9b9494);
+}
+.copy-button {
+  color: rgb(255, 255, 255);
+  font-size: 1rem;
+  padding: 0.35rem 0.75rem;
+}
+</style>

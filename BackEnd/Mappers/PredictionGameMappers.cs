@@ -8,7 +8,7 @@ namespace BackEnd.Mappers
 {
     public static class PredictionGameMappers
     {
-        public static PredictionGameDto ToPredictionGameDto(this PredictionGame predictionGameModel) {
+        public static PredictionGameDto ToPredictionGameDto(this PredictionGame predictionGameModel, int? currentUserId) {
             return new PredictionGameDto {
                 Id = predictionGameModel.Id,
                 PredictionGameTitle = predictionGameModel.PredictionGameTitle,
@@ -16,7 +16,7 @@ namespace BackEnd.Mappers
                 EndDate = predictionGameModel.EndDate,
                 Privacy = predictionGameModel.Privacy,
                 Events = predictionGameModel.Events?.Select(e => e.ToEventDto()).ToList() ?? new List<EventDto>(),
-                UniqueCode = predictionGameModel.UniqueCode,
+                UniqueCode = predictionGameModel.GameCreatorId == currentUserId ? predictionGameModel.UniqueCode : null,
                 GameCreatorId = predictionGameModel.GameCreatorId,
                 GameCreator = predictionGameModel.GameCreator?.ToApplicationUserDto(),
             };

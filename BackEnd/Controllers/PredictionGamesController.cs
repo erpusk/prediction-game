@@ -6,6 +6,7 @@ using itb2203_2024_predictiongame.Backend.Data.Repos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+using RandomString4Net;
 
 namespace itb2203_2024_predictiongame.Backend.Controllers
 {
@@ -25,7 +26,7 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
                 }
 
                 var result = await repo.GetPredictionGamesRelatedWithUser(userId);
-                var resultAsDto = result.Select(s => s.ToPredictionGameDto()).ToList();
+                var resultAsDto = result.Select(s => s.ToPredictionGameDto(userId)).ToList();
                 return Ok(resultAsDto);
             }
 
@@ -45,7 +46,9 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
             {
                 return NotFound();
             }
-            return Ok(predictionGame.ToPredictionGameDto());
+            var userIdClaim = User.FindFirst("id")?.Value;
+            int? userId = userIdClaim != null ? int.Parse(userIdClaim) : (int?)null;
+            return Ok(predictionGame.ToPredictionGameDto(userId));
         }
 
         [HttpPost]
@@ -68,10 +71,14 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
             {
                 return Conflict();
             }
+            do
+            {
+                predictionGameModel.UniqueCode = RandomString.GetString(Types.ALPHABET_LOWERCASE, 6);
+            } while (await repo.PredictionGameExistsWithCode(predictionGameModel.UniqueCode));
 
             var result = await repo.CreatePredictionGameToDb(predictionGameModel);
 
-            return CreatedAtAction(nameof(GetPredictionGame), new { predictionGameId = predictionGameModel.Id }, result.ToPredictionGameDto());
+            return CreatedAtAction(nameof(GetPredictionGame), new { predictionGameId = predictionGameModel.Id }, result.ToPredictionGameDto(userId));
         }
 
         [HttpPut("{predictionGameId:int}")]

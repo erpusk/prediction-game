@@ -32,13 +32,17 @@ export const usePredictionGameStore = defineStore("predictionGame", () => {
     }
     loadPredictionGames()
   }
+  const loadPredictionGame = async (predictionGameId: string | number) => {
+    const gameData = await api.customFetch<PredictionGame>(`PredictionGames/${predictionGameId}`);
+    return gameData;
+  };
 
   const getPredictionGameById = async (id: number): Promise<PredictionGame | null> => {
     const predictionGame = await api.customFetch<PredictionGame>(`PredictionGames/${id}`);
     return predictionGame || null;
   };
 
-  return { predictionGames, loadPredictionGames, addPredictionGame, deletePredictionGame, getPredictionGameById};
+  return { predictionGames, loadPredictionGames, addPredictionGame, deletePredictionGame, getPredictionGameById, loadPredictionGame};
 });
 
 export const useGameEventsStore = defineStore("gameEvent", () => {
@@ -109,6 +113,8 @@ export const usePredictionsStore = defineStore("prediction", () => {
       const predictionsList = await api.customFetch<Prediction[]>(url)
     return predictionsList
   };
+
+  
 
   return {predictions, addPrediction, loadPredictions, getPredictions}
 })
