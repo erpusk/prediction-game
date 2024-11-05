@@ -126,12 +126,8 @@ const isGameCreator = ref(false);
 const predictionGameCreatorId = ref<number | null>(null);
 
 onMounted(async () => {
-  console.log("onMounted triggered");
-  const gameData = await predictionGameStore.loadPredictionGame(Array.isArray(props.predictionGameId)
-   ? props.predictionGameId[0] : props.predictionGameId);
-   console.log("Game Data:", gameData);
+  const gameData = await predictionGameStore.loadPredictionGame(props.predictionGameId);
   uniqueCode.value = gameData?.uniqueCode || "Not available";
-  console.log("Unique Code:", uniqueCode.value);
   await gameEventStore.loadGameEvents(props.predictionGameId);
   const userId = userStore.user?.id;
 

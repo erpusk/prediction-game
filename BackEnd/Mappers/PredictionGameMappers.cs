@@ -8,7 +8,7 @@ namespace BackEnd.Mappers
 {
     public static class PredictionGameMappers
     {
-        public static PredictionGameDto ToPredictionGameDto(this PredictionGame predictionGameModel, int? currentUserId) {
+        public static PredictionGameDto ToPredictionGameDto(this PredictionGame predictionGameModel, int currentUserId) {
             return new PredictionGameDto {
                 Id = predictionGameModel.Id,
                 PredictionGameTitle = predictionGameModel.PredictionGameTitle,
@@ -22,7 +22,7 @@ namespace BackEnd.Mappers
             };
         }
 
-        public static PredictionGame ToPredictionGameFromCreateDTO(this CreatePredictionGameRequestDto predictionGameDto, ApplicationUser gameCreator) {
+        public static PredictionGame ToPredictionGameFromCreateDTO(this CreatePredictionGameRequestDto predictionGameDto, ApplicationUser gameCreator, string uniqueCode) {
             return new PredictionGame {
                 PredictionGameTitle = predictionGameDto.PredictionGameTitle,
                 CreationDate = DateTime.Now.ToUniversalTime(),
@@ -30,7 +30,7 @@ namespace BackEnd.Mappers
                 EndDate = predictionGameDto.EndDate,
                 Privacy = predictionGameDto.Privacy,
                 Events = predictionGameDto.Events?.Select(e => e.ToEvent()).ToList(),
-                UniqueCode = predictionGameDto.UniqueCode,
+                UniqueCode = uniqueCode,
                 GameCreatorId = gameCreator.Id,
                 GameCreator = gameCreator
             };
@@ -44,9 +44,6 @@ namespace BackEnd.Mappers
                 Privacy = predictionGameDto.Privacy,
                 Events = predictionGameDto.Events?.Select(e => e.ToEvent()).ToList(),
                 UniqueCode = predictionGameDto.UniqueCode
-                // GameCreator = predictionGameDto.GameCreator != null
-                //                 ? ApplicationUserMappers.ToApplicationUserFromDto(predictionGameDto.GameCreator)
-                //                 : null,
             };
         }
     }
