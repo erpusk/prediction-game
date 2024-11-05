@@ -46,8 +46,10 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
             {
                 return NotFound();
             }
-            var userIdClaim = User.FindFirst("id")?.Value;
-            int? userId = userIdClaim != null ? int.Parse(userIdClaim) : (int?)null;
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            if (userIdClaim == null || !int.TryParse(userIdClaim, out int userId)) {
+                return Unauthorized("User id is not correct");
+            }
             return Ok(predictionGame.ToPredictionGameDto(userId));
         }
 
@@ -56,7 +58,7 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
         {
             var userIdClaim = User.FindFirst("userId")?.Value;
             if (userIdClaim == null || !int.TryParse(userIdClaim, out int userId)) {
-                return Unauthorized();
+                return Unauthorized("User id is not correct");
             }
             var gameCreator = await repo.GetUserById(userId);
             if (gameCreator == null)
@@ -64,17 +66,18 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
                 return Conflict();
             }
 
-            var predictionGameModel = predictionGameDto.ToPredictionGameFromCreateDTO(gameCreator);
+            string uniqueCode;
+            do {
+                uniqueCode = RandomString.GetString(Types.ALPHABET_LOWERCASE, 6);
+            } while (await repo.PredictionGameExistsWithCode(uniqueCode));
+
+            var predictionGameModel = predictionGameDto.ToPredictionGameFromCreateDTO(gameCreator, uniqueCode);
 
             var predictionGameExists = await repo.PredictionGameExistsInDb(predictionGameModel.Id);
             if (predictionGameExists)
             {
                 return Conflict();
             }
-            do
-            {
-                predictionGameModel.UniqueCode = RandomString.GetString(Types.ALPHABET_LOWERCASE, 6);
-            } while (await repo.PredictionGameExistsWithCode(predictionGameModel.UniqueCode));
 
             var result = await repo.CreatePredictionGameToDb(predictionGameModel);
 
@@ -96,9 +99,6 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
             predictionGameModel.Privacy = predictionGameDto.Privacy;
             predictionGameModel.Events = predictionGameDto.Events?.Select(e => e.ToEvent()).ToList();
             predictionGameModel.UniqueCode = predictionGameDto.UniqueCode;
-            // predictionGameModel.GameCreator = updateDto.GameCreator != null
-            //                     ? ApplicationUserMappers.ToApplicationUserFromDto(updateDto.GameCreator)
-            //                     : null;
             
             bool result = await repo.UpdatePredictionGame(predictionGameId, predictionGameModel);
             return result ? NoContent() : NotFound();

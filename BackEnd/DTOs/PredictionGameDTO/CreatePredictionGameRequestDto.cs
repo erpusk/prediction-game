@@ -22,6 +22,6 @@ namespace BackEnd.DTOs.PredictionGame
         public string Privacy { get; set; } = "Private game";
         public List<EventDto>? Events { get; set; } = new List<EventDto>();
         // public List<GameParticipant> Participants { get; set; } = new List<GameParticipant>();
-        public string? UniqueCode { get; set; }
+        // public string? UniqueCode { get; set; }
     }
 }
