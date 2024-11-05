@@ -13,9 +13,14 @@
       :predictionGameId="parseInt(props.predictionGameId.toString())" 
       @close="closeModal" 
     />
-    <div v-if="uniqueCode && uniqueCode !== 'Not available'" class="unique-code-box mt-4 p-4 bg-gray-500 rounded text-center">
-        <p class="text-lg font-semibold">Unique Code:</p>
-        <p class="text-2xl font-bold text-blue-600">{{ uniqueCode }}</p>
+    <div v-if="uniqueCode && uniqueCode !== 'Not available'"
+     class="unique-code-box absolute top-32 right-10 mt-4 p-2 bg-gradient-to-r from-blue-500 to-blue-700 rounded text-center shadow-md">
+     <div class="flex items-center justify-center"> 
+     <p class="text-2xl font-bold mr-2">{{ uniqueCode }}</p>
+        <button @click="copyToClipboard" class="copy-button flex items-center">
+            <i class="fas fa-copy mr-1"></i>
+          </button>
+        </div>  
       </div>
       <div v-if="gameEvents.length === 0">
         <h2 class="text-x1 text-center">No events have been added</h2>
@@ -70,6 +75,16 @@ const { gameEvents } = storeToRefs(gameEventStore);
 const router = useRouter();
 const userStore = useUserStore();
 const predictionStore = usePredictionsStore();
+const copySuccess = ref(false);
+const copyToClipboard = async () => {
+  try {
+    await navigator.clipboard.writeText(uniqueCode.value);
+    copySuccess.value = true;
+    setTimeout(() => (copySuccess.value = false), 2000);
+  } catch (err) {
+    console.error('Failed to copy: ', err);
+  }
+};
 
 const props = defineProps<{
   title: string;
@@ -158,3 +173,17 @@ const goPredictionsList = (gameEvent: GameEvent) => {
 }
 
 </script>
+<style scoped>
+.unique-code-box {
+  width: 185px;
+  padding: 1rem;
+}
+.copy-button:hover {
+  background: linear-gradient(to right, #444242, #9b9494);
+}
+.copy-button {
+  color: rgb(255, 255, 255);
+  font-size: 1rem;
+  padding: 0.35rem 0.75rem;
+}
+</style>
