@@ -29,6 +29,11 @@
     <div v-else class="mt-8">
       <h1 class="text-3xl font-bold text-center mb-6 text-black">{{ title }}</h1>
       <UTable :rows="formattedGameEvents" :columns="columns">
+
+        <template #teams-data="{ row }">
+          <div v-html="row.teams.replace('\n', '<br>')"></div> <!-- Replace newline with a line break -->
+        </template>
+
         <template #actions-data="{ row }">
           <template v-if="isGameCreator">
               <button @click="deletePredictionGameEvent(row)" class="flex items-center text-red-500 hover:text-red-700">
@@ -96,12 +101,8 @@ const props = defineProps<{
 
 const columns = [
   {
-    key: "teamA",
-    label: "Team A",
-  },
-  {
-    key: "teamB",
-    label: "Team B",
+    key: "teams",
+    label: "Teams",
   },
   {
     key: "eventDate",
@@ -147,6 +148,7 @@ onMounted(async () => {
   }
 });
 
+
 async function userHasMadePrediction(gameEvent: GameEvent, userId: number): Promise<boolean> {
   const predictions = await predictionStore.getPredictions(gameEvent.id);
   return predictions.some(element => element.predictionMakerId === userId);
@@ -155,9 +157,11 @@ async function userHasMadePrediction(gameEvent: GameEvent, userId: number): Prom
 const formattedGameEvents = computed(() => {
   return gameEvents.value.map(event => ({
     ...event,
+    teams: `${event.teamA} \n ${event.teamB}`,
     eventDate : event.eventDate ? format(new Date(event.eventDate), 'dd.MM.yyyy HH:mm') : '',
   }));
 });
+
 
 const deletePredictionGameEvent = (gameEvent: GameEvent) => {
   gameEventStore.deletePredictionGameEvent(gameEvent);
