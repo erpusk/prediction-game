@@ -31,7 +31,7 @@
       <UTable :rows="formattedGameEvents" :columns="columns">
 
         <template #teams-data="{ row }">
-          <div v-html="row.teams.replace('\n', '<br>')"></div> <!-- Replace newline with a line break -->
+          <div v-html="row.teams.replace('\n', '<br>')"></div>
         </template>
 
         <template #actions-data="{ row }">
@@ -105,16 +105,12 @@ const columns = [
     label: "Teams",
   },
   {
+    key: "score",
+    label: "Score",
+  },
+  {
     key: "eventDate",
     label: "Event date",
-  },
-  {
-    key: "teamAScore",
-    label: "Team A score",
-  },
-  {
-    key: "teamBScore",
-    label: "Team B score",
   },
   {
     key: "actions",
@@ -157,7 +153,8 @@ async function userHasMadePrediction(gameEvent: GameEvent, userId: number): Prom
 const formattedGameEvents = computed(() => {
   return gameEvents.value.map(event => ({
     ...event,
-    teams: `${event.teamA} \n ${event.teamB}`,
+    teams: `${event.teamA} \n ${event.teamB}` ,
+    score: `${event.teamAScore} - ${event.teamBScore} `,
     eventDate : event.eventDate ? format(new Date(event.eventDate), 'dd.MM.yyyy HH:mm') : '',
   }));
 });
