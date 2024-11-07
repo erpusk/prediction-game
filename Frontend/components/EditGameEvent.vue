@@ -141,11 +141,6 @@
         errors.push({ path: "teamB", message: "Team B name must be between 3 and 30 characters." });
       }
 
-      // Check for future date
-      if (state.eventDate && new Date(state.eventDate) <= currentDate) {
-        errors.push({ path: "eventDate", message: "Event date must be in the future." });
-      }
-
       // Check for duplicate teams
       if (state.teamA === state.teamB) {
         errors.push({ path: "teamA", message: "Teams must have different names." });
