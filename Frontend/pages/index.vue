@@ -8,10 +8,10 @@
         <button class="btn-primary" @click="ToJoinGame">Join Game</button>
         <button class="btn-primary" @click="ToMyGames">Games</button>
       </div>
-      <div v-if="userStore.isAuthenticated" class="absolute top-10 right-4 flex items-center space-x-2">
+      <!-- <div v-if="userStore.isAuthenticated" class="absolute top-10 right-4 flex items-center space-x-2">
       <span class="user-greeting">Hello, {{ userName }}!</span>
       <button class="btn-secondary" @click="userStore.logout()">Logout</button>
-      </div>
+      </div> -->
     </div>
   </template>
   
@@ -38,7 +38,7 @@ const ToRegister = () => {
   router.push('/register')
 }
 const ToJoinGame = () => {
-  router.push('/joingame/join-game');
+  router.push('/join-game');
 };
 </script>
 
