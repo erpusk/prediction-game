@@ -68,7 +68,6 @@ const goBack = () => {
 }
 
 .nav-link:hover {
-  /* background-color: rgba(255, 255, 255, 0.2); */
   color: #4CAF50;
   transform: scale(1.05);
 }
