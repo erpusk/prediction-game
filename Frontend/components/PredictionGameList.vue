@@ -1,5 +1,5 @@
 <template>
-    <div class="min-h-screen bg-white flex justify-center items-start mt-20">
+    <div class="min-h-screen bg-white flex justify-center items-start mt-10">
       <div class="bg-white rounded-lg shadow-lg max-w-6xl w-full relative">
       <button 
         @click="goToCreateNewPredictionGame" 

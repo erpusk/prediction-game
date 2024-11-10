@@ -27,7 +27,7 @@
       <button class="btn-primary" @click="goBack">Back</button>
     </div>
 
-    <main>
+    <main class="mt-0">
       <NuxtPage />
     </main>
 

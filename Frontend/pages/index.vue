@@ -1,6 +1,6 @@
 <template>
     <div class="main-page h-screen bg-gray-100 flex flex-col justify-center items-center">
-        <div class="logo text-center mb-40 logo container">
+        <div class="logo text-center mb-20 logo container">
             <h1 class="logo-text">Prediction Games</h1>
         </div>
       <div class="button-group flex flex-col space-y-10 items-center">
@@ -39,7 +39,7 @@ const ToJoinGame = () => {
 </script>
 
   
-  <style scoped>
+<style scoped>
   .logo-text {
   font-family: 'Poppins', sans-serif;
   font-size: 3rem;
@@ -51,6 +51,7 @@ const ToJoinGame = () => {
 }
   .main-page {
     background-color: #f6f3f3;
+    padding-top: 20px;
   }
   .header {
     position: absolute;
