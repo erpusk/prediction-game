@@ -1,23 +1,23 @@
 <template>
   <div>
     <header v-if="$route.path !== '/login' && $route.path !== '/register'">
-      <nav class="flex justify-between items-center p-4 bg-gray-800 text-white">
+      <nav class="flex justify-between items-center p-4 bg-gray-900 text-white shadow-md">
         <!-- Logo and Navigation Links Section -->
-        <div class="flex items-center space-x-8">
-          <nuxt-link to="/" class="logo-btn">
+        <div class="flex items-center space-x-12">
+          <nuxt-link to="/" class="logo-btn font-inter">
             <span>LOGO</span>
           </nuxt-link>
 
           <ul class="flex space-x-6 text-base font-medium">
-            <li><nuxt-link to="/predictionGames" class="nav-link" :class="{ 'active': $route.path === '/predictionGames' }">My Prediction Games</nuxt-link></li>
+            <li><nuxt-link to="/predictiongames" class="nav-link" :class="{ 'active': $route.path === '/predictiongames' }">My Prediction Games</nuxt-link></li>
             <li><nuxt-link to="/join-game" class="nav-link" :class="{ 'active': $route.path === '/join-game' }">Join a Prediction Game</nuxt-link></li>
           </ul>
         </div>
 
         <!-- User Section (Hello + Logout) -->
         <div v-if="userStore.isAuthenticated" class="flex items-center space-x-6">
-          <span class="user-info">Hello, {{ userName }}!</span>
-          <button class="btn-logout" @click="userStore.logout()">Logout</button>
+          <span class="user-info font-inter">Hello, {{ userName }}!</span>
+          <button class="btn-logout font-inter" @click="userStore.logout()">Logout</button>
         </div>
       </nav>
     </header>
@@ -58,6 +58,12 @@ const goBack = () => {
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+.font-inter {
+  font-family: 'Inter', sans-serif;
+}
+
 .nav-link {
   color: #fff;
   text-decoration: none;
