@@ -61,7 +61,7 @@
     },
     {
       key: "actions",
-      label: "Actions",
+      label: "",
     }
   ];
   
