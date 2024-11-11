@@ -28,7 +28,12 @@
       <div v-else class="mt-8">
         <h1 class="text-3xl font-bold text-center mb-6 text-black">{{ title }}</h1>
           <UTable :rows="formattedGameEvents" :columns="columns">
-            <template #actions-data="{ row }">
+    
+        <template #teams-data="{ row }">
+          <div v-html="row.teams.replace('\n', '<br>')"></div>
+        </template>
+
+        <template #actions-data="{ row }">
               <div class="flex justify-end space-x-4 items-center">
                 <div class="flex flex-col space-y-2">
                   <div v-if="hasMadePredictionMap[row.id] === true">
@@ -99,24 +104,16 @@ const props = defineProps<{
 
 const columns = [
   {
-    key: "teamA",
-    label: "Team A",
+    key: "teams",
+    label: "Teams",
   },
   {
-    key: "teamB",
-    label: "Team B",
+    key: "score",
+    label: "Score",
   },
   {
     key: "eventDate",
     label: "Event date",
-  },
-  {
-    key: "teamAScore",
-    label: "Team A score",
-  },
-  {
-    key: "teamBScore",
-    label: "Team B score",
   },
   {
     key: "actions",
@@ -149,6 +146,7 @@ onMounted(async () => {
   }
 });
 
+
 async function userHasMadePrediction(gameEvent: GameEvent, userId: number): Promise<boolean> {
   const predictions = await predictionStore.getPredictions(gameEvent.id);
   return predictions.some(element => element.predictionMakerId === userId);
@@ -157,9 +155,12 @@ async function userHasMadePrediction(gameEvent: GameEvent, userId: number): Prom
 const formattedGameEvents = computed(() => {
   return gameEvents.value.map(event => ({
     ...event,
+    teams: `${event.teamA} \n ${event.teamB}` ,
+    score: `${event.teamAScore} - ${event.teamBScore} `,
     eventDate : event.eventDate ? format(new Date(event.eventDate), 'dd.MM.yyyy HH:mm') : '',
   }));
 });
+
 
 const deletePredictionGameEvent = (gameEvent: GameEvent) => {
   gameEventStore.deletePredictionGameEvent(gameEvent);

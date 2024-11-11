@@ -62,6 +62,8 @@
       const errors = [];
       if (isNaN(parseInt(state.endScoreTeamA))) errors.push({ path: "endScoreTeamA", message: "Needs to be a number" });
       if (isNaN(parseInt(state.endScoreTeamB))) errors.push({ path: "endScoreTeamB", message: "Needs to be a number" });
+      if (parseInt(state.endScoreTeamA) < 0) errors.push({ path: "endScoreTeamA", message: "Cannot be negative" });
+      if (parseInt(state.endScoreTeamB) < 0) errors.push({ path: "endScoreTeamB", message: "Cannot be negative" });
       return errors;
     };
   
