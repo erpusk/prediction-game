@@ -25,7 +25,7 @@
 
         <div class="flex justify-center space-x-4 mt-6">
         <UButton type="submit"
-        class="bg-green-500 hover:bg-gray-400 text-black font-bold py-3 px-6 rounded-lg transition duration-300 mx-auto">
+        class="bg-green-500 hover:bg-gray-400 text-white font-bold py-3 px-6 rounded-lg transition duration-300 mx-auto">
             Register
         </UButton>
     </div>

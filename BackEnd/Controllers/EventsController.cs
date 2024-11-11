@@ -62,7 +62,7 @@ namespace BackEnd.Controllers
             eventModel.TeamA = eventDto.TeamA;
             eventModel.TeamB = eventDto.TeamB;
             eventModel.PredictionGameId = predictionGameId;
-            eventModel.EventDate = eventDto.EventDate;
+            eventModel.EventDate = eventDto.EventDate.ToUniversalTime();
             eventModel.TeamAScore = eventDto.TeamAScore;
             eventModel.TeamBScore = eventDto.TeamBScore;
             eventModel.IsCompleted = eventDto.IsCompleted;

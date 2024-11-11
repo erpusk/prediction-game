@@ -47,7 +47,7 @@ div :deep(label) {
   
   <script setup lang="ts">
     import { _colors } from "#tailwind-config/theme";
-import type { FormError, FormErrorEvent, FormSubmitEvent } from "#ui/types";
+    import type { FormError, FormErrorEvent, FormSubmitEvent } from "#ui/types";
     import { useRouter } from 'vue-router';
 
   
@@ -61,7 +61,8 @@ import type { FormError, FormErrorEvent, FormSubmitEvent } from "#ui/types";
       startDate: '', 
       endDate: '', 
       gameCreatorId: userStore.user?.id || 0, 
-      privacy: 'Private game'
+      privacy: 'Private game',
+      uniqueCode: ''
     });
   
     const startDateStr = computed({
@@ -134,7 +135,8 @@ const endDateStr = computed({
             startDate: startDateStr.value ? new Date(startDateStr.value).toISOString() : undefined,
             endDate: endDateStr.value ? new Date(endDateStr.value).toISOString() : undefined,
             gameCreatorId: state.gameCreatorId,
-            privacy: state.privacy
+            privacy: state.privacy,
+            uniqueCode: state.uniqueCode
         };
       addPredictionGame(payload);
       await navigateTo("/predictiongames");

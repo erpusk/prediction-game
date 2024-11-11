@@ -36,8 +36,8 @@ namespace BackEnd.Mappers
                 TeamB = eventDto.TeamB,
                 EventDate = eventDto.EventDate,
                 PredictionGameId = predictinoGameId,
-                TeamAScore = eventDto.TeamAScore,
-                TeamBScore = eventDto.TeamBScore,
+                TeamAScore = null,
+                TeamBScore = null,
                 IsCompleted = eventDto.IsCompleted
             };
         }
