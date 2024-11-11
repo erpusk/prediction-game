@@ -1,16 +1,12 @@
 <template>
     <div class="main-page h-screen bg-gray-100 flex flex-col justify-center items-center">
-        <div class="logo text-center mb-40 logo container">
+        <div class="logo text-center mb-20 logo container">
             <h1 class="logo-text">Prediction Games</h1>
         </div>
       <div class="button-group flex flex-col space-y-10 items-center">
         <button class="btn-primary" @click="ToCreateGame">Create Game</button>
         <button class="btn-primary" @click="ToJoinGame">Join Game</button>
         <button class="btn-primary" @click="ToMyGames">Games</button>
-      </div>
-      <div v-if="userStore.isAuthenticated" class="absolute top-10 right-4 flex items-center space-x-2">
-      <span class="user-greeting">Hello, {{ userName }}!</span>
-      <button class="btn-secondary" @click="userStore.logout()">Logout</button>
       </div>
     </div>
   </template>
@@ -38,12 +34,12 @@ const ToRegister = () => {
   router.push('/register')
 }
 const ToJoinGame = () => {
-  router.push('/joingame/join-game');
+  router.push('/join-game');
 };
 </script>
 
   
-  <style scoped>
+<style scoped>
   .logo-text {
   font-family: 'Poppins', sans-serif;
   font-size: 3rem;
@@ -55,6 +51,7 @@ const ToJoinGame = () => {
 }
   .main-page {
     background-color: #f6f3f3;
+    padding-top: 20px;
   }
   .header {
     position: absolute;
