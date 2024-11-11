@@ -15,7 +15,7 @@
             @close="closeModal" 
           />
         
-        <div v-if="uniqueCode && uniqueCode !== 'Not available'" class="unique-code-box absolute top-16 right-5">
+        <div v-if="uniqueCode && uniqueCode !== 'Not available'" class="unique-code-box absolute top-14 right-5">
           <p class="text-2xl font-bold mr-2">{{ uniqueCode }}</p>
           <button @click="copyToClipboard" class="copy-button">
             <i class="fas fa-copy mr-1"></i>
