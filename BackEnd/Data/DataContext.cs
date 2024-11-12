@@ -86,7 +86,7 @@ public class DataContext : IdentityDbContext<ApplicationUser, IdentityRole<int>,
                 StartDate = new DateTime(2024, 06, 14).ToUniversalTime(),
                 EndDate = new DateTime(2024, 07, 14).ToUniversalTime(),
                 GameCreatorId = 1,
-                UniqueCode =  RandomString.GetString(Types.ALPHABET_LOWERCASE, 6),
+                UniqueCode =  "uniqueCode",
             }
         );
     }
