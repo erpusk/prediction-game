@@ -55,7 +55,7 @@ build:front-end:
   tags:
     - itb2203
 
-  api_test:
+api_test:
   variables:
     DOCKER_HOST: tcp://docker:2375/
     DOCKER_TLS_CERTDIR: ""
