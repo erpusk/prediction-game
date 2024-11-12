@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "7b13082c-95e4-4198-9c79-4646ea0ba796",
+		"_postman_id": "6e1192bb-3dbd-439b-ab73-d37cfd0b8e3b",
 		"name": "PredictionGameTests",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "38171196"
+		"_exporter_id": "38092498"
 	},
 	"item": [
 		{
@@ -557,7 +557,20 @@
 									"});\r",
 									"\r",
 									"var jsonData = pm.response.json();\r",
-									"pm.collectionVariables.set(\"uniqueCode\", jsonData.uniqueCode);"
+									"pm.collectionVariables.set(\"uniqueCode\", jsonData.uniqueCode);\r",
+									"\r",
+									"pm.globals.set(\"PredictionGameId\", jsonData.id);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -648,6 +661,480 @@
 								"PredictionGames",
 								"{{uniqueCode}}",
 								"join"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Events",
+			"item": [
+				{
+					"name": "PostEvent",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Event is created successfully with 201 status\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.globals.set(\"EventId\", jsonData.id);\r",
+									"pm.globals.set(\"TeamA\", jsonData.teamA)\r",
+									"pm.globals.set(\"TeamB\", jsonData.teamB)\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.globals.get(\"PredictionGameId\");"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"teamA\": \"AAAAa\",\r\n  \"teamB\": \"BBBBb\",\r\n  \"eventDate\": \"2024-11-12T08:20:43.606Z\",\r\n  \"isCompleted\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/PredictionGames/{{PredictionGameId}}/Event",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"PredictionGames",
+								"{{PredictionGameId}}",
+								"Event"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetEvents",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Events are got successfully with 200 status\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.test(\"Returns an array\", function (){\r",
+									"    pm.expect(jsonData).to.be.an('array').that.is.not.empty;\r",
+									"});\r",
+									"\r",
+									"pm.globals.set(\"eventsLength\", jsonData.length);\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.globals.get(\"PredictionGameId\");"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/PredictionGames/{{PredictionGameId}}/Event",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"PredictionGames",
+								"{{PredictionGameId}}",
+								"Event"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetEventById",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.globals.get(\"EventId\");\r",
+									"pm.globals.get(\"PredictionGameId\")"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Event is got successfully with 200 status\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Team A name is correct\", function (){\r",
+									"    pm.expect(jsonData.teamA).to.equal(pm.globals.get(\"TeamA\"));\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Team B name is correct\", function (){\r",
+									"    pm.expect(jsonData.teamB).to.equal(pm.globals.get(\"TeamB\"));\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/PredictionGames/{{PredictionGameId}}/Event/{{EventId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"PredictionGames",
+								"{{PredictionGameId}}",
+								"Event",
+								"{{EventId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PutEvent",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.globals.get(\"EventId\");\r",
+									"pm.globals.get(\"PredictionGameId\")"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"teamA\": \"string1\",\r\n  \"teamB\": \"string2\",\r\n  \"eventDate\": \"2024-11-12T12:41:55.136Z\",\r\n  \"teamAScore\": 0,\r\n  \"teamBScore\": 0,\r\n  \"isCompleted\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/PredictionGames/{{PredictionGameId}}/Event/{{EventId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"PredictionGames",
+								"{{PredictionGameId}}",
+								"Event",
+								"{{EventId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetEventByIdAfterPut",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.globals.get(\"EventId\");\r",
+									"pm.globals.get(\"PredictionGameId\")"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Event is got successfully with 200 status\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Team A has changed\", function (){\r",
+									"    pm.expect(jsonData.teamA).not.to.equal(pm.globals.get(\"TeamA\"));\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Team B has changed\", function (){\r",
+									"    pm.expect(jsonData.teamB).not.to.equal(pm.globals.get(\"TeamB\"));\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/PredictionGames/{{PredictionGameId}}/Event/{{EventId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"PredictionGames",
+								"{{PredictionGameId}}",
+								"Event",
+								"{{EventId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteEvent",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.globals.get(\"EventId\");\r",
+									"pm.globals.get(\"PredictionGameId\")"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/PredictionGames/{{PredictionGameId}}/Event/{{EventId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"PredictionGames",
+								"{{PredictionGameId}}",
+								"Event",
+								"{{EventId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetEventsAfterDeletion",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.globals.get(\"PredictionGameId\");"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Db has the same amount of events, as before collection run\", function () {\r",
+									"    var previousLength = pm.globals.get(\"eventsLength\");\r",
+									"    console.log(previousLength)\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.length).to.equal(previousLength - 1)\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/PredictionGames/{{PredictionGameId}}/Event",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"PredictionGames",
+								"{{PredictionGameId}}",
+								"Event"
 							]
 						}
 					},
