@@ -159,7 +159,9 @@ onMounted(async () => {
       return {
         ...event,
         teams: `${event.teamA} \n ${event.teamB}`,
-        score: `${event.teamAScore} - ${event.teamBScore}`,
+        score: event.teamAScore | event.teamBScore
+          ? `${event.teamAScore} - ${event.teamBScore}`
+          : "",
         yourPrediction: userPrediction
           ? `${userPrediction.endScoreTeamA} - ${userPrediction.endScoreTeamB}`
           : "No prediction made",
