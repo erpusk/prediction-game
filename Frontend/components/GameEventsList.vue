@@ -65,7 +65,8 @@
                 </template>
               </div>
             </template>
-          </UTable>
+
+        </UTable>
         </div>
       </div>
     </div>
@@ -116,14 +117,20 @@ const columns = [
     label: "Event date",
   },
   {
+    key: "yourPrediction",
+    label: "Your prediction"
+  },
+  {
     key: "actions",
     label: ""
   }
+  
 ];
 
 const hasMadePredictionMap = ref<{ [key: number]: boolean }>({});
 const isGameCreator = ref(false);
 const predictionGameCreatorId = ref<number | null>(null);
+const formattedGameEvents = ref<{ [key: string]: any }[]>([]);
 
 onMounted(async () => {
   const gameData = await predictionGameStore.loadPredictionGame(props.predictionGameId);
@@ -144,6 +151,28 @@ onMounted(async () => {
       hasMadePredictionMap.value[event.id] = hasMadePrediction;
     }
   }
+
+  const formattedEvents = await Promise.all(
+    gameEvents.value.map(async (event) => {
+      await predictionStore.loadUserPrediction(event.id);
+      const userPrediction = predictionStore.userPrediction;
+      return {
+        ...event,
+        teams: `${event.teamA} \n ${event.teamB}`,
+        score: `${event.teamAScore} - ${event.teamBScore}`,
+        yourPrediction: userPrediction
+          ? `${userPrediction.endScoreTeamA} - ${userPrediction.endScoreTeamB}`
+          : "No prediction made",
+        eventDate: event.eventDate
+          ? format(new Date(event.eventDate), 'dd.MM.yyyy HH:mm')
+          : '',
+      };
+    })
+  );
+
+  // Set the resolved array to the ref
+  formattedGameEvents.value = formattedEvents;
+  
 });
 
 
@@ -152,14 +181,10 @@ async function userHasMadePrediction(gameEvent: GameEvent, userId: number): Prom
   return predictions.some(element => element.predictionMakerId === userId);
 }
 
-const formattedGameEvents = computed(() => {
-  return gameEvents.value.map(event => ({
-    ...event,
-    teams: `${event.teamA} \n ${event.teamB}` ,
-    score: `${event.teamAScore} - ${event.teamBScore} `,
-    eventDate : event.eventDate ? format(new Date(event.eventDate), 'dd.MM.yyyy HH:mm') : '',
-  }));
-});
+
+
+
+
 
 
 const deletePredictionGameEvent = (gameEvent: GameEvent) => {
