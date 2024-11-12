@@ -56,13 +56,15 @@
   }
 };
 const isParticipant = (game: PredictionGame) => {
-  console.log("Participants:", game.participants);
-  console.log("User ID:", user.value?.id);
-  return (
-    game.participants?.some(
-      participant => participant.id === user.value?.id
-    ) && !isGameCreator(game)
-  );
+  console.log("Current user:", user.value);
+  console.log("Game participants:", game.participants);
+
+  const isUserParticipant = game.participants?.some(
+    participant => participant.id === user.value?.id
+  ) && !isGameCreator(game);
+
+  console.log("Is user a participant?", isUserParticipant);
+  return isUserParticipant;
 };
   const columns = [
     {

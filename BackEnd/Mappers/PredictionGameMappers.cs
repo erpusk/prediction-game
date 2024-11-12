@@ -19,6 +19,10 @@ namespace BackEnd.Mappers
                 UniqueCode = predictionGameModel.GameCreatorId == currentUserId ? predictionGameModel.UniqueCode : null,
                 GameCreatorId = predictionGameModel.GameCreatorId,
                 GameCreator = predictionGameModel.GameCreator?.ToApplicationUserDto(),
+                Participants = predictionGameModel.Participants
+                .Select(p => new ApplicationUserDto { Id = p.UserId, UserName = p.User!.UserName })
+                .ToList()
+
             };
         }
 

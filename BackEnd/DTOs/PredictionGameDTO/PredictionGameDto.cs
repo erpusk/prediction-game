@@ -15,5 +15,7 @@ namespace BackEnd.DTOs.PredictionGame
         public List<EventDto>? Events { get; set; } = new List<EventDto>();
         // public List<GameParticipant> Participants { get; set; } = new List<GameParticipant>();
         public string? UniqueCode { get; set; }
+        public List<ApplicationUserDto>? Participants { get; set; } = new List<ApplicationUserDto>();
+
     }
 }

@@ -122,18 +122,21 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
         }
         public async Task<bool> LeaveGameAsync(int userId, int gameId)
         {
-        var participant = await context.PredictionGameParticipants
-        .FirstOrDefaultAsync(p => p.UserId == userId && p.GameId == gameId);
+        var game = await context.PredictionGames
+                             .Include(g => g.Participants)
+                             .FirstOrDefaultAsync(g => g.Id == gameId);
 
-        if (participant == null)
-        {
-            return false; // User is not a participant in this game.
-        }
+        if (game == null) return false;
 
-        context.PredictionGameParticipants.Remove(participant);
+        var user = game.Participants.FirstOrDefault(u => u.Id == userId);
+        if (user == null) return false;
+
+        game.Participants.Remove(user);
         await context.SaveChangesAsync();
+
         return true;
         }
+
 
     }
 }
