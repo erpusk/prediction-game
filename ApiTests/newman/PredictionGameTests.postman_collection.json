@@ -139,12 +139,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:5160/api/PredictionGames",
-							"protocol": "http",
+							"raw": "{{url}}/api/PredictionGames",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "5160",
 							"path": [
 								"api",
 								"PredictionGames"
@@ -369,33 +367,176 @@
 			"item": [
 				{
 					"name": "GetUserPredictionGames",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has related games\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.be.an('array').that.is.not.empty;\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/PredictionGames",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"PredictionGames"
+							]
+						}
 					},
 					"response": []
 				},
 				{
 					"name": "Unauthorized_GetUserPredictionGames",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Unauthorized if no userId claim\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/PredictionGames",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"PredictionGames"
+							]
+						}
 					},
 					"response": []
 				},
 				{
 					"name": "GetPredictionGameWithId",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 and game exists\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/PredictionGames/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"PredictionGames",
+								"1"
+							]
+						}
 					},
 					"response": []
 				},
 				{
 					"name": "NotFound_PredictionGameWithIncorrectId",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Returns 404 for non-existing game ID\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/PredictionGames/100",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"PredictionGames",
+								"100"
+							]
+						}
 					},
 					"response": []
 				},
@@ -413,7 +554,10 @@
 									"pm.test(\"Response contains a unique code\", function () {\r",
 									"    var jsonData = pm.response.json();\r",
 									"    pm.expect(jsonData).to.have.property('uniqueCode').that.is.a('string').with.lengthOf(6);\r",
-									"});"
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.collectionVariables.set(\"uniqueCode\", jsonData.uniqueCode);"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -457,9 +601,55 @@
 				},
 				{
 					"name": "JoinGameWithUniqueCode",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"User successfully joins the game\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
-						"method": "GET",
-						"header": []
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"uniqueCode\": \"{{uniqueCode}}\",\r\n  \"userId\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/PredictionGames/{{uniqueCode}}/join",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"PredictionGames",
+								"{{uniqueCode}}",
+								"join"
+							]
+						}
 					},
 					"response": []
 				}
