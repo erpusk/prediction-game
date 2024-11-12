@@ -120,5 +120,20 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
         {
             return await context.PredictionGames.AnyAsync(pg => pg.UniqueCode == uniqueCode);
         }
+        public async Task<bool> LeaveGameAsync(int userId, int gameId)
+        {
+        var participant = await context.PredictionGameParticipants
+        .FirstOrDefaultAsync(p => p.UserId == userId && p.GameId == gameId);
+
+        if (participant == null)
+        {
+            return false; // User is not a participant in this game.
+        }
+
+        context.PredictionGameParticipants.Remove(participant);
+        await context.SaveChangesAsync();
+        return true;
+        }
+
     }
 }

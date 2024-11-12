@@ -20,6 +20,10 @@
             <button @click="showEvents(row)" class="btn-primary-small">
               Show events
             </button>
+            <button v-if="isParticipant(row)" @click="leaveGame(row)" class="btn-primary-small">
+  Leave Game
+</button>
+
             <button 
               v-if="isGameCreator(row)" 
               @click="deletePredictionGame(row)" 
@@ -39,9 +43,27 @@
   import DeleteIconComponent from '@/components/DeleteIconComponent.vue';
   import { useRouter } from 'vue-router';
   import { format } from 'date-fns';
+  import type { PredictionGame } from '~/types/predictionGame';
+  import { useUserStore } from '@/stores/userStore';
   
   defineProps<{ title: string }>();
-  
+  const leaveGame = async (game: PredictionGame) => {
+  try {
+    await predictionGameStore.leavePredictionGame(game.id);
+    await predictionGameStore.loadPredictionGames();
+  } catch (error) {
+    console.error("Failed to leave the game:", error);
+  }
+};
+const isParticipant = (game: PredictionGame) => {
+  console.log("Participants:", game.participants);
+  console.log("User ID:", user.value?.id);
+  return (
+    game.participants?.some(
+      participant => participant.id === user.value?.id
+    ) && !isGameCreator(game)
+  );
+};
   const columns = [
     {
       key: "predictionGameTitle",

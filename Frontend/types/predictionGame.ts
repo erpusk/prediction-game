@@ -7,6 +7,7 @@ export interface PredictionGame {
     gameCreatorId: number;
     privacy: string;
     uniqueCode: string;
+    participants: Array<{ id: number; userId: number }>;
     //Events: GameEvent[];
     // participants?: GameParticipant[];  // Uncomment when implementing participants
   }

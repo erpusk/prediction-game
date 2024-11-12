@@ -2,16 +2,38 @@ import { ListFormat } from "typescript";
 import type { GameEvent } from "~/types/gameEvent";
 import type { Prediction } from "~/types/prediction";
 import type { PredictionGame } from "~/types/predictionGame";
+import { useUserStore } from '@/stores/userStore';
 
 export const usePredictionGameStore = defineStore("predictionGame", () => {
   const api = useApi();
   const predictionGames = ref<PredictionGame[]>([]);
+  const userStore = useUserStore();
   
+  const leavePredictionGame = async (gameId: number) => {
+    try {
+      await api.customFetch(`PredictionGames/${gameId}/leave`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${userStore.token}`,
+        },
+      });
+  
+      const index = predictionGames.value.findIndex(g => g.id === gameId);
+      if (index !== -1) {
+        predictionGames.value.splice(index, 1);
+      }
+      await loadPredictionGames();
+    } catch (error) {
+      console.error("Error leaving the game:", error);
+    }
+  };
 
   const loadPredictionGames = async () => {
     predictionGames.value = await api.customFetch<PredictionGame[]>("PredictionGames");
   };
 
+
+  
   const addPredictionGame = async (game: PredictionGame) => {
     const res = await api.customFetch("PredictionGames", {
       method: "POST",
@@ -42,7 +64,7 @@ export const usePredictionGameStore = defineStore("predictionGame", () => {
     return predictionGame || null;
   };
 
-  return { predictionGames, loadPredictionGames, addPredictionGame, deletePredictionGame, getPredictionGameById, loadPredictionGame};
+  return { predictionGames, loadPredictionGames, addPredictionGame, deletePredictionGame, getPredictionGameById, loadPredictionGame, leavePredictionGame};
 });
 
 export const useGameEventsStore = defineStore("gameEvent", () => {
@@ -113,7 +135,8 @@ export const usePredictionsStore = defineStore("prediction", () => {
       const predictionsList = await api.customFetch<Prediction[]>(url)
     return predictionsList
   };
-
+  
+  
   
 
   return {predictions, addPrediction, loadPredictions, getPredictions}
