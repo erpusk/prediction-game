@@ -1,0 +1,363 @@
+{
+	"info": {
+		"_postman_id": "2a186084-e2a2-48df-a8d0-3275394b4b1e",
+		"name": "PredictionGameTests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38238858"
+	},
+	"item": [
+		{
+			"name": "GetPredictionGamesWithoutAuthorization",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 401\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/Prediction",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"Prediction"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Authorize",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Username is correct\", function () {\r",
+							"\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData.username).to.eql(\"MariMas\")\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Email is correct\", function () {\r",
+							"\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData.email).to.eql(\"mari.maasikas@test.ee\")\r",
+							"});\r",
+							"\r",
+							"const responseData = pm.response.json();\r",
+							"if (responseData.token) { \r",
+							"    pm.environment.set(\"authToken\", responseData.token);\r",
+							"}\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"mari.maasikas@test.ee\",\r\n  \"password\": \"Default_Password1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/Account/login",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"Account",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetPredictionGamesWithAuthorization",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Predictiongames count is correct\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.length).to.eql(1);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5160/api/PredictionGames",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5160",
+					"path": [
+						"api",
+						"PredictionGames"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RegisterNewUser",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Username is correct\", function () {\r",
+							"\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData.username).to.eql(\"testUser\")\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Email is correct\", function () {\r",
+							"\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData.email).to.eql(\"testUser@example.com\")\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"username\": \"testUser\",\r\n  \"email\": \"testUser@example.com\",\r\n  \"password\": \"Default_Password111\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/Account/register",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"Account",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetApplicationUsers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Users count is correct\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.length).to.eql(3);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/ApplicationUser",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"ApplicationUser"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetUserById",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Username is correct\", function () {\r",
+							"\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData.userName).to.eql(\"MariMas\")\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiZW1haWwiOiJtYXJpLm1hYXNpa2FzQHRlc3QuZWUiLCJnaXZlbl9uYW1lIjoiTWFyaU1hcyIsIm5iZiI6MTczMTM5MzQ5OSwiZXhwIjoxNzMxOTk4Mjk5LCJpYXQiOjE3MzEzOTM0OTksImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTE2MCIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTE2MCJ9.ATJNC5yUb11GUNU0vcI2C-nkVFICOkl2Jf2Eso0QKiHBiW-uTV2QyXWkX1zKX4pQCbiXSP7mWYiaCWKhxf2cqQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/ApplicationUser/1",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"ApplicationUser",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateUser",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userName\": \"IvoTamm\",\r\n  \"dateOfBirth\": \"2024-11-12T07:18:16.462Z\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/ApplicationUser/3",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"ApplicationUser",
+						"3"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
