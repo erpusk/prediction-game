@@ -130,11 +130,11 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
 
         if (game == null) return false;
 
-        var user = game.Participants.FirstOrDefault(u => u.UserId == userId);
+        var user = game.Participants!.FirstOrDefault(u => u.UserId == userId);
 
         if (user == null) return false;
 
-        game.Participants.Remove(user);
+        game.Participants!.Remove(user);
         await context.SaveChangesAsync();
 
         return true;

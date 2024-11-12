@@ -20,7 +20,11 @@ namespace BackEnd.Mappers
                 GameCreatorId = predictionGameModel.GameCreatorId,
                 GameCreator = predictionGameModel.GameCreator?.ToApplicationUserDto(),
                 Participants = predictionGameModel.Participants
-                .Select(p => new ApplicationUserDto { Id = p.UserId, UserName = p.User!.UserName })
+                .Where(p => p.User != null)
+                .Select(p => new ApplicationUserDto {
+                Id = p.UserId,
+                UserName = p.User.UserName ?? "Unknown User"
+                })
                 .ToList()
 
             };

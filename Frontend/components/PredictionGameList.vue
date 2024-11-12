@@ -49,7 +49,7 @@
   defineProps<{ title: string }>();
   const leaveGame = async (game: PredictionGame) => {
   try {
-    await predictionGameStore.leavePredictionGame(game.id);
+    await predictionGameStore.leavePredictionGame(game.uniqueCode);
     await predictionGameStore.loadPredictionGames();
   } catch (error) {
     console.error("Failed to leave the game:", error);

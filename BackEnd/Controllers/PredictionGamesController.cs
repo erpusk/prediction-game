@@ -135,9 +135,10 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
 
             return Ok("Successfully joined the game.");
         }
-        [HttpPost("{uniqueCode}/leave")]
+        [HttpPost("{uniquecode}/leave")]
         public async Task<IActionResult> LeaveGame(string uniqueCode, [FromBody] LeaveGameRequestDto request)
         {
+            Console.WriteLine($"Received leave request for uniqueCode: {uniqueCode} and UserId: {request.UserId}");
             int userId = request.UserId;
             var game = await repo.GetPredictionGameByCode(uniqueCode);
             if (game == null)
