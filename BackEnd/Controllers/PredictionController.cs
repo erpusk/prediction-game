@@ -38,6 +38,23 @@ namespace BackEnd.Controllers
             var resultAsDto = result.toPredictionDto();
             return Ok(resultAsDto);
         }
+
+        [HttpGet("user/event/{eventid}")]
+        public async Task<IActionResult> GetByEventAndUserId(int eventid){
+            try {
+            var userIdClaim = int.Parse(User.FindFirst("userId")!.Value);
+            var resultAsList = await _repo.GetAll(eventid, userIdClaim);
+            if (resultAsList == null) {
+                return NotFound("Predictions, with your event id or userid were not found");
+            }
+            var result = resultAsList[0];
+            var resultAsDto = result.toPredictionDto();
+            return Ok(resultAsDto);
+            } catch {
+                return Ok(null);
+            }
+        }
+        
         [HttpPost]
         public async Task<IActionResult> CreatePrediction([FromBody] CreatePredictionRequestDto predictioDto){
             var userIdClaim = User.FindFirst("userId")?.Value;

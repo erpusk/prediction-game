@@ -24,7 +24,7 @@ namespace BackEnd.Data.Repos
                 predictions = predictions.Where(x => x.EventId == eventId);
             }
             if (userId.HasValue){
-                predictions = predictions.Where(x => x.PredictionMakerId == userId.Value);
+                predictions = predictions.Where(x => x.PredictionMakerId == userId);
             }
             return await predictions.ToListAsync();
         }
