@@ -135,20 +135,29 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
 
             return Ok("Successfully joined the game.");
         }
-        [HttpPost("{uniquecode}/leave")]
+        [HttpPost("{uniqueCode}/leave")]
         public async Task<IActionResult> LeaveGame(string uniqueCode, [FromBody] LeaveGameRequestDto request)
         {
-            Console.WriteLine($"Received leave request for uniqueCode: {uniqueCode} and UserId: {request.UserId}");
-            int userId = request.UserId;
+            // Find the game by unique code
             var game = await repo.GetPredictionGameByCode(uniqueCode);
             if (game == null)
             {
                 return NotFound("Game not found.");
             }
 
-            bool leftSuccessfully = await repo.LeaveGameAsync(userId, game.Id);
-            return leftSuccessfully ? Ok("Successfully left the game.") : BadRequest("Could not leave the game.");
+            // Find the participant record
+            var participant = await repo.GetParticipantByUserIdAndGameId(request.UserId, game.Id);
+            if (participant == null)
+            {
+                return NotFound("User is not a participant in this game.");
+            }
+
+            // Remove the participant from the game
+            await repo.RemoveParticipant(participant);
+
+            return Ok("Successfully left the game.");
         }
+
 
 
     }

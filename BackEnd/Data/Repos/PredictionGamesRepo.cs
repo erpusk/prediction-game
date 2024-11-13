@@ -139,6 +139,20 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
 
         return true;
         }
+        // Find participant by UserId and GameId
+        public async Task<PredictionGameParticipant?> GetParticipantByUserIdAndGameId(int userId, int gameId)
+        {
+            return await context.PredictionGameParticipants
+                                .FirstOrDefaultAsync(p => p.UserId == userId && p.GameId == gameId);
+        }
+
+        // Remove a participant from the game
+        public async Task RemoveParticipant(PredictionGameParticipant participant)
+        {
+            context.PredictionGameParticipants.Remove(participant);
+            await context.SaveChangesAsync();
+        }
+
 
 
     }
