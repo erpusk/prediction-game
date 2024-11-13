@@ -166,7 +166,7 @@ onMounted(async () => {
           ? `${userPrediction.endScoreTeamA} - ${userPrediction.endScoreTeamB}`
           : "No prediction made",
         eventDate: event.eventDate
-          ? format(new Date(event.eventDate), 'dd.MM.yyyy HH:mm')
+          ? format(new Date(event.eventDate), 'dd.MM.yyyy')
           : '',
       };
     })
