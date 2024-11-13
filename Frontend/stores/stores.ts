@@ -2,10 +2,34 @@ import { ListFormat } from "typescript";
 import type { GameEvent } from "~/types/gameEvent";
 import type { Prediction } from "~/types/prediction";
 import type { PredictionGame } from "~/types/predictionGame";
+import { useUserStore } from '@/stores/userStore';
 
 export const usePredictionGameStore = defineStore("predictionGame", () => {
   const api = useApi();
   const predictionGames = ref<PredictionGame[]>([]);
+  const userStore = useUserStore();
+
+  const leavePredictionGame = async (uniqueCode: string | null) => {
+    if (!uniqueCode) {
+        console.error("UniqueCode is null or undefined.");
+        return;
+    }
+    try {
+        await api.customFetch(`PredictionGames/${uniqueCode}/leave`, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${userStore.token}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ UserId: userStore.user!.id }),
+        });
+    } catch (error) {
+        console.error("Error leaving the game:", error);
+    }
+};
+
+
+
   
 
   const loadPredictionGames = async () => {
@@ -17,7 +41,7 @@ export const usePredictionGameStore = defineStore("predictionGame", () => {
       method: "POST",
       body: game,
     });
-    loadPredictionGames();
+    await loadPredictionGames();
   };
 
   const deletePredictionGame = async (game: PredictionGame) => {
@@ -26,12 +50,12 @@ export const usePredictionGameStore = defineStore("predictionGame", () => {
     });
 
     const index = predictionGames.value.findIndex(g => g.id === game.id);
-    
     if (index !== -1) {
       predictionGames.value.splice(index, 1);
     }
-    loadPredictionGames()
-  }
+    await loadPredictionGames();
+  };
+
   const loadPredictionGame = async (predictionGameId: string | number) => {
     const gameData = await api.customFetch<PredictionGame>(`PredictionGames/${predictionGameId}`);
     return gameData;
@@ -42,8 +66,17 @@ export const usePredictionGameStore = defineStore("predictionGame", () => {
     return predictionGame || null;
   };
 
-  return { predictionGames, loadPredictionGames, addPredictionGame, deletePredictionGame, getPredictionGameById, loadPredictionGame};
+  return {
+    predictionGames,
+    loadPredictionGames,
+    addPredictionGame,
+    deletePredictionGame,
+    getPredictionGameById,
+    loadPredictionGame,
+    leavePredictionGame,
+  };
 });
+
 
 export const useGameEventsStore = defineStore("gameEvent", () => {
   const api = useApi();

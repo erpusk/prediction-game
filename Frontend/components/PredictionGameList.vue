@@ -21,6 +21,13 @@
               Show events
             </button>
             <button 
+        v-if="isParticipant(row)"
+        @click="leaveGame(row)"
+        class="btn-primary-small !bg-red-600 !hover:bg-red-700 !text-white">
+        Leave Game
+      </button>
+
+            <button 
               v-if="isGameCreator(row)" 
               @click="deletePredictionGame(row)" 
               class="flex items-center text-red-500 hover:text-red-700">
@@ -39,9 +46,36 @@
   import DeleteIconComponent from '@/components/DeleteIconComponent.vue';
   import { useRouter } from 'vue-router';
   import { format } from 'date-fns';
+  import type { PredictionGame } from '~/types/predictionGame';
+  import { useUserStore } from '@/stores/userStore';
+  import { storeToRefs } from 'pinia';
+
+const predictionGameStore = usePredictionGameStore();
+const { predictionGames } = storeToRefs(predictionGameStore);
   
   defineProps<{ title: string }>();
+  const leaveGame = async (game: PredictionGame) => {
+  // Check if uniqueCode exists
+  if (!game.uniqueCode) {
+    console.error("UniqueCode is null or undefined.", game);
+    return;
+  }
   
+  try {
+    await predictionGameStore.leavePredictionGame(game.uniqueCode);
+    console.log("Left the game successfully");
+    predictionGameStore.predictionGames = predictionGameStore.predictionGames.filter(
+      (g) => g.id !== game.id
+    );
+  } catch (error) {
+    console.error("Failed to leave the game:", error);
+  }
+};
+
+const isParticipant = (game: PredictionGame) => {
+  return game && game.participants && game.participants.some(participant => participant.id === userStore.user?.id) &&
+  game.gameCreatorId !== userStore.user?.id;
+};
   const columns = [
     {
       key: "predictionGameTitle",
@@ -65,8 +99,6 @@
     }
   ];
   
-  const predictionGameStore = usePredictionGameStore();
-  const { predictionGames } = storeToRefs(predictionGameStore);
   const router = useRouter();
   const userStore = useUserStore();
   const { user } = storeToRefs(userStore);

@@ -38,10 +38,12 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
         //Kuva kasutajaga seotud (created/joined) mänge)
         public async Task<List<PredictionGame>> GetPredictionGamesRelatedWithUser(int userId) {
             IQueryable<PredictionGame> query = context.PredictionGames
-            .Where(x => x.Participants.Any(p => p.UserId == userId))
+            .Where(x => x.Participants!.Any(p => p.UserId == userId))
             .Include(m => m.Events)
             .Include(t => t.GameCreator)
+            .Include(g => g.Participants)
             .AsQueryable();
+            
 
             return await query.ToListAsync();
         }
@@ -120,5 +122,22 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
         {
             return await context.PredictionGames.AnyAsync(pg => pg.UniqueCode == uniqueCode);
         }
+        
+        // Find participant by UserId and GameId
+        public async Task<PredictionGameParticipant?> GetParticipantByUserIdAndGameId(int userId, int gameId)
+        {
+            return await context.PredictionGameParticipants
+                                .FirstOrDefaultAsync(p => p.UserId == userId && p.GameId == gameId);
+        }
+
+        // Remove a participant from the game
+        public async Task RemoveParticipant(PredictionGameParticipant participant)
+        {
+            context.PredictionGameParticipants.Remove(participant);
+            await context.SaveChangesAsync();
+        }
+
+
+
     }
 }
