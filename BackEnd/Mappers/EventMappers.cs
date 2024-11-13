@@ -14,7 +14,7 @@ namespace BackEnd.Mappers
                 PredictionGameId = eventModel.PredictionGameId,
                 TeamAScore = eventModel.TeamAScore,
                 TeamBScore = eventModel.TeamBScore,
-                IsCompleted = eventModel.IsCompleted
+                IsCompleted = eventModel.IsCompleted,
             };
         }
         public static Event ToEvent(this EventDto eventDto) {
