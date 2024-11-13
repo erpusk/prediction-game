@@ -1,5 +1,6 @@
 using BackEnd.Models.Classes;
 using itb2203_2024_predictiongame.Backend.Data;
+using itb2203_2024_predictiongame.Backend.Models.Classes;
 using Microsoft.EntityFrameworkCore;
 
 namespace BackEnd.Data.Repos

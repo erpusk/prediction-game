@@ -12,5 +12,6 @@ namespace BackEnd.Models.Classes
         public int EventId { get; set; }
         public int EndScoreTeamA { get; set; }
         public int EndScoreTeamB { get; set; }
+        public int PointsEarned { get; set; } = 0;
     }
 }
