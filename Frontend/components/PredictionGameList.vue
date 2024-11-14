@@ -136,9 +136,9 @@ const isParticipant = (game: PredictionGame) => {
     router.push(`/gameevents/${predictionGameId}`);
   }
   const goToGameDetails = (game: PredictionGame) => {
-  const predictionGameId = game.id;
-  router.push(`/predictiongame-details/${game.id}`);
-};
+    const predictionGameId = game.id;
+  router.push(`/predictiongame-details/${predictionGameId}`);
+  };
   </script>  
 
 <style scoped>
