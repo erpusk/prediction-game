@@ -20,6 +20,9 @@
             <button @click="showEvents(row)" class="btn-primary-small">
               Show events
             </button>
+            <button @click="goToGameDetails(row)" class="btn-primary-small">
+            Details
+            </button>
             <button 
         v-if="isParticipant(row)"
         @click="leaveGame(row)"
@@ -102,6 +105,7 @@
   const router = useRouter();
   const userStore = useUserStore();
   const { user } = storeToRefs(userStore);
+  
 
   const formattedPredictionGames = computed(() => {
   return predictionGames.value.map(game => ({
@@ -128,9 +132,13 @@
   };
 
   const showEvents = (game: PredictionGame) => {
-    const predictionGameId = game.id; // Get the predictionGameId from the clicked game
+    const predictionGameId = game.id;
     router.push(`/gameevents/${predictionGameId}`);
   }
+  const goToGameDetails = (game: PredictionGame) => {
+    const predictionGameId = game.id;
+  router.push(`/predictiongame-details/${predictionGameId}`);
+  };
   </script>  
 
 <style scoped>
