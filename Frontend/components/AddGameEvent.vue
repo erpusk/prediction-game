@@ -22,8 +22,12 @@
           <UInput v-model="state.teamB" class="border rounded-md p-2 w-full"/>
         </UFormGroup>
     
-        <UFormGroup label="Event date" name="eventDate">
-          <UInput v-model="eventDateStr" type="date" class="border rounded-md p-2 w-full"/>
+        <UFormGroup label="Event date and time" name="eventDate">
+          <UInput 
+            v-model="eventDateStr" 
+            type="datetime-local" 
+            class="border rounded-md p-2 w-full"
+          />
         </UFormGroup>
 
         <div class="flex justify-between mt-6">

@@ -1,6 +1,7 @@
 using BackEnd.Data.Repos;
 using BackEnd.DTOs.Event;
 using BackEnd.Mappers;
+using BackEnd.Models.Classes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -55,7 +56,9 @@ namespace BackEnd.Controllers
             if (eventModel == null) {
                 return NotFound();
             }
-            if (eventDto.EventDate > DateTime.UtcNow) {
+            
+            var onlyUpdatesTeamNamesOrEventDate = eventModel.TeamA != eventDto.TeamA || eventModel.TeamB != eventDto.TeamB || eventModel.EventDate != eventDto.EventDate;
+            if (eventDto.EventDate > DateTime.UtcNow && !onlyUpdatesTeamNamesOrEventDate) {
                 return BadRequest("Cannot add scores until the event has passed");
             }  
 
@@ -77,7 +80,5 @@ namespace BackEnd.Controllers
             var result = await _repo.DeleteEvent(id);
             return result ? NoContent() : NotFound();
         }
-
-        
     }
 }

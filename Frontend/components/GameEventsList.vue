@@ -12,8 +12,7 @@
           <AddGameEvent 
             v-if="showModal" 
             :predictionGameId="props.predictionGameId" 
-            @close="closeModal" 
-          />
+            @close="closeModal" />
         
         <div v-if="uniqueCode && uniqueCode !== 'Not available'" class="unique-code-box absolute top-14 right-5">
           <p class="text-2xl font-bold mr-2">{{ uniqueCode }}</p>
@@ -21,13 +20,16 @@
             <i class="fas fa-copy mr-1"></i>
           </button>
         </div>
+        <div class="mt-8">
+          <h1 class="text-3xl font-bold text-center mb-6 text-black">{{ title }}</h1>
+          <UTable class="w-full"
+          :rows="formattedGameEvents" :columns="columns">
 
-      <div v-if="gameEvents.length === 0">
-        <h2 class="text-xl text-center">No events have been added</h2>
-      </div>
-      <div v-else class="mt-8">
-        <h1 class="text-3xl font-bold text-center mb-6 text-black">{{ title }}</h1>
-          <UTable :rows="formattedGameEvents" :columns="columns">
+          <template #empty-state>
+            <div class="flex flex-col items-center justify-center py-6 gap-3">
+              <span class="italic text-base">No events here, create now! </span>
+            </div>
+          </template>
     
         <template #teams-data="{ row }">
           <div v-html="row.teams.replace('\n', '<br>')"></div>
@@ -82,12 +84,16 @@ import { usePredictionGameStore } from '@/stores/stores';
 const predictionGameStore = usePredictionGameStore();
 const uniqueCode = ref('');
 const showModal = ref(false);
+
 const gameEventStore = useGameEventsStore();
 const { gameEvents } = storeToRefs(gameEventStore);
+
 const router = useRouter();
 const userStore = useUserStore();
+
 const predictionStore = usePredictionsStore();
 const copySuccess = ref(false);
+
 const copyToClipboard = async () => {
   try {
     await navigator.clipboard.writeText(uniqueCode.value);
@@ -105,16 +111,16 @@ const props = defineProps<{
 
 const columns = [
   {
+    key: "eventDate",
+    label: "Event date and time",
+  },
+  {
     key: "teams",
     label: "Teams",
   },
   {
     key: "score",
     label: "Score",
-  },
-  {
-    key: "eventDate",
-    label: "Event date",
   },
   {
     key: "yourPrediction",
@@ -124,70 +130,64 @@ const columns = [
     key: "actions",
     label: ""
   }
-  
 ];
 
 const hasMadePredictionMap = ref<{ [key: number]: boolean }>({});
 const isGameCreator = ref(false);
 const predictionGameCreatorId = ref<number | null>(null);
-const formattedGameEvents = ref<{ [key: string]: any }[]>([]);
+
+const formattedGameEvents = computed(() => {
+  return gameEvents.value.map( (event) => {
+    const userPrediction = predictionStore.userPredictionsMap[event.id];
+
+    return {
+      ...event,
+      teams: `${event.teamA} \n ${event.teamB}`,
+      score: event.teamAScore || event.teamBScore
+        ? `${event.teamAScore} - ${event.teamBScore}`
+        : "",
+      yourPrediction: userPrediction
+        ? `${userPrediction.endScoreTeamA} - ${userPrediction.endScoreTeamB}`
+        : "No prediction made",
+      eventDate: event.eventDate
+        ? format(new Date(event.eventDate), 'dd.MM.yyyy HH:mm')
+        : '',
+    };
+  });
+});
 
 onMounted(async () => {
   const gameData = await predictionGameStore.loadPredictionGame(props.predictionGameId);
   uniqueCode.value = gameData?.uniqueCode || "Not available";
+
   await gameEventStore.loadGameEvents(props.predictionGameId);
   const userId = userStore.user?.id;
 
   const predictionGame = await predictionGameStore.getPredictionGameById(props.predictionGameId);
   if (predictionGame) {
     predictionGameCreatorId.value = predictionGame.gameCreatorId;
-    const userId = userStore.user?.id;
     isGameCreator.value = userId === predictionGameCreatorId.value;
   }
   
   if (userId) {
+    const predictionsMap: { [key: number]: Prediction | null } = {};
+    await Promise.all(gameEvents.value.map(async (event) => {
+      await predictionStore.loadUserPrediction(event.id);
+      predictionsMap[event.id] = predictionStore.userPrediction ? 
+        { ...(predictionStore.userPrediction as Prediction) } : null;
+    }));
     for (const event of gameEvents.value) {
       const hasMadePrediction = await userHasMadePrediction(event, userId);
       hasMadePredictionMap.value[event.id] = hasMadePrediction;
     }
+    predictionStore.userPredictionsMap = predictionsMap;
   }
-
-  const formattedEvents = await Promise.all(
-    gameEvents.value.map(async (event) => {
-      await predictionStore.loadUserPrediction(event.id);
-      const userPrediction = predictionStore.userPrediction;
-      return {
-        ...event,
-        teams: `${event.teamA} \n ${event.teamB}`,
-        score: event.teamAScore | event.teamBScore
-          ? `${event.teamAScore} - ${event.teamBScore}`
-          : "",
-        yourPrediction: userPrediction
-          ? `${userPrediction.endScoreTeamA} - ${userPrediction.endScoreTeamB}`
-          : "No prediction made",
-        eventDate: event.eventDate
-          ? format(new Date(event.eventDate), 'dd.MM.yyyy')
-          : '',
-      };
-    })
-  );
-
-  // Set the resolved array to the ref
-  formattedGameEvents.value = formattedEvents;
-  
 });
-
 
 async function userHasMadePrediction(gameEvent: GameEvent, userId: number): Promise<boolean> {
   const predictions = await predictionStore.getPredictions(gameEvent.id);
   return predictions.some(element => element.predictionMakerId === userId);
 }
-
-
-
-
-
-
 
 const deletePredictionGameEvent = (gameEvent: GameEvent) => {
   gameEventStore.deletePredictionGameEvent(gameEvent);
