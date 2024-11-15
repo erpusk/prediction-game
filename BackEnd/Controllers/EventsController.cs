@@ -1,6 +1,7 @@
 using BackEnd.Data.Repos;
 using BackEnd.DTOs.Event;
 using BackEnd.Mappers;
+using BackEnd.Models.Classes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,10 +13,12 @@ namespace BackEnd.Controllers
     public class EventController: ControllerBase
     {
         private readonly EventRepo _repo;
+        private readonly GameParticipantRepo _gpRepo;
 
-        public EventController(EventRepo repo)
+        public EventController(EventRepo repo, GameParticipantRepo gameParticipantRepo)
         {
             _repo = repo;
+            _gpRepo = gameParticipantRepo;
         }
 
         [HttpGet]
@@ -68,7 +71,17 @@ namespace BackEnd.Controllers
             eventModel.IsCompleted = eventDto.IsCompleted;
 
             var result = await _repo.UpdateEvent(id, eventModel);
+
+            if(eventModel.IsCompleted == true && eventModel.TeamAScore != null && eventModel.TeamBScore != null){
+                foreach (var prediction in eventModel.Predictions)
+                {
+                    var awardResult = await _gpRepo.AwardPoints(eventModel.PredictionGameId, prediction.PredictionMakerId);
+                    if (!awardResult) return BadRequest(result);
+                }
+            }
+
             return result ? NoContent() : NotFound();
+            
         }
 
         [HttpDelete("{id}")]

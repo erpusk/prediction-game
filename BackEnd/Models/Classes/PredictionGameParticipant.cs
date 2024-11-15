@@ -16,6 +16,6 @@ namespace BackEnd.Models.Classes
         public ApplicationUser? User { get; set; }
         public string? Role { get; set; }
 
-        public int EarnedPoints { get; set; }
+        public int EarnedPoints { get; set; } = 0;
     }
 }

@@ -14,43 +14,63 @@ namespace BackEnd.Data.Repos
     public class GameParticipantRepo
     {
         private readonly DataContext _context;
-
         public GameParticipantRepo(DataContext context) {
             _context = context;
+
         }
 
-        public async Task UpdateParticipantPoints(int userId, int predictionGameId, int pointsToAward){
-            var participant = await _context.PredictionGameParticipants
+        public async Task<bool> IsParticipantExistsInDb(int id) => await _context.PredictionGameParticipants.AnyAsync(x => x.Id == id);
+
+
+        public async Task<bool> UpdateGameParticipant(int id, PredictionGameParticipant participant){
+            bool isIdsMatch = id == participant.Id;
+            bool participantExistsInDB = await IsParticipantExistsInDb(id);
+
+            if (!isIdsMatch || !participantExistsInDB){
+                return false;
+            }
+            
+            _context.Update(participant);
+            int changesCount = await _context.SaveChangesAsync();
+            return changesCount == 1;
+        }
+
+        public async Task<bool> UpdateGameParticipantPoints(int userId, int predictionGameId, int pointsToAward){
+             var participant = await _context.PredictionGameParticipants
             .FirstOrDefaultAsync(gp => gp.UserId == userId && gp.GameId == predictionGameId);
 
-            if (participant != null) {
-                participant.EarnedPoints += pointsToAward;
-                _context.Update(participant);
-                await _context.SaveChangesAsync();
-            }
+            if (participant == null) return false;
+
+            
+            participant.EarnedPoints += pointsToAward;
+            var result = await UpdateGameParticipant(participant.Id, participant);
+
+            return result;
         }
 
-        public async Task AwardPoints(int eventId, int userId){
+        public async Task<bool> AwardPoints(int eventId, int userId){
             var completedEvent = await _context.Events
             .Include(x => x.Predictions)
             .FirstOrDefaultAsync(e => e.Id == eventId && e.IsCompleted == true);
     
-            if (completedEvent == null) return;
+            if (completedEvent == null) return false;
 
             var predictionGame = await _context.PredictionGames
             .Include(pg => pg.Events)
             .FirstOrDefaultAsync(pg => pg.Id == completedEvent.PredictionGameId);
             
-            if(predictionGame == null) return;
+            if(predictionGame == null) return false;
 
             var userPrediction = completedEvent.Predictions.FirstOrDefault(p => p.PredictionMakerId == userId);
-            if (userPrediction == null) return;
+            if (userPrediction == null) return false;
 
             PointsCalculator pointsCalculator = new PointsCalculator(userPrediction, completedEvent);
 
             var calculatedPoints = pointsCalculator.CalculatePoints();
 
-            await UpdateParticipantPoints(userId, predictionGame.Id, calculatedPoints);
+            var result = await UpdateGameParticipantPoints(userId, predictionGame.Id, calculatedPoints);
+
+            return result;
         }
 
     }
