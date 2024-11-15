@@ -59,7 +59,7 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
         }
 
         public async Task<PredictionGame?> GetPredictionGameById(int id) => 
-            await context.PredictionGames.Include(m => m.Events).Include(pg => pg.GameCreator).FirstOrDefaultAsync(x => x.Id == id);
+            await context.PredictionGames.Include(m => m.Events).Include(pg => pg.Participants).ThenInclude(participant => participant.User).Include(pg => pg.GameCreator).FirstOrDefaultAsync(x => x.Id == id);
         public async Task<bool> PredictionGameExistsInDb(int id) => await context.PredictionGames.AnyAsync(x => x.Id == id);
 
         //UPDATE
@@ -101,12 +101,14 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
             bool isAlreadyInGame = await IsUserAlreadyInGame(user.Id, gameId);
             if (isAlreadyInGame) return false;
 
+
             var participant = new PredictionGameParticipant{
                 GameId = gameId,
                 UserId = user.Id,
                 Role = "Player"
             };
-            context.PredictionGameParticipants.Add(participant);
+            Console.WriteLine(participant.ToString());
+            await context.PredictionGameParticipants.AddAsync(participant);
             await context.SaveChangesAsync();
             return true;
         }

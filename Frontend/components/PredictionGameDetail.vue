@@ -18,6 +18,10 @@
         <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm">
           <p class="text-lg font-medium text-gray-700 text-center"><strong>Creation date:</strong> {{ game.creationDate }}</p>
         </div>
+
+        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm">
+          <p class="text-lg font-medium text-gray-700 text-center"><strong>Joined players:</strong> {{ game.participants }}</p>
+        </div>
       </div>
     </div>
   </template>
@@ -32,6 +36,8 @@ const props = defineProps<{
   }>();
 const route = useRoute();
 const predictionGameStore = usePredictionGameStore();
+const userStore = useUserStore();
+
 
 const game = ref({
   id: parseInt(props.id.toString(), 10),
@@ -39,7 +45,8 @@ const game = ref({
   endDate: '',
   creationDate: '',
   privacy: '',
-  title: ''
+  title: '',
+  participants: [] as string[]
 });
 
 onMounted(async () => {
@@ -50,6 +57,15 @@ onMounted(async () => {
   game.value.creationDate = predictionGame.creationDate ? new Date(predictionGame.creationDate).toLocaleDateString() : '';
   game.value.privacy = predictionGame.privacy;
   game.value.title = predictionGame.predictionGameTitle
+
+  const participantsUsernames = [] as string[];
+  predictionGame.participants.forEach(async element => {
+    const userName = await (await userStore.getUser(element.id)).userName
+
+    participantsUsernames.push(userName)
+  });
+
+  game.value.participants = participantsUsernames
 });
 </script>
   
