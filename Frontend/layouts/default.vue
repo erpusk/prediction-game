@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="page-container">
     <header v-if="$route.path !== '/login' && $route.path !== '/register'">
       <nav class="flex justify-between items-center p-4 bg-gray-900 text-white shadow-md">
         <!-- Logo and Navigation Links Section -->
@@ -23,17 +23,19 @@
     </header>
 
     <!-- Back Button for Non-Home Pages -->
-    <div v-if="$route.path !== '/' && $route.path !== '/login' && $route.path !== '/register'" class="button-group fixed bottom-4 left-4">
+    <div v-if="$route.path !== '/' && $route.path !== '/login' && $route.path !== '/register'" class="button-group fixed bottom-4 left-4 z-20">
       <button class="btn-primary" @click="goBack">Back</button>
     </div>
 
-    <main class="mt-0">
-      <NuxtPage />
-    </main>
+    <div id="content-wrap">
+      <main class="content mt-0">
+        <NuxtPage />
+      </main>
+    </div>
 
-    <footer>
-      <div class="p-4 bg-gray-800 text-white text-center">
-        &copy; 2024 Your Company. All rights reserved.
+    <footer id="footer">
+      <div class="footer-content p-4 text-white text-center">
+        &copy; 2024 PredictionGames. All rights reserved.
       </div>
     </footer>
   </div>
@@ -59,6 +61,31 @@ const goBack = () => {
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+#page-container {
+  position: relative;
+  min-height: 100vh;
+}
+
+#content-wrap {
+  padding-bottom: 2.5rem;
+}
+
+#footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 3rem;
+  background-color: #1F1F1F;
+  color: white;
+  text-align: center;
+  z-index: 1;
+}
+
+footer .footer-content {
+  padding: 16px;
+  background-color: #1F1F1F;
+}
 
 .font-inter {
   font-family: 'Inter', sans-serif;
