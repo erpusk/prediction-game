@@ -9,12 +9,13 @@ namespace BackEnd.Mappers
 {
     public static class PredictionMappers
     {
-        public static PredictionDto toPredictionDto(this Prediction predictionModel){
+        public static PredictionDto ToPredictionDto(this Prediction predictionModel){
             return new PredictionDto{
                 Id = predictionModel.Id,
                 EndScoreTeamA = predictionModel.EndScoreTeamA,
                 EndScoreTeamB = predictionModel.EndScoreTeamB,
                 PredictionMakerId = predictionModel.PredictionMakerId,
+                EventId = predictionModel.EventId
             };
         }
 

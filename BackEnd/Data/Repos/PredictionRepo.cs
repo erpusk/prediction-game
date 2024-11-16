@@ -44,5 +44,31 @@ namespace BackEnd.Data.Repos
             await _context.SaveChangesAsync();
             return prediction;
         }
+
+        public async Task<List<Prediction>> GetUserPredictionHistory(int userId) {
+            IQueryable<Prediction> query = _context.Predictions
+            .Where(p => p.PredictionMakerId == userId && p.EndScoreTeamA.HasValue && p.EndScoreTeamB.HasValue) 
+            .AsQueryable();
+
+            return await query.ToListAsync();
+        }
+
+        public async Task<List<Prediction>> GetUserUpcomingPredictions(int userId) {
+            var upcomingEvents = await _context.Events
+                .Where(e => e.EventDate > DateTime.Now)
+                .ToListAsync();
+
+            var userPredictions = await _context.Predictions
+                .Where(p => p.PredictionMakerId == userId &&
+                            !p.EndScoreTeamA.HasValue &&
+                            !p.EndScoreTeamB.HasValue)
+                .ToListAsync();
+
+            var upcomingPredictions = userPredictions
+                .Where(p => upcomingEvents.Any(e => e.Id == p.EventId))
+                .ToList();
+
+            return upcomingPredictions;
+        }
     }
 }

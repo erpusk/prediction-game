@@ -128,6 +128,8 @@ export const usePredictionsStore = defineStore("prediction", () => {
   const api = useApi();
   const predictions = ref<Prediction[]>([]);
   const userPrediction = ref<Prediction>();
+  const userPredictionHistory = ref<Prediction[]>([]);
+  const userUpcomingPredictions = ref<Prediction[]>([]);
   const userPredictionsMap = ref<Record<number, Prediction | null>>({});
   
   const addPrediction = async (prediction: Prediction) => {
@@ -158,5 +160,25 @@ export const usePredictionsStore = defineStore("prediction", () => {
     }
   }
 
-  return {predictions, addPrediction, loadPredictions, getPredictions, userPrediction, userPredictionsMap, loadUserPrediction}
+  const loadUserPredictionHistory = async () => {
+    userPredictionHistory.value = await api.customFetch<Prediction[]>(`Prediction/history`);
+  };
+
+  const loadUserUpcomingPredictions = async () => {
+    userUpcomingPredictions.value = await api.customFetch<Prediction[]>(`Prediction/upcoming`);
+  };
+
+  return {
+    predictions, 
+    addPrediction, 
+    loadPredictions, 
+    getPredictions, 
+    userPrediction, 
+    userPredictionsMap, 
+    loadUserPrediction, 
+    loadUserPredictionHistory,
+    userPredictionHistory,
+    loadUserUpcomingPredictions,
+    userUpcomingPredictions 
+  }
 })

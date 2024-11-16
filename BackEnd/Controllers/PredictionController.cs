@@ -24,7 +24,7 @@ namespace BackEnd.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll ([FromQuery]int? eventId){
             var result = await _repo.GetAll(eventId);
-            var resultAsDto = result.Select(x => x.toPredictionDto()).ToList();
+            var resultAsDto = result.Select(x => x.ToPredictionDto()).ToList();
             return Ok(result);
         }
         [HttpGet("{id}")]
@@ -35,7 +35,7 @@ namespace BackEnd.Controllers
                 return NotFound();
             }
 
-            var resultAsDto = result.toPredictionDto();
+            var resultAsDto = result.ToPredictionDto();
             return Ok(resultAsDto);
         }
 
@@ -48,7 +48,7 @@ namespace BackEnd.Controllers
                 return NotFound("Predictions, with your event id or userid were not found");
             }
             var result = resultAsList[0];
-            var resultAsDto = result.toPredictionDto();
+            var resultAsDto = result.ToPredictionDto();
             return Ok(resultAsDto);
             } catch {
                 return Ok(null);
@@ -80,7 +80,31 @@ namespace BackEnd.Controllers
             }
 
             var result = await _repo.CreatePrediction(predictionModel);
-            return CreatedAtAction(nameof(GetById), new {id = predictionModel.Id}, result.toPredictionDto());
+            return CreatedAtAction(nameof(GetById), new {id = predictionModel.Id}, result.ToPredictionDto());
+        }
+
+        [HttpGet("history")]
+        public async Task<IActionResult> GetUserPredictionHistory()
+        {
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            if (userIdClaim == null || !int.TryParse(userIdClaim, out int userId)) {
+                return Unauthorized("User ID claim not found.");
+            }
+            var result = await _repo.GetUserPredictionHistory(userId);
+            var resultAsDto = result.Select(x => x.ToPredictionDto()).ToList();
+            return Ok(resultAsDto);
+        }
+
+        [HttpGet("upcoming")]
+        public async Task<IActionResult> GetUserUpcomingPredictions()
+        {
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            if (userIdClaim == null || !int.TryParse(userIdClaim, out int userId)) {
+                return Unauthorized("User ID claim not found.");
+            }
+            var result = await _repo.GetUserUpcomingPredictions(userId);
+            var resultAsDto = result.Select(x => x.ToPredictionDto()).ToList();
+            return Ok(resultAsDto);
         }
     }
 }

@@ -7,8 +7,8 @@ namespace BackEnd.DTOs.Prediction
 {
     public class CreatePredictionRequestDto
     {
-        public int EndScoreTeamA { get; set; }
-        public int EndScoreTeamB { get; set; }
+        public int? EndScoreTeamA { get; set; }
+        public int? EndScoreTeamB { get; set; }
         public int EventId { get; set; }
     }
 }
