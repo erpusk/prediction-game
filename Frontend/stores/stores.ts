@@ -92,7 +92,7 @@ export const useGameEventsStore = defineStore("gameEvent", () => {
       method: "POST",
       body: gameEvent,
     });
-    loadGameEvents(gameEvent.predictionGameId);
+    await loadGameEvents(gameEvent.predictionGameId);
   };
 
   const deletePredictionGameEvent = async (gameEvent: GameEvent) => {
@@ -104,7 +104,7 @@ export const useGameEventsStore = defineStore("gameEvent", () => {
     if (index !== -1) {
       gameEvents.value.splice(index, 1);
     }
-    loadGameEvents(gameEvent.predictionGameId);
+    await loadGameEvents(gameEvent.predictionGameId);
   }
 
   const editPredictionGameEvent = async (gameEvent: GameEvent) => {
@@ -112,7 +112,7 @@ export const useGameEventsStore = defineStore("gameEvent", () => {
       method: "PUT",
       body: gameEvent
     })
-    loadGameEvents(gameEvent.predictionGameId)
+    await loadGameEvents(gameEvent.predictionGameId)
   }
 
   const loadSingleEvent = async (id: Number) => {
@@ -128,6 +128,7 @@ export const usePredictionsStore = defineStore("prediction", () => {
   const api = useApi();
   const predictions = ref<Prediction[]>([]);
   const userPrediction = ref<Prediction>();
+  const userPredictionsMap = ref<Record<number, Prediction | null>>({});
   
   const addPrediction = async (prediction: Prediction) => {
     const res: Response = await api.customFetch("Prediction", {
@@ -148,10 +149,14 @@ export const usePredictionsStore = defineStore("prediction", () => {
     return predictionsList
   };
 
-  const loadUserPrediction = async (eventid: Number) => {
-    console.log(eventid)
-    userPrediction.value = await api.customFetch<Prediction>(`Prediction/user/event/${eventid}`)
+  const loadUserPrediction = async (eventId: number) => {
+    console.log(eventId)
+    const prediction = await api.customFetch<Prediction>(`Prediction/user/event/${eventId}`)
+    userPrediction.value = prediction;
+    if (prediction) {
+      userPredictionsMap.value[eventId] = prediction;
+    }
   }
 
-  return {predictions, addPrediction, loadPredictions, getPredictions, userPrediction, loadUserPrediction}
+  return {predictions, addPrediction, loadPredictions, getPredictions, userPrediction, userPredictionsMap, loadUserPrediction}
 })

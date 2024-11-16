@@ -53,8 +53,8 @@
   import { useUserStore } from '@/stores/userStore';
   import { storeToRefs } from 'pinia';
 
-const predictionGameStore = usePredictionGameStore();
-const { predictionGames } = storeToRefs(predictionGameStore);
+  const predictionGameStore = usePredictionGameStore();
+  const { predictionGames } = storeToRefs(predictionGameStore);
   
   defineProps<{ title: string }>();
   const leaveGame = async (game: PredictionGame) => {
@@ -73,12 +73,12 @@ const { predictionGames } = storeToRefs(predictionGameStore);
   } catch (error) {
     console.error("Failed to leave the game:", error);
   }
-};
+  };
 
-const isParticipant = (game: PredictionGame) => {
+  const isParticipant = (game: PredictionGame) => {
   return game && game.participants && game.participants.some(participant => participant.id === userStore.user?.id) &&
   game.gameCreatorId !== userStore.user?.id;
-};
+  };
   const columns = [
     {
       key: "predictionGameTitle",
