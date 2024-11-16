@@ -9,16 +9,27 @@ namespace BackEnd.Mappers
     public static class PredictionGameMappers
     {
         public static PredictionGameDto ToPredictionGameDto(this PredictionGame predictionGameModel, int currentUserId) {
+            bool isUserGameCreator = predictionGameModel.GameCreatorId == currentUserId;
+    bool    isUserParticipant = predictionGameModel.Participants!.Any(p => p.UserId == currentUserId);
             return new PredictionGameDto {
+                
                 Id = predictionGameModel.Id,
                 PredictionGameTitle = predictionGameModel.PredictionGameTitle,
                 StartDate = predictionGameModel.StartDate,
                 EndDate = predictionGameModel.EndDate,
                 Privacy = predictionGameModel.Privacy,
                 Events = predictionGameModel.Events?.Select(e => e.ToEventDto()).ToList() ?? new List<EventDto>(),
-                UniqueCode = predictionGameModel.GameCreatorId == currentUserId ? predictionGameModel.UniqueCode : null,
+                UniqueCode = (isUserGameCreator || isUserParticipant) ? predictionGameModel.UniqueCode : null,
                 GameCreatorId = predictionGameModel.GameCreatorId,
                 GameCreator = predictionGameModel.GameCreator?.ToApplicationUserDto(),
+                Participants = predictionGameModel.Participants!
+                .Where(p => p.User != null)
+                .Select(p => new ApplicationUserDto {
+                Id = p.UserId,
+                UserName = p.User!.UserName ?? "Unknown User"
+                })
+                .ToList()
+
             };
         }
 

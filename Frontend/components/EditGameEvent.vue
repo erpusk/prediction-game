@@ -16,8 +16,8 @@
         <UInput v-model="state.teamB" class="border rounded-md p-2"/>
       </UFormGroup>
   
-      <UFormGroup label="Event date" name="eventDate" class="!text-black">
-        <UInput v-model="eventDateStr" type="date" class="border rounded-md p-2"/>
+      <UFormGroup label="Event date and time" name="eventDate" class="!text-black">
+        <UInput v-model="eventDateStr" type="datetime-local" class="border rounded-md p-2 w-full"/>
       </UFormGroup>
 
       <UFormGroup v-if="isPastDate" label="Team A Score" name="teamAScore" class="!text-black" step="1" min="0">
@@ -100,7 +100,7 @@
     state.id = gameEventData.id;
     state.teamA = gameEventData.teamA;
     state.teamB = gameEventData.teamB;
-    state.eventDate = new Date(gameEventData.eventDate);
+    state.eventDate = gameEventData.eventDate;
     state.predictionGameId = gameEventData.predictionGameId;
     state.teamAScore = gameEventData.teamAScore;
     state.teamBScore = gameEventData.teamBScore;
