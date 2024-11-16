@@ -76,10 +76,11 @@ namespace BackEnd.Controllers
                 foreach (var prediction in eventModel.Predictions)
                 {
                     var awardResult = await _gpRepo.AwardPoints(eventModel.PredictionGameId, prediction.PredictionMakerId);
-                    if (!awardResult) return BadRequest(result);
+                    if (!awardResult){
+                        throw new Exception("Problem occured with awarding points.");
+                    }
                 }
             }
-
             return result ? NoContent() : NotFound();
             
         }

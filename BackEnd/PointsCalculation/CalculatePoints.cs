@@ -7,19 +7,16 @@ using Microsoft.VisualBasic;
 
 namespace BackEnd.PointsCalculation
 {
-    public record PointsCalculator(Prediction userPrediction, Event completedEvent)
+    public class PointsCalculator
     {
-        private readonly Prediction _userPrediction = userPrediction;
-        private readonly Event _completedEvent = completedEvent;
-
-            internal int CalculatePoints() {
+            internal int CalculatePoints(Event completedEvent, Prediction userPrediction) {
     
             int claimedPoints = 0;
-            if (_completedEvent.TeamAScore == _userPrediction.EndScoreTeamA && _completedEvent.TeamBScore == _userPrediction.EndScoreTeamB) {
+            if (completedEvent.TeamAScore == userPrediction.EndScoreTeamA && completedEvent.TeamBScore == userPrediction.EndScoreTeamB) {
                 claimedPoints = 10;
             } 
-            else if ((_completedEvent.TeamAScore > _completedEvent.TeamBScore && _userPrediction.EndScoreTeamA > _userPrediction.EndScoreTeamB) ||
-            (_completedEvent.TeamAScore < _completedEvent.TeamBScore && _userPrediction.EndScoreTeamA < _userPrediction.EndScoreTeamB)) {
+            else if ((completedEvent.TeamAScore > completedEvent.TeamBScore && userPrediction.EndScoreTeamA > userPrediction.EndScoreTeamB) ||
+            (completedEvent.TeamAScore < completedEvent.TeamBScore && userPrediction.EndScoreTeamA < userPrediction.EndScoreTeamB)) {
                 claimedPoints = 5;
             }
             else {

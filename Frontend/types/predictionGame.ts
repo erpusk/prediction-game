@@ -8,6 +8,6 @@ export interface PredictionGame {
     privacy: string;
     uniqueCode: string;
     //Events: GameEvent[];
-    // participants?: GameParticipant[];  // Uncomment when implementing participants
+    participants?: GameParticipant[];  // Uncomment when implementing participants
   }
   
