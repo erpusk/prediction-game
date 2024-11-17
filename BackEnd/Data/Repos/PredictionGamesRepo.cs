@@ -123,10 +123,6 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
         {
             return await context.PredictionGames.AnyAsync(pg => pg.UniqueCode == uniqueCode);
         }
-
-        public async Task<List<Event>> GetCompletedEvents(int gameId) {
-            return await context.Events.Where(e => e.PredictionGameId == gameId && e.IsCompleted == true).ToListAsync();
-        }
         
         // Find participant by UserId and GameId
         public async Task<PredictionGameParticipant?> GetParticipantByUserIdAndGameId(int userId, int gameId)
