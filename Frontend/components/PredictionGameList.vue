@@ -58,27 +58,36 @@
   
   defineProps<{ title: string }>();
   const leaveGame = async (game: PredictionGame) => {
-  // Check if uniqueCode exists
   if (!game.uniqueCode) {
     console.error("UniqueCode is null or undefined.", game);
     return;
   }
-  
   try {
     await predictionGameStore.leavePredictionGame(game.uniqueCode);
     console.log("Left the game successfully");
-    predictionGameStore.predictionGames = predictionGameStore.predictionGames.filter(
-      (g) => g.id !== game.id
-    );
+    predictionGames.value = predictionGames.value.filter(g => g.id !== game.id);
   } catch (error) {
     console.error("Failed to leave the game:", error);
   }
-  };
+};
 
-  const isParticipant = (game: PredictionGame) => {
-  return game && game.participants && game.participants.some(participant => participant.id === userStore.user?.id) &&
-  game.gameCreatorId !== userStore.user?.id;
-  };
+
+const isParticipant = (game: PredictionGame) => {
+  const userId = userStore.user?.id;
+  if (!userId || !game || !game.participants) return false;
+
+  // Log participants array for debugging
+  console.log("Participants in game:", game.participants);
+
+  // Check if any participant matches the current user's ID
+  const found = game.participants.some(participant => participant.id === userId);
+  console.log(`User ID ${userId} is participant in game ${game.id}:`, found);
+  return found && game.gameCreatorId !== userId;
+};
+
+
+
+
   const columns = [
     {
       key: "predictionGameTitle",
@@ -115,9 +124,15 @@
   }));
 });
   
-  const isGameCreator = (game: PredictionGame) => {
-    return game.gameCreatorId === user.value?.id;
-  };
+const isGameCreator = (game: PredictionGame) => {
+    const userId = userStore.user?.id;
+    const isCreator = game.gameCreatorId === userId;
+    console.log(`User ID ${userId} is creator of game ${game.id}:`, isCreator);
+    return isCreator;
+};
+
+
+
 
   const goToCreateNewPredictionGame = () => {
     router.push('/add-predictionGame');
@@ -125,6 +140,9 @@
   
   onMounted(async () => {
   await predictionGameStore.loadPredictionGames();
+  predictionGames.value.forEach((game) => {
+    console.log("Full game object for game ID:", game.id, game);
+  });
   });
   
   const deletePredictionGame = (game: PredictionGame) => {
@@ -139,6 +157,7 @@
     const predictionGameId = game.id;
   router.push(`/predictiongame-details/${predictionGameId}`);
   };
+  
   </script>  
 
 <style scoped>
