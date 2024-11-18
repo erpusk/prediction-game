@@ -72,8 +72,6 @@ onMounted(async () => {
   predictionGame.participants.forEach(async element => {
     participantsUsernames.push(element.userName)
     if (element.userId === predictionGame.gameCreatorId){
-      console.log(element.userId)
-      console.log(predictionGame.gameCreatorId)
       game.value.gameCreator = element.userName
     }
   });

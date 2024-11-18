@@ -67,7 +67,6 @@ export const usePredictionGameStore = defineStore("predictionGame", () => {
 
   const loadPredictionGame = async (predictionGameId: number) => {
     const gameData = await api.customFetch<PredictionGame>(`PredictionGames/${predictionGameId}`);
-    console.log(gameData)
     return gameData;
   };
  
