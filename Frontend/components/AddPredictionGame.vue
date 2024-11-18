@@ -62,7 +62,8 @@ div :deep(label) {
       endDate: '', 
       gameCreatorId: userStore.user?.id || 0, 
       privacy: 'Private game',
-      uniqueCode: ''
+      uniqueCode: '',
+      participants:[]
     });
   
     const startDateStr = computed({
@@ -136,7 +137,8 @@ const endDateStr = computed({
             endDate: endDateStr.value ? new Date(endDateStr.value).toISOString() : undefined,
             gameCreatorId: state.gameCreatorId,
             privacy: state.privacy,
-            uniqueCode: state.uniqueCode
+            uniqueCode: state.uniqueCode,
+            participants: state.participants
         };
       addPredictionGame(payload);
       await navigateTo("/predictiongames");
