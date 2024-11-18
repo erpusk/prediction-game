@@ -19,9 +19,11 @@
           <p class="text-lg font-medium text-gray-700 text-center"><strong>Creation date:</strong> {{ game.creationDate }}</p>
         </div>
 
-        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm">
-          <p class="text-lg font-medium text-gray-700 text-center"><strong>Joined players:</strong> {{ game.participants }}</p>
-        </div>
+        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm md:col-span-2">
+        <p class="text-lg font-medium text-gray-700 text-center" style="white-space: pre-line;">
+          <strong>Joined players:</strong> {{ game.participants }}
+        </p>
+      </div>
       </div>
     </div>
   </template>
@@ -46,7 +48,7 @@ const game = ref({
   creationDate: '',
   privacy: '',
   title: '',
-  participants: [] as string[]
+  participants: ''
 });
 
 onMounted(async () => {
@@ -60,12 +62,10 @@ onMounted(async () => {
 
   const participantsUsernames = [] as string[];
   predictionGame.participants.forEach(async element => {
-    const userName = await (await userStore.getUser(element.id)).userName
-
-    participantsUsernames.push(userName)
+    participantsUsernames.push(element.userName)
   });
-
-  game.value.participants = participantsUsernames
+  
+  game.value.participants = "\n" + participantsUsernames.join('\n');
 });
 </script>
   
