@@ -18,6 +18,19 @@
         <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm">
           <p class="text-lg font-medium text-gray-700 text-center"><strong>Creation date:</strong> {{ game.creationDate }}</p>
         </div>
+
+        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm md:col-span-2">
+        <p class="text-lg font-medium text-gray-700 text-center" style="white-space: pre-line;">
+          <strong>Game creator:</strong> {{ game.gameCreator }}
+        </p>
+        </div>
+
+        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm md:col-span-2">
+        <p class="text-lg font-medium text-gray-700 text-center" style="white-space: pre-line;">
+          <strong>Joined players:</strong> {{ game.participants }}
+        </p>
+        </div>
+
       </div>
     </div>
   </template>
@@ -32,6 +45,8 @@ const props = defineProps<{
   }>();
 const route = useRoute();
 const predictionGameStore = usePredictionGameStore();
+const userStore = useUserStore();
+
 
 const game = ref({
   id: parseInt(props.id.toString(), 10),
@@ -39,7 +54,9 @@ const game = ref({
   endDate: '',
   creationDate: '',
   privacy: '',
-  title: ''
+  title: '',
+  participants: '',
+  gameCreator: ''
 });
 
 onMounted(async () => {
@@ -50,6 +67,18 @@ onMounted(async () => {
   game.value.creationDate = predictionGame.creationDate ? new Date(predictionGame.creationDate).toLocaleDateString() : '';
   game.value.privacy = predictionGame.privacy;
   game.value.title = predictionGame.predictionGameTitle
+
+  const participantsUsernames = [] as string[];
+  predictionGame.participants.forEach(async element => {
+    participantsUsernames.push(element.userName)
+    if (element.userId === predictionGame.gameCreatorId){
+      game.value.gameCreator = element.userName
+    }
+  });
+  
+  game.value.participants = "\n" + participantsUsernames.join('\n');
+
+  
 });
 </script>
   

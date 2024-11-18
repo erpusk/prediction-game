@@ -17,5 +17,6 @@ namespace BackEnd.DTOs.PredictionGame
         public string? UniqueCode { get; set; }
         public List<ApplicationUserDto>? Participants { get; set; } = new List<ApplicationUserDto>();
 
+        public DateTime CreationDate { get; set; } = DateTime.Now.ToUniversalTime();
     }
 }
