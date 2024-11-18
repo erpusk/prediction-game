@@ -21,9 +21,16 @@
 
         <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm md:col-span-2">
         <p class="text-lg font-medium text-gray-700 text-center" style="white-space: pre-line;">
+          <strong>Game creator:</strong> {{ game.gameCreator }}
+        </p>
+        </div>
+
+        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm md:col-span-2">
+        <p class="text-lg font-medium text-gray-700 text-center" style="white-space: pre-line;">
           <strong>Joined players:</strong> {{ game.participants }}
         </p>
-      </div>
+        </div>
+
       </div>
     </div>
   </template>
@@ -48,7 +55,8 @@ const game = ref({
   creationDate: '',
   privacy: '',
   title: '',
-  participants: ''
+  participants: '',
+  gameCreator: ''
 });
 
 onMounted(async () => {
@@ -63,9 +71,16 @@ onMounted(async () => {
   const participantsUsernames = [] as string[];
   predictionGame.participants.forEach(async element => {
     participantsUsernames.push(element.userName)
+    if (element.userId === predictionGame.gameCreatorId){
+      console.log(element.userId)
+      console.log(predictionGame.gameCreatorId)
+      game.value.gameCreator = element.userName
+    }
   });
   
   game.value.participants = "\n" + participantsUsernames.join('\n');
+
+  
 });
 </script>
   

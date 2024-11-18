@@ -11,6 +11,7 @@ namespace BackEnd.DTOs.ApplicationUser
     {
         public int Id { get; set; }
         public string? UserName { get; set; }
+        public int? UserId { get; set;}
 
         [Required(ErrorMessage = "Please select your date of birth")]
         public DateTime DateOfBirth { get; set; } = DateTime.Now.ToUniversalTime();

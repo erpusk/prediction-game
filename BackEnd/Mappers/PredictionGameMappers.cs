@@ -27,7 +27,8 @@ namespace BackEnd.Mappers
                 .Select(p => new ApplicationUserDto
                 {
                     Id = p.UserId,
-                    UserName = p.User?.UserName ?? "Unknown User"
+                    UserName = p.User?.UserName ?? "Unknown User",
+                    UserId = p.UserId
                 }).ToList(),
 
             };
