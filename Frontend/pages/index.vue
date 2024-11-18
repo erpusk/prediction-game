@@ -16,14 +16,14 @@
     </div>
 
     <!-- User's Content Section -->
-    <div v-else class="content-sections grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div v-else class="content-sections grid grid-cols-1 md:grid-cols-2 gap-8 flex-grow">
       <!-- Prediction History -->
       <div class="section-box bg-white p-6 rounded shadow">
         <h2 class="section-title">Your Prediction History</h2>
         <div v-if="formattedPredictionGamesHistory.length === 0" class="mt-6">
           <p class="empty-text text-center text-gray-500">No past predictions yet.</p>
         </div>
-        <div v-else class="mt-8">
+        <div v-else class="mt-1">
           <UTable :rows="formattedPredictionGamesHistory" :columns="columns">
             <template #teamNames-data="{ row }">
               <div v-html="row.teamNames"></div>
@@ -42,8 +42,8 @@
         <div v-if="upcomingPredictions.length === 0" class="mt-6">
           <p class="empty-text text-center text-gray-500">No upcoming predictions at the moment.</p>
         </div>
-        <div v-else class="mt-8">
-          <UTable :rows="formattedUpcomingPredictions" :columns="upcomingColumns">
+        <div v-else class="mt-1">
+          <UTable :rows="paginatedUpcomingPredictions" :columns="upcomingColumns">
             <template #teamNames-data="{ row }">
               <div v-html="row.teamNames"></div>
             </template>
@@ -53,6 +53,9 @@
               </button>
             </template>
           </UTable>
+          <div class="flex justify-end px-3 py-3.5 border-t border-gray-200 dark:border-gray-700">
+            <UPagination v-model="upcomingPage" :page-count="upcomingPageSize" :total="formattedUpcomingPredictions.length" />
+          </div>
         </div>
       </div>
 
@@ -109,6 +112,13 @@ const predictionHistory = computed(() => predictionsStore.userPredictionHistory 
 const upcomingPredictions = computed(() => gameEventStore.userUpcomingPredictions || []);
 //const leaderboards = computed(() => userStore.user?.leaderboards || []);
 
+const upcomingPage = ref(1);
+const upcomingPageSize = 4;
+const paginatedUpcomingPredictions = computed(() => {
+  const start = (upcomingPage.value - 1) * upcomingPageSize;
+  return formattedUpcomingPredictions.value.slice(start, start + upcomingPageSize);
+});
+
 type PredictionWithScoreTeamnamesEventdate = {
   id: number;
   endScoreTeamA: number;
@@ -122,11 +132,17 @@ type PredictionWithScoreTeamnamesEventdate = {
 const predictionHistoryWithScores = ref<PredictionWithScoreTeamnamesEventdate[]>([]);
 
 const formattedPredictionGamesHistory = computed(() => {
-  return predictionHistoryWithScores.value.map((prediction) => {
+  const latestFivePredictions = predictionHistoryWithScores.value
+    .slice(-5)
+    .reverse();
+
+  return latestFivePredictions.map((prediction) => {
     return {
-      teamNames: prediction.teamNames ? `${prediction.teamNames[0]} <br> ${prediction.teamNames[1]}` : "Error loading teams",
+      teamNames: prediction.teamNames
+        ? `${prediction.teamNames[0]} <br> ${prediction.teamNames[1]}`
+        : "Error loading teams",
       yourPrediction: `${prediction.endScoreTeamA} - ${prediction.endScoreTeamB}`,
-      score: prediction.score,
+      score: prediction.score || "Not available",
     };
   });
 });
@@ -239,8 +255,11 @@ function closePredictionModal() {
 
 <style scoped>
 .main-page {
-  max-width: 1200px;
+  max-width: 1300px;
   margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .title-text {
@@ -340,5 +359,22 @@ function closePredictionModal() {
 
 .empty-state {
   color: #5a6677;
+}
+
+.content-sections {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  flex-grow: 1;
+  /* overflow: auto; */
+}
+
+.footer {
+  margin-top: auto;
+  padding: 10px;
+  background-color: #333;
+  color: white;
+  text-align: center;
 }
 </style>

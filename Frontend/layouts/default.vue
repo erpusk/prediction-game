@@ -33,7 +33,7 @@
       </main>
     </div>
 
-    <footer id="footer">
+    <footer class="footer">
       <div class="footer-content p-4 text-white text-center">
         &copy; 2024 PredictionGames. All rights reserved.
       </div>
@@ -50,10 +50,6 @@ const userName = computed(() => userStore.user?.userName);
 const router = useRouter();
 const route = useRoute();
 
-const goToMainPage = () => {
-  router.push('/');
-};
-
 const goBack = () => {
   router.go(-1); 
 };
@@ -63,23 +59,25 @@ const goBack = () => {
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 #page-container {
-  position: relative;
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
 }
 
 #content-wrap {
-  padding-bottom: 2.5rem;
+  flex-grow: 1;
+  padding-bottom: 3rem;
 }
 
-#footer {
-  position: absolute;
-  bottom: 0;
+.footer {
+  position: relative;
   width: 100%;
   height: 3rem;
   background-color: #1F1F1F;
   color: white;
   text-align: center;
   z-index: 1;
+  margin-top: auto;
 }
 
 footer .footer-content {
