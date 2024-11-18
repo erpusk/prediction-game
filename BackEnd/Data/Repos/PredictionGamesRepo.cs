@@ -133,6 +133,10 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
         // Remove a participant from the game
         public async Task RemoveParticipant(PredictionGameParticipant participant)
         {
+            var userPredictions = await context.Predictions.Where(p => p.PredictionMakerId == participant.UserId).ToListAsync();
+            context.Predictions.RemoveRange(userPredictions);
+            await context.SaveChangesAsync();
+            
             context.PredictionGameParticipants.Remove(participant);
             await context.SaveChangesAsync();
         }

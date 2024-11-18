@@ -58,27 +58,27 @@
   
   defineProps<{ title: string }>();
   const leaveGame = async (game: PredictionGame) => {
-  // Check if uniqueCode exists
   if (!game.uniqueCode) {
-    console.error("UniqueCode is null or undefined.", game);
     return;
   }
-  
   try {
     await predictionGameStore.leavePredictionGame(game.uniqueCode);
-    console.log("Left the game successfully");
-    predictionGameStore.predictionGames = predictionGameStore.predictionGames.filter(
-      (g) => g.id !== game.id
-    );
+    predictionGames.value = predictionGames.value.filter(g => g.id !== game.id);
   } catch (error) {
-    console.error("Failed to leave the game:", error);
   }
-  };
+};
 
-  const isParticipant = (game: PredictionGame) => {
-  return game && game.participants && game.participants.some(participant => participant.id === userStore.user?.id) &&
-  game.gameCreatorId !== userStore.user?.id;
-  };
+
+const isParticipant = (game: PredictionGame) => {
+  const userId = userStore.user?.id;
+  if (!userId || !game || !game.participants) return false;
+  const found = game.participants.some(participant => participant.id === userId);
+  return found && game.gameCreatorId !== userId;
+};
+
+
+
+
   const columns = [
     {
       key: "predictionGameTitle",
@@ -115,9 +115,14 @@
   }));
 });
   
-  const isGameCreator = (game: PredictionGame) => {
-    return game.gameCreatorId === user.value?.id;
-  };
+const isGameCreator = (game: PredictionGame) => {
+    const userId = userStore.user?.id;
+    const isCreator = game.gameCreatorId === userId;
+    return isCreator;
+};
+
+
+
 
   const goToCreateNewPredictionGame = () => {
     router.push('/add-predictionGame');
@@ -139,6 +144,7 @@
     const predictionGameId = game.id;
   router.push(`/predictiongame-details/${predictionGameId}`);
   };
+  
   </script>  
 
 <style scoped>

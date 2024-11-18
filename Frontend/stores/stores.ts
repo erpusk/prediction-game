@@ -11,30 +11,40 @@ export const usePredictionGameStore = defineStore("predictionGame", () => {
 
   const leavePredictionGame = async (uniqueCode: string | null) => {
     if (!uniqueCode) {
-        console.error("UniqueCode is null or undefined.");
-        return;
+      console.error("UniqueCode is null or undefined.");
+      return;
     }
     try {
-        await api.customFetch(`PredictionGames/${uniqueCode}/leave`, {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${userStore.token}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ UserId: userStore.user!.id }),
-        });
+      await api.customFetch(`PredictionGames/${uniqueCode}/leave`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${userStore.token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ UserId: userStore.user!.id }),
+      });
+      
+      // After leaving, reload the prediction games list to reflect changes
+      await loadPredictionGames();
     } catch (error) {
-        console.error("Error leaving the game:", error);
+      console.error("Error leaving the game:", error);
     }
-};
+  };
 
 
 
   
 
   const loadPredictionGames = async () => {
-    predictionGames.value = await api.customFetch<PredictionGame[]>("PredictionGames");
-  };
+    try {
+        const response = await api.customFetch<PredictionGame[]>("PredictionGames");
+        console.log("Loaded Prediction Games:", response);
+        predictionGames.value = response;
+    } catch (error) {
+        console.error("Error loading prediction games:", error);
+    }
+};
+
 
   const addPredictionGame = async (game: PredictionGame) => {
     const res = await api.customFetch("PredictionGames", {
@@ -48,13 +58,12 @@ export const usePredictionGameStore = defineStore("predictionGame", () => {
     await api.customFetch(`PredictionGames/${game.id}`, {
       method: "DELETE",
     });
-
-    const index = predictionGames.value.findIndex(g => g.id === game.id);
-    if (index !== -1) {
-      predictionGames.value.splice(index, 1);
-    }
+  
     await loadPredictionGames();
   };
+  
+  
+
 
   const loadPredictionGame = async (predictionGameId: string | number) => {
     const gameData = await api.customFetch<PredictionGame>(`PredictionGames/${predictionGameId}`);
