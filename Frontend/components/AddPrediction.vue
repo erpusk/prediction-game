@@ -1,5 +1,10 @@
 <template>
-  <div class="min-h-screen flex justify-center items-center bg-white">
+  <div class="flex justify-center items-center">
+    <button 
+      @click="$emit('close')" 
+      class="absolute top-2 right-2 text-black hover:text-red-600 transition duration-300">
+      &times;
+    </button>
     <UForm
       :validate="validate"
       :state="state"

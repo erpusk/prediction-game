@@ -18,31 +18,6 @@
     <!-- User's Content Section -->
     <div v-else class="content-sections grid grid-cols-1 md:grid-cols-2 gap-8">
       <!-- Prediction History -->
-      <!-- <div class="section-box bg-white p-6 rounded shadow">
-        <h2 class="section-title">Your Prediction History</h2>
-        <UTable v-if="predictionHistoryWithScores.length" class="prediction-table mt-4">
-          <thead>
-            <tr>
-              <th>Teams</th>
-              <th>Your Prediction</th>
-              <th>Actual Score</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(prediction, index) in predictionHistoryWithScores" :key="index">
-              <td>
-                <div>
-                  Team A: {{ prediction.teamNames[0] }}<br />
-                  Team B: {{ prediction.teamNames[1] }}
-                </div>
-              </td>
-              <td>{{ prediction.endScoreTeamA }} - {{ prediction.endScoreTeamB }}</td>
-              <td>{{ prediction.score }} </td>
-            </tr>
-          </tbody>
-        </UTable>
-        <p v-else class="empty-text">No past predictions yet.</p>
-      </div> -->
       <div class="section-box bg-white p-6 rounded shadow">
         <h2 class="section-title">Your Prediction History</h2>
         <div v-if="formattedPredictionGamesHistory.length === 0" class="mt-6">
@@ -61,15 +36,33 @@
         </div>
       </div>
 
-      <!-- To-Do Predictions -->
+      <!-- Upcoming Predictions -->
       <div class="section-box bg-white p-6 rounded shadow">
         <h2 class="section-title">Upcoming Predictions</h2>
-        <ul v-if="upcomingPredictions.length" class="todo-list mt-4">
-          <li v-for="(prediction, index) in upcomingPredictions" :key="index" class="todo-item">
-            <span>{{ prediction.eventId }}</span> - <button class="btn-link" @click="ToJoinGame">Make Prediction</button>
-          </li>
-        </ul>
-        <p v-else class="empty-text">No upcoming predictions at the moment.</p>
+        <div v-if="upcomingPredictions.length === 0" class="mt-6">
+          <p class="empty-text text-center text-gray-500">No upcoming predictions at the moment.</p>
+        </div>
+        <div v-else class="mt-8">
+          <UTable :rows="formattedUpcomingPredictions" :columns="upcomingColumns">
+            <template #teamNames-data="{ row }">
+              <div v-html="row.teamNames"></div>
+            </template>
+            <template #actions-data="{ row }">
+              <button @click="openPredictionModal(row)" class="btn-primary-small">
+                Make a prediction
+              </button>
+            </template>
+          </UTable>
+        </div>
+      </div>
+
+      <div v-if="showPredictionModal" class="modal-overlay" @click="closePredictionModal">
+        <div class="modal-content" @click.stop>
+          <AddPrediction
+            :gameEventId="selectedGameEventId"
+            :predictionGameId="selectedPredictionGameId"
+            @close="closePredictionModal" />
+        </div>
       </div>
 
       <!-- Leaderboards -->
@@ -96,6 +89,9 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 import { useUserStore, type GameEvent } from '#imports';
+import { format } from 'date-fns';
+import { errorMessages } from 'vue/compiler-sfc';
+import { onBeforeRouteLeave } from 'vue-router';
 
 const userStore = useUserStore();
 const predictionGameStore = usePredictionGameStore();
@@ -103,39 +99,60 @@ const gameEventStore = useGameEventsStore();
 const predictionsStore = usePredictionsStore();
 const router = useRouter();
 
+const showPredictionModal = ref(false);
+const selectedGameEventId = ref(0);
+const selectedPredictionGameId = ref(0);
+
 const userName = computed(() => userStore.user?.userName || 'User');
 const hasPredictionGames = computed(() => predictionGameStore.predictionGames.length > 0);
 const predictionHistory = computed(() => predictionsStore.userPredictionHistory || []);
-//const predictionHistoryWithScores = ref([]);
-const upcomingPredictions = computed(() => predictionsStore.userUpcomingPredictions || []);
+const upcomingPredictions = computed(() => gameEventStore.userUpcomingPredictions || []);
 //const leaderboards = computed(() => userStore.user?.leaderboards || []);
 
-type PredictionWithScore = {
+type PredictionWithScoreTeamnamesEventdate = {
   id: number;
   endScoreTeamA: number;
   endScoreTeamB: number;
   predictionMakerId: number;
   eventId: number;
-  score: string;
-  teamNames : [string, string];
+  score?: string;
+  teamNames? : [string, string];
 };
 
-const predictionHistoryWithScores = ref<PredictionWithScore[]>([]);
+const predictionHistoryWithScores = ref<PredictionWithScoreTeamnamesEventdate[]>([]);
 
 const formattedPredictionGamesHistory = computed(() => {
   return predictionHistoryWithScores.value.map((prediction) => {
     return {
-      teamNames: `${prediction.teamNames[0]} <br> ${prediction.teamNames[1]}`,
+      teamNames: prediction.teamNames ? `${prediction.teamNames[0]} <br> ${prediction.teamNames[1]}` : "Error loading teams",
       yourPrediction: `${prediction.endScoreTeamA} - ${prediction.endScoreTeamB}`,
       score: prediction.score,
     };
   });
 });
 
+const formattedUpcomingPredictions = computed(() => {
+  return upcomingPredictions.value.map((event : GameEvent) => {
+    return {
+      ...event,
+      eventDate: event.eventDate? format(new Date(event.eventDate), 'dd.MM.yyyy HH:mm') : '',
+      teamNames: `${event.teamA} <br> ${event.teamB}`
+    }
+  })
+})
+
+const loadAllUserUpcomingPredictions = async () => {
+  const predictionGameIds = predictionGameStore.predictionGames.map(game => game.id);
+
+  for (const gameId of predictionGameIds) {
+    await gameEventStore.loadUserUpcomingPredictions(gameId)
+  }
+};
+
 onMounted(async () => {
   await predictionGameStore.loadPredictionGames();
   await predictionsStore.loadUserPredictionHistory();
-  predictionsStore.loadUserUpcomingPredictions();
+  await loadAllUserUpcomingPredictions();
 
   predictionHistoryWithScores.value = await Promise.all(
     predictionHistory.value.map(async (prediction) => {
@@ -144,7 +161,10 @@ onMounted(async () => {
       return { ...prediction, score, teamNames };
     })
   );
-  console.log(predictionHistoryWithScores.value);
+});
+
+onBeforeRouteLeave(() => {
+  gameEventStore.userUpcomingPredictions = [];
 });
 
 const getScore = async (eventId: number): Promise<string> => {
@@ -156,7 +176,6 @@ const getScore = async (eventId: number): Promise<string> => {
     }
     return "final score not inserted";
   } catch (error) {
-    console.error("Error fetching event:", error);
     return "Error loading score";
   }
 };
@@ -174,6 +193,18 @@ const getTeamNames = async (eventId: number): Promise<[string, string]> => {
   }
 }
 
+// const getEventDate = async (eventId: number): Promise<Date | string> => {
+//   try {
+//     const event = await gameEventStore.loadSingleEvent(eventId) as GameEvent;
+//     if (event && event.eventDate) {
+//       return event.eventDate;
+//     }
+//     return "Event date not found";
+//   } catch (error) {
+//     return "Error loading event date";
+//   }
+// }
+
 const columns = [
   { key: "teamNames", label: "Teams" },
   { key: "yourPrediction", label: "Your Prediction" },
@@ -182,12 +213,28 @@ const columns = [
   { key: "actions", label: "" }
 ];
 
+const upcomingColumns = [
+  { key: "eventDate", label: 'Event Date' },
+  { key: "teamNames", label: "Teams" },
+  { key: "actions", label: '' },
+];
+
 const ToCreateGame = () => {
   router.push('/add-predictiongame');
 };
 const ToJoinGame = () => {
   router.push('/join-game');
 };
+
+function openPredictionModal(row : GameEvent) {
+  selectedGameEventId.value = row.id;
+  selectedPredictionGameId.value = row.predictionGameId;
+  showPredictionModal.value = true;
+}
+
+function closePredictionModal() {
+  showPredictionModal.value = false;
+}
 </script>
 
 <style scoped>
@@ -241,6 +288,54 @@ const ToJoinGame = () => {
   border: none;
   cursor: pointer;
   text-decoration: underline;
+}
+
+.btn-primary-small {
+  padding: 5px 15px;
+  font-size: 14px;
+  font-weight: normal;
+  color: #fff;
+  background-color: #5bb17c;
+  border-radius: 80px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary-small:hover {
+  background-color: #4d6bac;
+  transform: scale(1.05);
+}
+
+.btn-primary-small:active {
+  background-color: #3f6b96;
+  transform: scale(1);
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 4px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 80%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  position: relative;
+  z-index: 100;
 }
 
 .empty-state {

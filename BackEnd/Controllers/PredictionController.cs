@@ -94,17 +94,5 @@ namespace BackEnd.Controllers
             var resultAsDto = result.Select(x => x.ToPredictionDto()).ToList();
             return Ok(resultAsDto);
         }
-
-        [HttpGet("upcoming")]
-        public async Task<IActionResult> GetUserUpcomingPredictions()
-        {
-            var userIdClaim = User.FindFirst("userId")?.Value;
-            if (userIdClaim == null || !int.TryParse(userIdClaim, out int userId)) {
-                return Unauthorized("User ID claim not found.");
-            }
-            var result = await _repo.GetUserUpcomingPredictions(userId);
-            var resultAsDto = result.Select(x => x.ToPredictionDto()).ToList();
-            return Ok(resultAsDto);
-        }
     }
 }

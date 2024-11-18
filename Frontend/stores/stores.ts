@@ -81,6 +81,7 @@ export const usePredictionGameStore = defineStore("predictionGame", () => {
 export const useGameEventsStore = defineStore("gameEvent", () => {
   const api = useApi();
   const gameEvents = ref<GameEvent[]>([]);
+  const userUpcomingPredictions = ref<GameEvent[]>([]);
   
   const loadGameEvents = async (predictionGameId: number) => {
     const url = `PredictionGames/${predictionGameId}/Event`;
@@ -121,7 +122,23 @@ export const useGameEventsStore = defineStore("gameEvent", () => {
     return event;
   }
 
-  return { gameEvents, loadGameEvents, addGameEvent, deletePredictionGameEvent, editPredictionGameEvent, loadSingleEvent };
+  const loadUserUpcomingPredictions = async (predictionGameId: number) => {
+    const response : GameEvent[] = await api.customFetch<GameEvent[]>(`PredictionGames/${predictionGameId}/Event/upcoming`);
+    for (const event of response) {
+        userUpcomingPredictions.value.push(event);
+    }
+  };
+
+  return { 
+    gameEvents, 
+    loadGameEvents, 
+    addGameEvent, 
+    deletePredictionGameEvent, 
+    editPredictionGameEvent, 
+    loadSingleEvent, 
+    loadUserUpcomingPredictions,
+    userUpcomingPredictions  
+  };
 })
 
 export const usePredictionsStore = defineStore("prediction", () => {
@@ -129,7 +146,6 @@ export const usePredictionsStore = defineStore("prediction", () => {
   const predictions = ref<Prediction[]>([]);
   const userPrediction = ref<Prediction>();
   const userPredictionHistory = ref<Prediction[]>([]);
-  const userUpcomingPredictions = ref<Prediction[]>([]);
   const userPredictionsMap = ref<Record<number, Prediction | null>>({});
   
   const addPrediction = async (prediction: Prediction) => {
@@ -164,10 +180,6 @@ export const usePredictionsStore = defineStore("prediction", () => {
     userPredictionHistory.value = await api.customFetch<Prediction[]>(`Prediction/history`);
   };
 
-  const loadUserUpcomingPredictions = async () => {
-    userUpcomingPredictions.value = await api.customFetch<Prediction[]>(`Prediction/upcoming`);
-  };
-
   return {
     predictions, 
     addPrediction, 
@@ -177,8 +189,6 @@ export const usePredictionsStore = defineStore("prediction", () => {
     userPredictionsMap, 
     loadUserPrediction, 
     loadUserPredictionHistory,
-    userPredictionHistory,
-    loadUserUpcomingPredictions,
-    userUpcomingPredictions 
+    userPredictionHistory
   }
 })

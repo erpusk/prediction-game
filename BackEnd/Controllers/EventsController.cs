@@ -80,5 +80,17 @@ namespace BackEnd.Controllers
             var result = await _repo.DeleteEvent(id);
             return result ? NoContent() : NotFound();
         }
+
+        [HttpGet("upcoming")]
+        public async Task<IActionResult> GetUserUpcomingPredictions(int predictionGameId)
+        {
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            if (userIdClaim == null || !int.TryParse(userIdClaim, out int userId)) {
+                return Unauthorized("User ID claim not found.");
+            }
+            var result = await _repo.GetUserUpcomingPredictions(userId, predictionGameId);
+            var resultAsDto = result.Select(e => e.ToEventDto()).ToList();
+            return Ok(resultAsDto);
+        }
     }
 }

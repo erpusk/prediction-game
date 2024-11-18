@@ -48,5 +48,21 @@ namespace BackEnd.Data.Repos
             int changesCount = await _context.SaveChangesAsync();
             return changesCount == 1;
         }
+
+        public async Task<List<Event>> GetUserUpcomingPredictions(int userId, int predictionGameId) {
+            var isUserParticipant = await _context.PredictionGameParticipants
+                .AnyAsync(x => x.UserId == userId && x.GameId == predictionGameId);
+
+            if (!isUserParticipant) {
+                return new List<Event>();
+            }
+
+            var upcomingUserEvents = await _context.Events
+                .Where(e => e.PredictionGameId == predictionGameId && e.EventDate > DateTime.UtcNow && 
+                    !e.Predictions.Any(p => p.PredictionMakerId == userId))
+                .ToListAsync();
+
+            return upcomingUserEvents;
+        }
     }
 }
