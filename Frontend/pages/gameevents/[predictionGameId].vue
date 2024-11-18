@@ -1,5 +1,5 @@
 <template>
-    <GameEventsList :title="'Events that are in a prediction game'" :prediction-game-id="predictionGameId" />
+    <GameEventsList :title="'Events in the Prediction Game'" :prediction-game-id="predictionGameId" />
   </template>
   
   <script setup lang="ts">
@@ -7,5 +7,5 @@
   import { useRoute } from 'vue-router';
   
   const route = useRoute();
-  const predictionGameId = parseInt(route.params.predictionGameId.toString()); 
+  const predictionGameId = parseInt(route.params.predictionGameId.toString());
   </script>

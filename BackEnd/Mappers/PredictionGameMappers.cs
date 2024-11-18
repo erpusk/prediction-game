@@ -24,12 +24,11 @@ namespace BackEnd.Mappers
                 GameCreator = predictionGameModel.GameCreator?.ToApplicationUserDto(),
                 creationDate = predictionGameModel.CreationDate,
                 Participants = predictionGameModel.Participants!
-                .Where(p => p.User != null)
-                .Select(p => new ApplicationUserDto {
-                Id = p.UserId,
-                UserName = p.User!.UserName ?? "Unknown User"
-                })
-                .ToList()
+                .Select(p => new ApplicationUserDto
+                {
+                    Id = p.UserId,
+                    UserName = p.User?.UserName ?? "Unknown User"
+                }).ToList(),
 
             };
         }
