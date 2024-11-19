@@ -9,7 +9,7 @@
   
       
       <div v-if="predictionGames.length === 0" class="mt-6">
-        <h2 class="text-lg text-center text-gray-500">Prediction games are missing</h2>
+        <h2 class="text-lg text-center text-gray-500 ">Prediction games are missing</h2>
       </div>
   
       <div v-else class="mt-8">
