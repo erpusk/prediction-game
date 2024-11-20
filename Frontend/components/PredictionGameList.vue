@@ -1,13 +1,19 @@
 <template>
     <div class="min-h-screen bg-white dark:bg-gray-900 flex justify-center items-start">
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-6xl w-full relative">
+        
       <button 
-        @click="goToCreateNewPredictionGame" 
+        @click="showModal = true" 
         class="absolute top-6 right-5 btn-primary-large">
         Create a new Prediction Game
-      </button>
-  
-      
+        </button>
+
+      <div 
+        v-if="showModal" 
+        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+        <AddPredictionGame @close="closeModal" />
+      </div>
+
       <div v-if="predictionGames.length === 0" class="mt-6">
         <h2 class="text-lg text-center text-gray-500 ">Prediction games are missing</h2>
       </div>
@@ -55,6 +61,12 @@
 
   const predictionGameStore = usePredictionGameStore();
   const { predictionGames } = storeToRefs(predictionGameStore);
+
+  const showModal = ref(false);
+
+  const closeModal = () => {
+  showModal.value = false; 
+};
   
   defineProps<{ title: string }>();
   const leaveGame = async (game: PredictionGame) => {
@@ -120,13 +132,6 @@ const isGameCreator = (game: PredictionGame) => {
     const isCreator = game.gameCreatorId === userId;
     return isCreator;
 };
-
-
-
-
-  const goToCreateNewPredictionGame = () => {
-    router.push('/add-predictionGame');
-  };
   
   onMounted(async () => {
   await predictionGameStore.loadPredictionGames();

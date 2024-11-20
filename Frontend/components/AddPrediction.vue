@@ -1,5 +1,13 @@
 <template>
-  <div class="min-h-screen flex justify-center items-center bg-white dark:bg-gray-900 ">
+  <div class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+    <div class="relative">
+      
+       <button 
+        @click="$emit('close')" 
+        class="absolute top-2 right-2 text-black hover:text-red-600 transition duration-300">
+        &times;
+    </button>
+
     <UForm
       :validate="validate"
       :state="state"
@@ -16,16 +24,14 @@
         <UInput v-model="state.endScoreTeamB" class="border rounded-md p-2"/>
       </UFormGroup>
       
-      <div class="flex justify-center space-x-4 mt-6">
-        <UButton type="button" @click="navigateToGameEvent" class="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-md transition duration-300">
-            Back to List
-        </UButton>
-        <UButton type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition duration-300">
-          Add
-        </UButton>
+      <div class="flex justify-between mt-6">
+          <UButton type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition duration-300">
+            Add
+          </UButton>
       </div>
       
     </UForm>
+    </div>
   </div>
   </template>
    <style scoped>
@@ -42,9 +48,11 @@
   <script setup lang="ts">
     import type { FormError, FormErrorEvent, FormSubmitEvent } from "#ui/types";
     import type { Prediction } from "~/types/prediction";
+import PredictionsList from "./PredictionsList.vue";
 
     const { addPrediction } = usePredictionsStore();
     const gameEventStore = useGameEventsStore();
+    const emit = defineEmits(['close']);
 
     const props = defineProps<{
       gameEventId: number;
@@ -85,8 +93,9 @@
       alert("Event has already ended. Cannot add prediction"); 
       console.log(res)
     }
-    await navigateTo(`/gameevents/${props.predictionGameId}`);
-    }
+
+    emit('close');
+  }
   
     async function onError(prediction: FormErrorEvent) {
       const element = document.getElementById(prediction.errors[0].id);

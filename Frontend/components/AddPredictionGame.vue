@@ -1,9 +1,16 @@
 <template>
-  <div class="min-h-screen bg-white dark:bg-gray-900  flex justify-center items-center">
+  <div class="min-h-screen flex justify-center items-center bg-opacity-50 relative">
+    
+    <button 
+        @click="$emit('close')" 
+        class="absolute top-2 right-2 text-black hover:text-red-600 transition duration-300">
+        &times;
+    </button>
+
     <UForm
       :validate="validate"
       :state="state"
-      class="space-y-7 p-20 bg-white dark:bg-gray-800  rounded-lg shadow-lg max-w-lg w-full text-black"
+      class="space-y-7 px-20 py-10 bg-white dark:bg-gray-800  rounded-lg shadow-lg max-w-lg w-full text-black"
       @submit="onSubmit"
       @error="onError"
     >
@@ -26,14 +33,10 @@
         <USelect v-model="state.privacy" :options="['Private game', 'Public game']" class="border rounded-md p-2"  />
       </UFormGroup>
   
-      <div class="flex justify-center space-x-4 mt-6">
-        <UButton type="button" @click="navigateToListOfPredictionGames" class="bg-gray-300 
-        hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-md transition duration-300 dark:hover:bg-gray-500 dark:bg-gray-400  ">
-            To Games List
-        </UButton>
-        <UButton type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition duration-300 dark:hover:bg-blue-600 dark:bg-blue-500">
-            Create a Game
-        </UButton>
+      <div class="flex justify-between mt-6">
+          <UButton type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition duration-300">
+            Add
+          </UButton>
       </div>
     </UForm>
   </div>
@@ -55,7 +58,7 @@ div :deep(label) {
     import type { FormError, FormErrorEvent, FormSubmitEvent } from "#ui/types";
     import { useRouter } from 'vue-router';
 
-  
+    const emit = defineEmits(['close']);
     const { addPredictionGame } = usePredictionGameStore();
     const userStore = useUserStore();
   
@@ -146,14 +149,8 @@ const endDateStr = computed({
             participants: state.participants
         };
       addPredictionGame(payload);
-      await navigateTo("/predictiongames");
+      emit('close');
     }
-
-    const router = useRouter();
-
-    const navigateToListOfPredictionGames = () => {
-    router.push('/predictiongames');
-    };
   
     async function onError(event: FormErrorEvent) {
       const element = document.getElementById(event.errors[0].id);

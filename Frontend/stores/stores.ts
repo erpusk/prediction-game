@@ -161,7 +161,6 @@ export const usePredictionsStore = defineStore("prediction", () => {
   };
 
   const loadUserPrediction = async (eventId: number) => {
-    console.log(eventId)
     const prediction = await api.customFetch<Prediction>(`Prediction/user/event/${eventId}`)
     userPrediction.value = prediction;
     if (prediction) {
