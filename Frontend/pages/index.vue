@@ -102,57 +102,6 @@
         </div>
       </div>  
 
-      <!-- Prediction History -->
-      <!-- <div class="section-box bg-white p-6 rounded shadow">
-        <h2 class="section-title">Your Prediction History</h2>
-        <div v-if="formattedPredictionGamesHistory.length === 0" class="mt-6">
-          <p class="empty-text text-center text-gray-500">No past predictions yet.</p>
-        </div>
-        <div v-else class="mt-1">
-          <UTable :rows="formattedPredictionGamesHistory" :columns="columns" class="styled-table">
-            <template #teamNames-data="{ row }">
-              <div v-html="row.teamNames"></div>
-            </template>
-            <template #actions-data="{ row }">
-              <div class="flex items-center space-x-4">
-              </div>
-            </template>
-          </UTable>
-        </div>
-      </div> -->
-
-      <!-- Upcoming Predictions -->
-      <!-- <div class="section-box bg-white p-6 rounded shadow">
-        <h2 class="section-title">Upcoming Predictions</h2>
-        <div v-if="upcomingPredictions.length === 0" class="mt-6">
-          <p class="empty-text text-center text-gray-500">No upcoming predictions at the moment.</p>
-        </div>
-        <div v-else class="mt-1">
-          <UTable :rows="paginatedUpcomingPredictions" :columns="upcomingColumns">
-            <template #teamNames-data="{ row }">
-              <div v-html="row.teamNames"></div>
-            </template>
-            <template #actions-data="{ row }">
-              <button @click="openPredictionModal(row)" class="btn-primary-small">
-                Make a prediction
-              </button>
-            </template>
-          </UTable>
-          <div class="flex justify-end px-3 py-3.5 border-t border-gray-200 dark:border-gray-700">
-            <UPagination v-model="upcomingPage" :page-count="upcomingPageSize" :total="formattedUpcomingPredictions.length" />
-          </div>
-        </div>
-      </div>
-
-      <div v-if="showPredictionModal" class="modal-overlay" @click="closePredictionModal">
-        <div class="modal-content" @click.stop>
-          <AddPrediction
-            :gameEventId="selectedGameEventId"
-            :predictionGameId="selectedPredictionGameId"
-            @close="closePredictionModal" />
-        </div>
-      </div> -->
-
       <!-- Leaderboards -->
       <!-- <div class="section-box bg-white p-6 rounded shadow">
         <h2 class="section-title">Your Leaderboards</h2>
@@ -162,13 +111,6 @@
           </li>
         </ul>
         <p v-else class="empty-text">You're not currently ranked in any games.</p>
-      </div> -->
-
-      <!-- Create a New Game Section -->
-      <!-- <div class="create-game-section bg-white p-6 rounded shadow text-center">
-        <h2 class="section-title">Create a New Prediction Game</h2>
-        <p class="description mt-2">Start a new competition with friends and test your prediction skills!</p>
-        <button class="btn-primary mt-4" @click="ToCreateGame">Create Game</button>
       </div> -->
 
       <!-- Bottom Section -->
@@ -256,8 +198,17 @@ const vote = (team: "Team A" | "Team B") => {
   else votes.value.teamB++;
 };
 
-const teamAPercentage = computed(() => totalVotes.value === 0 ? 0 : Math.round((votes.value.teamA / totalVotes.value) * 100));
-const teamBPercentage = computed(() => totalVotes.value === 0 ? 0 : Math.round((votes.value.teamB / totalVotes.value) * 100));
+const teamAPercentage = computed(() => totalVotes.value === 0 ? 50 : Math.round((votes.value.teamA / totalVotes.value) * 100));
+const teamBPercentage = computed(() => {
+  if (totalVotes.value === 0) return 50;
+  const percentageB = (votes.value.teamB / totalVotes.value) * 100;
+  
+  if (percentageB + teamAPercentage.value !== 100) {
+    const adjustedB = 100 - teamAPercentage.value;
+    return Math.round(adjustedB);
+  }
+  return percentageB;
+});
 
 const userName = computed(() => userStore.user?.userName || 'User');
 const hasPredictionGames = computed(() => predictionGameStore.predictionGames.length > 0);
@@ -435,43 +386,6 @@ function closePredictionModal() {
   color: #4c9266;
 }
 
-/* .hero-section {
-  position: relative;
-  background-image: url('/images/soccer-fans-cheering-team-monochrome (1).jpg');
-  background-size: cover;
-  background-position: center top;
-  height: 100vh;
-  width: 100%;
-  color: white;
-}
-.hero-section .overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  z-index: 1;
-}
-
-.greeting-message {
-  position: relative;
-  z-index: 2;
-  text-align: center;
-}
-
-.greeting-message h1 {
-  font-size: 3.5rem;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
-}
-
-.greeting-message p {
-  font-size: 2rem;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
-}
-
-.overlay {
-  position: absolute;
-  background: rgba(0, 0, 0, 0.5);
-} */
-
 .section-box {
   background-color: white;
   border-radius: 30px;
@@ -480,25 +394,7 @@ function closePredictionModal() {
   
 }
 
-/* .poll-options button {
-  padding: 0.5rem 1rem;
-}
-
-.poll-results {
-  background-color: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-}
-
-.poll-results .bg-blue-500 {
-  background-color: #3b82f6;
-}
-
-.poll-results .bg-red-500 {
-  background-color: #f87171;
-} */
 .poll-rectangle {
-  /* display: flex; */
   position: relative;
   background-color: #f9fafb;
   height: 80px;
@@ -546,7 +442,7 @@ function closePredictionModal() {
   position: absolute;
   z-index: 5;
   width: 2px;
-  background-color: #333;
+  background-color: #B0B0B0;
 }
 
 .static-result {
