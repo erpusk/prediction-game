@@ -1,13 +1,13 @@
 <template>
-  <div class="min-h-screen bg-white flex justify-center items-center">
+  <div class="min-h-screen bg-white dark:bg-gray-900  flex justify-center items-center">
     <UForm
       :validate="validate"
       :state="state"
-      class="space-y-7 p-20 bg-white rounded-lg shadow-lg max-w-lg w-full text-black"
+      class="space-y-7 p-20 bg-white dark:bg-gray-800  rounded-lg shadow-lg max-w-lg w-full text-black"
       @submit="onSubmit"
       @error="onError"
     >
-      <h2 class="text-2xl font-semibold text-center mb-6 drop-shadow-lg text-black">Create a Prediction Game</h2>
+      <h2 class="text-2xl font-semibold text-center mb-6 drop-shadow-lg text-black dark:text-white">Create a Prediction Game</h2>
       
       <UFormGroup label="Prediction game title" name="predictionGameTitle" class="!text-black">
         <UInput v-model="state.predictionGameTitle" placeholder="Enter game title" 
@@ -23,15 +23,15 @@
       </UFormGroup>
   
       <UFormGroup label="Game privacy" name="privacy" class="!text-black">
-        <USelect v-model="state.privacy" :options="['Private game', 'Public game']"  />
+        <USelect v-model="state.privacy" :options="['Private game', 'Public game']" class="border rounded-md p-2"  />
       </UFormGroup>
   
       <div class="flex justify-center space-x-4 mt-6">
         <UButton type="button" @click="navigateToListOfPredictionGames" class="bg-gray-300 
-        hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-md transition duration-300">
+        hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-md transition duration-300 dark:hover:bg-gray-500 dark:bg-gray-400  ">
             To Games List
         </UButton>
-        <UButton type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition duration-300">
+        <UButton type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition duration-300 dark:hover:bg-blue-600 dark:bg-blue-500">
             Create a Game
         </UButton>
       </div>
@@ -41,6 +41,11 @@
 <style scoped>
 div :deep(label) {
   color: black !important;
+}
+@media (prefers-color-scheme: dark) {
+  div :deep(label) {
+    color: #ffffff !important;
+  }
 }
 </style>
 
@@ -62,7 +67,8 @@ div :deep(label) {
       endDate: '', 
       gameCreatorId: userStore.user?.id || 0, 
       privacy: 'Private game',
-      uniqueCode: ''
+      uniqueCode: '',
+      participants:[]
     });
   
     const startDateStr = computed({
@@ -136,7 +142,8 @@ const endDateStr = computed({
             endDate: endDateStr.value ? new Date(endDateStr.value).toISOString() : undefined,
             gameCreatorId: state.gameCreatorId,
             privacy: state.privacy,
-            uniqueCode: state.uniqueCode
+            uniqueCode: state.uniqueCode,
+            participants: state.participants
         };
       addPredictionGame(payload);
       await navigateTo("/predictiongames");
