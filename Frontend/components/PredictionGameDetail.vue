@@ -1,31 +1,32 @@
 <template>
+  <div class="min-h-screen bg-gray-100 flex justify-center items-start  dark:bg-gray-900">
     <div class="detail-page">
       <h2 class="text-4xl font-semibold text-center mb-8 text-gray-800 dark:text-white">{{ game.title }} details</h2>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm dark:bg-gray-800 dark:border-gray-500">
+        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm dark:bg-gray-700 dark:border-gray-500">
           <p class="text-lg font-medium text-gray-700 text-center dark:text-white"><strong>Privacy:</strong> {{ game.privacy }}</p>
         </div>
 
-        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm dark:bg-gray-800 dark:border-gray-500 ">
+        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm dark:bg-gray-700 dark:border-gray-500 ">
           <p class="text-lg font-medium text-gray-700 text-center dark:text-white"><strong>Start date:</strong> {{ game.startDate }}</p>
         </div>
 
-        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm dark:bg-gray-800 dark:border-gray-500">
+        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm dark:bg-gray-700 dark:border-gray-500">
           <p class="text-lg font-medium text-gray-700 text-center dark:text-white"><strong>End date:</strong> {{ game.endDate }}</p>
         </div>
 
-        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm dark:bg-gray-800 dark:border-gray-500">
+        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm dark:bg-gray-700 dark:border-gray-500">
           <p class="text-lg font-medium text-gray-700 text-center dark:text-white"><strong>Creation date:</strong> {{ game.creationDate }}</p>
         </div>
 
-        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm md:col-span-2 dark:bg-gray-800 dark:border-gray-500">
+        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm md:col-span-2 dark:bg-gray-700 dark:border-gray-500">
         <p class="text-lg font-medium text-gray-700 text-center dark:text-white" style="white-space: pre-line;">
           <strong>Game creator:</strong> {{ game.gameCreator }}
         </p>
         </div>
 
-        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm md:col-span-2 dark:bg-gray-800 dark:border-gray-500">
+        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm md:col-span-2 dark:bg-gray-700 dark:border-gray-500">
         <p class="text-lg font-medium text-gray-700 text-center dark:text-white" style="white-space: pre-line;">
           <strong>Joined players:</strong> {{ game.participants }}
         </p>
@@ -33,7 +34,8 @@
 
       </div>
     </div>
-  </template>
+  </div>
+</template>
   
   <script setup lang="ts">
 import { ref, onMounted } from 'vue';
@@ -91,7 +93,7 @@ onMounted(async () => {
     margin: 20px auto;
   }
   .dark .detail-page {
-    background-color: #111827;
+    background-color: #1f2937;
   }
   </style>
   
