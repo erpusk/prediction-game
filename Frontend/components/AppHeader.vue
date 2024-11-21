@@ -7,7 +7,7 @@
             <span>LOGO</span>
           </nuxt-link>
 
-          <ul class="flex space-x-6 text-base font-medium">
+          <ul class="flex space-x-4 text-base font-medium">
             <li><nuxt-link to="/predictiongames" class="nav-link" :class="{ 'active': $route.path === '/predictiongames' }">My Prediction Games</nuxt-link></li>
             <li><nuxt-link to="/join-game" class="nav-link" :class="{ 'active': $route.path === '/join-game' }">Join a Prediction Game</nuxt-link></li>
           </ul>
@@ -46,12 +46,14 @@ const route = useRoute();
 }
 
 .nav-link {
-  color: #fff;
+  color: #ffffff;
   text-decoration: none;
+  font-weight: bold;
+  font-weight:700;
   padding: 8px 16px;
   border-radius: 4px;
-  font-weight: 500;
   transition: all 0.3s ease;
+  text-transform: uppercase;
 }
 
 .nav-link:hover {

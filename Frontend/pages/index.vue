@@ -1,7 +1,7 @@
 <template>
     <div class="main-page">
       
-      <AppHeaderTransparent v-if="isHomePage" />
+      <AppHeaderTransparent :scrollTarget="mainContentRef" v-if="isHomePage" />
     
     <!-- Background Section with Greeting -->
     <!-- <div class="hero-section relative h-screen bg-cover bg-center flex items-center justify-center text-white">
@@ -23,7 +23,7 @@
     </div> -->
 
       <!-- Top Section -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 mt-12 p-8">
+      <div ref="mainContentRef" class="grid grid-cols-1 sm:grid-cols-2 gap-8 mt-12 p-8">
         <!-- Left Column -->
         <div class="sm:col-span-1">
           <h1 class="text-4xl font-bold font-merriweather-900">WELCOME TO YOUR PREDICTION GAMES HUB</h1>
@@ -174,6 +174,7 @@ import { _width } from '#tailwind-config/theme';
 
 const route = useRoute();
 const isHomePage = computed(() => route.path === '/');
+const mainContentRef = ref(null);
 
 const userStore = useUserStore();
 const predictionGameStore = usePredictionGameStore();
