@@ -1,13 +1,13 @@
 <template>
-  <div class="min-h-screen flex justify-center items-center bg-white">
+  <div class="min-h-screen flex justify-center items-center bg-white dark:bg-gray-900 ">
     <UForm
       :validate="validate"
       :state="state"
-      class="p-6 bg-white rounded-lg shadow-lg max-w-lg w-full"
+      class=" p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-lg w-full "
       @submit="onSubmit"
       @error="onError"
     >
-      <h2 class="text-2xl font-semibold text-center mb-4 text-black">Add a prediction</h2>
+      <h2 class="text-2xl font-semibold text-center mb-4 text-black dark:text-white">Add a prediction</h2>
       <UFormGroup :label="teamALabel" name="endScoreTeamA">
         <UInput v-model="state.endScoreTeamA" class="border rounded-md p-2"/>
       </UFormGroup>
@@ -30,8 +30,13 @@
   </template>
    <style scoped>
    div :deep(label) {
-     color: black !important;
-   }
+  color: black !important;
+}
+@media (prefers-color-scheme: dark) {
+  div :deep(label) {
+    color: #ffffff !important;
+  }
+}
    </style>
   
   <script setup lang="ts">

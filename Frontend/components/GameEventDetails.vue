@@ -1,36 +1,36 @@
 <template>
-  <div class="min-h-screen bg-gray-100 flex justify-center items-start py-10">
-    <div class="bg-white rounded-xl shadow-lg max-w-4xl w-full p-6">
-      <h1 class="text-4xl font-semibold text-center mb-8 text-gray-800">Event Details</h1>
+  <div class="min-h-screen bg-gray-100 flex justify-center items-start py-10 dark:bg-gray-900">
+    <div class="bg-white rounded-xl shadow-lg max-w-4xl w-full p-6 dark:bg-gray-800">
+      <h1 class="text-4xl font-semibold text-center mb-8 text-gray-800 dark:text-white">Event Details</h1>
       
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm">
-          <p class="text-lg font-medium text-gray-700 text-center"><strong>Team A:</strong> {{ event.teamA }}</p>
+        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm dark:bg-gray-700 dark:border-gray-500">
+          <p class="text-lg font-medium text-gray-700 text-center dark:text-white"><strong>Team A:</strong> {{ event.teamA }}</p>
         </div>
-        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm">
-          <p class="text-lg font-medium text-gray-700 text-center"><strong>Team B:</strong> {{ event.teamB }}</p>
-        </div>
-
-        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm">
-          <p class="text-lg font-medium text-gray-700 text-center"><strong>Event Date:</strong> {{ event.eventDate }}</p>
-        </div>
-        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm">
-          <p class="text-lg font-medium text-gray-700 text-center"><strong>Game ID:</strong> {{ event.predictionGameId }}</p>
+        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm dark:bg-gray-700 dark:border-gray-500">
+          <p class="text-lg font-medium text-gray-700 text-center dark:text-white"><strong>Team B:</strong> {{ event.teamB }}</p>
         </div>
 
-        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm">
-          <p class="text-lg font-medium text-gray-700 text-center"><strong>Team A Score:</strong> {{ event.teamAScore }}</p>
+        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm dark:bg-gray-700 dark:border-gray-500">
+          <p class="text-lg font-medium text-gray-700 text-center dark:text-white"><strong>Event Date:</strong> {{ event.eventDate }}</p>
         </div>
-        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm">
-          <p class="text-lg font-medium text-gray-700 text-center"><strong>Team B Score:</strong> {{ event.teamBScore }}</p>
-        </div>
-
-        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm col-span-1 md:col-span-2">
-          <p class="text-lg font-medium text-gray-700 text-center"><strong>Is Completed:</strong> {{ event.isCompleted ? 'Yes' : 'No' }}</p>
+        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm dark:bg-gray-700 dark:border-gray-500">
+          <p class="text-lg font-medium text-gray-700 text-center dark:text-white"><strong>Game ID:</strong> {{ event.predictionGameId }}</p>
         </div>
 
-        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm col-span-1 md:col-span-2">
-          <p class="text-lg font-medium text-gray-700 text-center"><strong>Your Prediction:</strong> {{ yourPrediction.yourprediction }}</p>
+        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm dark:bg-gray-700 dark:border-gray-500">
+          <p class="text-lg font-medium text-gray-700 text-center dark:text-white"><strong>Team A Score:</strong> {{ event.teamAScore }}</p>
+        </div>
+        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm dark:bg-gray-700 dark:border-gray-500">
+          <p class="text-lg font-medium text-gray-700 text-center dark:text-white"><strong>Team B Score:</strong> {{ event.teamBScore }}</p>
+        </div>
+
+        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm col-span-1 md:col-span-2 dark:bg-gray-700 dark:border-gray-500">
+          <p class="text-lg font-medium text-gray-700 text-center dark:text-white"><strong>Is Completed:</strong> {{ event.isCompleted ? 'Yes' : 'No' }}</p>
+        </div>
+
+        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm col-span-1 md:col-span-2 dark:bg-gray-700 dark:border-gray-500">
+          <p class="text-lg font-medium text-gray-700 text-center dark:text-white"><strong>Your Prediction:</strong> {{ yourPrediction.yourprediction }}</p>
         </div>
       </div>
     </div>

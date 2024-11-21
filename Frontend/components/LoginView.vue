@@ -1,25 +1,25 @@
 <template>
-  <div class="min-h-screen bg-white flex justify-center items-center">
+  <div class="min-h-screen bg-white flex justify-center items-center dark:bg-gray-900">
     <form name="login-form" @submit.prevent="handleLogin"
-      class="space-y-8 p-16 bg-white rounded-lg shadow-lg max-w-md w-full border rounded-md p-4">
-      <h2 class="text-3xl font-semibold text-center mb-6 drop-shadow-lg text-black">Login</h2>
+      class="space-y-8 p-16 bg-white rounded-lg shadow-lg max-w-md w-full border rounded-md p-4 dark:bg-gray-800 dark:border-black">
+      <h2 class="text-3xl font-semibold text-center mb-6 drop-shadow-lg text-black dark:text-white">Login</h2>
 
       <UFormGroup label="Email" class="!text-black">
-        <UInput v-model="email" class="border rounded-md p-4 text-lg" type="email" required />
+        <UInput v-model="email" class="border rounded-md p-4 text-lg dark:border-black" type="email" required />
       </UFormGroup>
 
       <UFormGroup label="Password" class="!text-black">
-        <UInput v-model="password" class="border rounded-md p-4 text-lg" type="password" required />
+        <UInput v-model="password" class="border rounded-md p-4 text-lg dark:border-black" type="password" required />
       </UFormGroup>
 
       <div class="flex justify-center space-x-4 mt-6">
         <UButton type="submit"
-          class="bg-green-500 hover:bg-gray-400 text-white font-bold py-3 px-6 rounded-lg transition duration-300">
+          class="bg-green-500 hover:bg-gray-400 dark:hover:bg-gray-400 text-white font-bold py-3 px-6 rounded-lg transition duration-300">
           Login
         </UButton>
       </div>
       <div>
-        <p class="text-center mt-6 text-gray-600">
+        <p class="text-center mt-6 text-gray-600 dark:text-gray-400">
           Don´t have an account?
           <a @click="goToRegister" class="text-blue-500 hover:underline cursor-pointer">Register</a>
         </p>
@@ -33,6 +33,11 @@
 <style scoped>
 div :deep(label) {
   color: black !important;
+}
+@media (prefers-color-scheme: dark) {
+  div :deep(label) {
+    color: #ffffff !important;
+  }
 }
 </style>
 
