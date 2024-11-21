@@ -4,7 +4,8 @@
       <nav class="flex justify-between items-center p-4 bg-gray-900 text-white shadow-md">
         <div class="flex items-center space-x-12">
           <nuxt-link to="/" class="logo-btn font-inter">
-            <span>LOGO</span>
+            <i class='fas fa-futbol text-black bg-white' style='font-size:30px'></i>
+            <span>     LOGO</span>
           </nuxt-link>
 
           <ul class="flex space-x-4 text-base font-medium">
@@ -111,7 +112,7 @@ nav {
 
 .user-info {
   color: #fff;
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: 500;
   transition: color 0.3s ease;
 }

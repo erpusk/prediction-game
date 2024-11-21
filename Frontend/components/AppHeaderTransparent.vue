@@ -4,10 +4,11 @@
       <nav class="flex justify-between items-center p-4 bg-transparent text-white">
         <div class="flex items-center space-x-12">
           <nuxt-link to="/" class="logo-btn font-inter">
-            <span>LOGO</span>
+            <i class='fas fa-futbol bg-white' style='font-size:30px'></i>
+            <span>     LOGO</span>
           </nuxt-link>
 
-          <ul class="flex space-x-4 text-base font-medium">
+          <ul class="flex space-x-4 text-base font-xl">
             <li><nuxt-link to="/predictiongames" class="nav-link" :class="{ 'active': $route.path === '/predictiongames' }">My Prediction Games</nuxt-link></li>
             <li><nuxt-link to="/join-game" class="nav-link" :class="{ 'active': $route.path === '/join-game' }">Join a Prediction Game</nuxt-link></li>
           </ul>
@@ -73,7 +74,7 @@ const scrollToTarget = () => {
   background-size: cover;
   background-repeat: no-repeat;
   background-position-y: -100px;
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.0);
   background-blend-mode: overlay;
 }
 
@@ -84,13 +85,13 @@ const scrollToTarget = () => {
 .nav-link {
   color: #000000;
   text-decoration: none;
-  font-weight: bold;
   padding: 8px 16px;
   border-radius: 4px;
   font-weight:700;
   transition: all 0.3s ease;
   text-transform: uppercase;
   align-items: center;
+  font-size: medium;
 }
 
 .nav-link:hover {
@@ -122,7 +123,7 @@ nav {
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  background-color: rgba(255, 255, 255, 0.4);
+  background-color: rgba(255, 255, 255, 0.5);
   background-blend-mode: overlay;
   font-size: large;
 }
@@ -150,8 +151,8 @@ nav {
 }
 
 .user-info {
-  color: #fff;
-  font-size: 1rem;
+  color: #000000;
+  font-size: 1.2rem;
   font-weight: 500;
   transition: color 0.3s ease;
 }
