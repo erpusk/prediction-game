@@ -31,7 +31,7 @@
         </UFormGroup>
 
         <div class="flex justify-between mt-6">
-          <UButton type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition duration-300">
+          <UButton type="submit" class="add-button text-white font-bold py-2 px-4 rounded-md transition duration-300">
             Add
           </UButton>
         </div>
@@ -137,3 +137,12 @@ div :deep(label) {
     router.push(`/gameevents/${props.predictionGameId}`);
     };
   </script>
+
+<style>
+.add-button{
+  background-color: #5bb17c;
+}
+.add-button:hover{
+  background-color: #26547C;
+}
+</style>

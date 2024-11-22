@@ -31,7 +31,7 @@
         hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-md transition duration-300">
             To Games List
         </UButton>
-        <UButton type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition duration-300">
+        <UButton type="submit" class="create-button text-white font-bold py-2 px-4 rounded-md transition duration-300">
             Create a Game
         </UButton>
       </div>
@@ -62,7 +62,7 @@ div :deep(label) {
       endDate: '', 
       gameCreatorId: userStore.user?.id || 0, 
       privacy: 'Private game',
-      uniqueCode: ''
+      uniqueCode: '',
     });
   
     const startDateStr = computed({
@@ -136,7 +136,7 @@ const endDateStr = computed({
             endDate: endDateStr.value ? new Date(endDateStr.value).toISOString() : undefined,
             gameCreatorId: state.gameCreatorId,
             privacy: state.privacy,
-            uniqueCode: state.uniqueCode
+            uniqueCode: state.uniqueCode,
         };
       addPredictionGame(payload);
       await navigateTo("/predictiongames");
@@ -154,4 +154,13 @@ const endDateStr = computed({
       element?.scrollIntoView({ behavior: "smooth", block: "center" });
     }
   </script>
+
+<style>
+.create-button{
+  background-color: #5bb17c;
+}
+.create-button:hover{
+  background-color: #26547C;
+}
+</style>
   

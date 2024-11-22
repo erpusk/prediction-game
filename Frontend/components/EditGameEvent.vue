@@ -36,7 +36,7 @@
         <UButton type="button" @click="navigateToListOfGameEvents" class="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-md transition duration-300">
             Back to List
         </UButton>
-        <UButton type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition duration-300">
+        <UButton type="submit" class="confirm-button text-white font-bold py-2 px-4 rounded-md transition duration-300">
           Confirm
         </UButton>
       </div>
@@ -182,3 +182,12 @@
       return new Date(state.eventDate) <= new Date();
     });
   </script>
+
+<style>
+.confirm-button{
+  background-color: #5bb17c;
+}
+.confirm-button:hover{
+  background-color: #26547C;
+}
+</style>

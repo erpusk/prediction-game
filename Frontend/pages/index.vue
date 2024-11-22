@@ -137,7 +137,7 @@
               </template>
             </UTable>
             <div class="flex justify-end px-3 py-3.5 border-t border-gray-200 dark:border-gray-700">
-              <UPagination v-model="upcomingPage" :page-count="upcomingPageSize" :total="formattedUpcomingPredictions.length" class="pagination"/>
+              <UPagination v-model="upcomingPage" :page-count="upcomingPageSize" :total="formattedUpcomingPredictions.length" class="bg-primary-500"/>
             </div>
           </div>
         </div>
@@ -388,12 +388,12 @@ function closePredictionModal() {
   padding: 0;
 }
 
-.up-pagination {
-  color: #5bb17c !important;
-  background-color: #5bb17c !important;
+.bg-primary-500 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(91, 177, 124 / var(--tw-bg-opacity)) !important;
 }
 
-.pagination .up-pagination__item {
+.up-pagination__item {
   color: #090f0b;
 }
 
@@ -506,7 +506,6 @@ function closePredictionModal() {
 }
 
 .btn-primary {
-  /* background-color: #5bb17c; */
   background-color: #5bb17c;
   color: #fff;
   padding: 10px 28px;
@@ -519,12 +518,12 @@ function closePredictionModal() {
 }
 
 .btn-primary:hover {
-  background-color: #4d6bac;
+  background-color: #26547C;
   transform: scale(1.05)
 }
 
 .btn-primary:active {
-  background-color: #3f6b96;
+  background-color: #26547C;
   transform: scale(1);
 }
 
@@ -534,7 +533,6 @@ function closePredictionModal() {
   font-weight: normal;
   color: #ffffff;
   background-color: #5bb17c;
-  /* background-color: #6BA292; */
   border-radius: 80px;
   border: none;
   cursor: pointer;
@@ -543,12 +541,12 @@ function closePredictionModal() {
 }
 
 .btn-primary-small:hover {
-  background-color: #4d6bac;
+  background-color: #26547C;
   transform: scale(1.05);
 }
 
 .btn-primary-small:active {
-  background-color: #3f6b96;
+  background-color: #26547C;
   transform: scale(1);
 }
 
@@ -597,30 +595,9 @@ function closePredictionModal() {
   }
 }
 
-.empty-state {
-  color: #5a6677;
-}
-
-.content-sections {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 80px;
-  flex-grow: 1;
-  overflow: auto;
-}
-
 .styled-table {
     width: 100%;
     border-collapse: collapse;
     overflow: hidden;
-}
-
-.footer {
-  margin-top: auto;
-  padding: 10px;
-  background-color: #333;
-  color: white;
-  text-align: center;
 }
 </style>
