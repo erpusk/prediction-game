@@ -181,10 +181,6 @@ export const usePredictionsStore = defineStore("prediction", () => {
       userPredictionsMap.value[eventId] = prediction;
     }
   }
-
-  const getUserPoints = async (predictionGameId: number) => {
-
-  }
-
+  
   return {predictions, addPrediction, loadPredictions, getPredictions, userPrediction, userPredictionsMap, loadUserPrediction}
 })
