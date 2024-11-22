@@ -79,7 +79,7 @@ namespace BackEnd.Controllers
                 {
                     var awardResult = await _gpRepo.AwardPoints(eventModel.PredictionGameId, prediction.PredictionMakerId);
                     if (!awardResult){
-                        throw new Exception("Problem occured with awarding points.");
+                        return BadRequest("Problem occured with awarding points.");
                     }
                 }
             }

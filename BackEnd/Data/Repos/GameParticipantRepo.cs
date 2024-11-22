@@ -24,6 +24,18 @@ namespace BackEnd.Data.Repos
 
         public async Task<bool> IsParticipantExistsInDb(int id) => await _context.PredictionGameParticipants.AnyAsync(x => x.Id == id);
 
+        public async Task<bool> GetParticipantEarnedPoints(int id) {
+            bool participantExist = await IsParticipantExistsInDb(id);
+            
+            if(!participantExist) {
+                return false;
+            }
+
+            var result = _context.PredictionGameParticipants.Where(x => x.Id == id).Select(x => x.EarnedPoints);
+
+            return result != null;     
+        }
+
 
         public async Task<bool> UpdateGameParticipant(int id, PredictionGameParticipant participant){
             bool isIdsMatch = id == participant.Id;

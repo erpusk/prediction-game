@@ -144,7 +144,11 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
             await context.SaveChangesAsync();
         }
 
+        public async Task<int?> GetUserPoints(int userId, int gameId)
+        {
+            var participant = await GetParticipantByUserIdAndGameId(userId, gameId);
 
-
+            return participant?.EarnedPoints;
+        }
     }
 }
