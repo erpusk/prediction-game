@@ -46,13 +46,14 @@
    </style>
   
   <script setup lang="ts">
-    import type { FormError, FormErrorEvent, FormSubmitEvent } from "#ui/types";
+    import type { FormError, FormErrorEvent } from "#ui/types";
     import type { Prediction } from "~/types/prediction";
-import PredictionsList from "./PredictionsList.vue";
+import GameEventsList from "./GameEventsList.vue";
 
     const { addPrediction } = usePredictionsStore();
     const gameEventStore = useGameEventsStore();
     const emit = defineEmits(['close']);
+
 
     const props = defineProps<{
       gameEventId: number;
@@ -93,8 +94,9 @@ import PredictionsList from "./PredictionsList.vue";
       alert("Event has already ended. Cannot add prediction"); 
       console.log(res)
     }
+    router.push(`/predictions/${props.predictionGameId}/${props.gameEventId}`);
+    emit('close')
 
-    emit('close');
   }
   
     async function onError(prediction: FormErrorEvent) {
@@ -105,7 +107,5 @@ import PredictionsList from "./PredictionsList.vue";
 
     const router = useRouter()
 
-    const navigateToGameEvent = () => {
-    router.push(`/gameevents/${props.predictionGameId}`);
-    };
+    
 </script>

@@ -53,7 +53,7 @@
                       v-if="showModalPrediction" 
                       :predictionGameId="props.predictionGameId" 
                       :game-event-id="row.id"
-                      @close="closeModalPrediction" />
+                      @close="closeModalPrediction"/>
 
                   </div>
                   <button @click="goPredictionsList(row)" class="btn-primary-small">
@@ -165,6 +165,10 @@ const formattedGameEvents = computed(() => {
     };
   });
 });
+
+
+
+
 
 onMounted(async () => {
   const gameData = await predictionGameStore.loadPredictionGame(props.predictionGameId);

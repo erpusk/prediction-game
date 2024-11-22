@@ -146,7 +146,8 @@ export const usePredictionsStore = defineStore("prediction", () => {
       method: "POST",
       body: prediction
     })
-    return res;
+    await loadPredictions(prediction.eventId)
+    return res
   }
 
   const loadPredictions = async (gameEventId: number) => {
