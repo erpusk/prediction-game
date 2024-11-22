@@ -110,19 +110,17 @@ const endDateStr = computed({
       const errors = [];
       const currentDate = new Date();
 
-      // validate prediction game title
       if (!state.predictionGameTitle) errors.push({ path: "predictionGameTitle", message: "Required" });
       else if (state.predictionGameTitle.length < 4 || state.predictionGameTitle.length > 40) {
         errors.push({ path: "predictionGameTitle", message: "Title must be between 4 and 40 characters." });
       }
 
-      // validate start and end dates
       if (!state.startDate) errors.push({ path: "startDate", message: "Required" });
       if (!state.endDate) errors.push({ path: "endDate", message: "Required" });
       if (new Date(state.startDate) >= new Date(state.endDate)) {
         errors.push({ path: "endDate", message: "End date must be after the start date." });
       }
-      // Check if startDate and endDate are in the future
+
       if (state.startDate && new Date(state.startDate) <= currentDate) {
         errors.push({ path: "startDate", message: "Start date must be in the future." });
       }
@@ -130,7 +128,7 @@ const endDateStr = computed({
           errors.push({ path: "endDate", message: "End date must be in the future." });
       }
 
-      // validate privacy field
+
       if (!state.privacy) errors.push({ path: "privacy", message: "Please select a game privacy option." });
 
       return errors;

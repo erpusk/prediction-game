@@ -15,7 +15,6 @@
 
 <script setup lang="ts">
 import { onMounted } from 'vue';
-import EventId from '~/pages/add-prediction/[predictionGameId]/[eventId].vue';
 const predictionsStore = usePredictionsStore();
 const gameEventStore = useGameEventsStore();
 const { predictions } = storeToRefs(predictionsStore);

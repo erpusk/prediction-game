@@ -199,8 +199,8 @@ onMounted(async () => {
 });
 
 async function userHasMadePrediction(gameEvent: GameEvent, userId: number): Promise<boolean> {
-  const predictions = await predictionStore.getPredictions(gameEvent.id);
-  return predictions.some(element => element.predictionMakerId === userId);
+  await predictionStore.loadPredictions(gameEvent.id);
+  return predictionStore.predictions.some(element => element.predictionMakerId === userId);
 }
 
 const deletePredictionGameEvent = (gameEvent: GameEvent) => {
