@@ -1,10 +1,10 @@
 <template>
   <header class="bg-transparent" v-if="$route.path !== '/login' && $route.path !== '/register'">
     <div class="header-bg">
-      <nav class="flex justify-between items-center p-4 bg-transparent text-white">
+      <nav class="nav-bar flex justify-between items-center p-4 bg-transparent text-white">
         <div class="flex items-center space-x-12">
           <nuxt-link to="/" class="logo-btn font-inter">
-            <i class='fas fa-futbol bg-white' style='font-size:30px'></i>
+            <i class='fas fa-futbol text-black bg-white' style='font-size:30px'></i>
             <span>     LOGO</span>
           </nuxt-link>
 
@@ -16,7 +16,7 @@
 
         <div v-if="userStore.isAuthenticated" class="flex items-center space-x-6">
           <span class="user-info font-inter">Hello, {{ userName }}!</span>
-          <button class="btn-logout font-inter" @click="userStore.logout()">Logout</button>
+          <button class="btn-logout font-inter" @click="userStore.logout()">LOGOUT</button>
         </div>
       </nav>
 
@@ -82,8 +82,12 @@ const scrollToTarget = () => {
   font-family: 'Inter', sans-serif;
 }
 
+.nav-bar {
+  background-color: #131B23;
+}
+
 .nav-link {
-  color: #000000;
+  color: #ffffff;
   text-decoration: none;
   padding: 8px 16px;
   border-radius: 4px;
@@ -95,19 +99,19 @@ const scrollToTarget = () => {
 }
 
 .nav-link:hover {
-  color: #4CAF50;
+  color: #5bb17c;
   transform: scale(1.05);
 }
 
 .nav-link.active {
-  color: #4CAF50;
+  color: #5bb17c;
   font-weight: 700;
 }
 
 .logo-btn {
   font-size: 1.5rem;
   font-weight: 700;
-  color: rgb(0, 0, 0);
+  color: rgb(255, 255, 255);
   text-transform: uppercase;
   letter-spacing: 1px;
   padding: 8px 16px;
@@ -115,7 +119,7 @@ const scrollToTarget = () => {
 }
 
 .logo-btn:hover {
-  color: #4CAF50;
+  color: #5bb17c;
 }
 
 nav {
@@ -151,7 +155,7 @@ nav {
 }
 
 .user-info {
-  color: #000000;
+  color: #ffffff;
   font-size: 1.2rem;
   font-weight: 500;
   transition: color 0.3s ease;
@@ -159,7 +163,7 @@ nav {
 
 .btn-logout {
   padding: 9px 18px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
   color: #ffffff;
   background-color: #e74c3c;
@@ -217,7 +221,7 @@ button:focus {
 }
 
 .btn-scroll:hover {
-  background-color: #d3d3d3;
+  background-color: #d3d3d34e;
   transform: scale(1.05);
 }
 

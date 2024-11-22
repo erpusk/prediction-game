@@ -43,11 +43,17 @@
           <!-- Poll Options -->
           <div class="poll-rectangle relative flex mt-2 w-full rounded-lg border border-gray-300">
             <!-- Team A Background -->
-            <div
+            <!-- <div
               class="team-bg team-a-bg absolute h-full"
               :style="{ 
                 width: showResults ? `${teamAPercentage}%` : '50%',
                 backgroundColor: selectedOption === 'Team A' ? '#B0B0B0' : '#E8E8E8' }">
+            </div> -->
+            <div
+              class="team-bg team-a-bg absolute h-full"
+              :style="{ 
+                width: showResults ? `${teamAPercentage}%` : '50%',
+                backgroundColor: selectedOption === 'Team A' ? '#26547C' : '#26547C8b' }">
             </div>
 
             <!-- Team B Background -->
@@ -55,12 +61,12 @@
               class="team-bg team-b-bg absolute h-full"
               :style="{ 
                 width: showResults ? `${teamBPercentage}%` : '50%',
-                backgroundColor: selectedOption === 'Team B' ? '#B0B0B0' : '#E8E8E8' }">
+                backgroundColor: selectedOption === 'Team B' ? '#26547C' : '#26547C8b' }">
             </div>
 
             <!-- Divider -->
             <div
-              class="divider absolute h-full bg-gray-500"
+              class="divider absolute h-full"
               :style="{ left: showResults ? `${teamAPercentage}%` : '50%', transition: 'left 0.5s ease' }">
             </div>
 
@@ -114,10 +120,10 @@
       </div> -->
 
       <!-- Bottom Section -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 mt-12 p-8">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-16 mt-12 p-8">
         <!-- Left Table: Upcoming Predictions -->
         <div class="section-box bg-white p-6 rounded shadow">
-          <h2 class="text-lg font-bold">Upcoming Events That Await Your Predictions</h2>
+          <h2 class="text-lg font-bold font-merriweather-400">Upcoming Events That Await Your Predictions</h2>
           <div v-if="upcomingPredictions.length === 0">
             <p class="text-gray-500">No upcoming predictions at the moment.</p>
           </div>
@@ -130,8 +136,8 @@
                 <button @click="openPredictionModal(row)" class="btn-primary-small">Make a prediction</button>
               </template>
             </UTable>
-            <div class="pagination flex justify-end px-3 py-3.5 border-t border-gray-200 dark:border-gray-700">
-              <UPagination v-model="upcomingPage" :page-count="upcomingPageSize" :total="formattedUpcomingPredictions.length" />
+            <div class="flex justify-end px-3 py-3.5 border-t border-gray-200 dark:border-gray-700">
+              <UPagination v-model="upcomingPage" :page-count="upcomingPageSize" :total="formattedUpcomingPredictions.length" class="pagination"/>
             </div>
           </div>
         </div>
@@ -141,18 +147,19 @@
             <AddPrediction
               :gameEventId="selectedGameEventId"
               :predictionGameId="selectedPredictionGameId"
+              :isPopup="true"
               @close="closePredictionModal" />
           </div>
         </div>
 
         <!-- Right Table: Prediction History -->
         <div class="section-box bg-white p-6 rounded shadow">
-          <h2 class="text-lg font-bold">Your Predictions History</h2>
+          <h2 class="text-lg font-bold font-merriweather-400">Your Predictions History and Points Earned</h2>
           <div v-if="formattedPredictionGamesHistory.length === 0">
             <p class="text-gray-500">No past predictions yet.</p>
           </div>
           <div v-else>
-            <UTable :rows="formattedPredictionGamesHistory" :columns="columns">
+            <UTable :rows="formattedPredictionGamesHistory" :columns="columns" class="styled-table">
               <template #teamNames-data="{ row }">
                 <div v-html="row.teamNames"></div>
               </template>
@@ -355,6 +362,8 @@ function openPredictionModal(row : GameEvent) {
 
 function closePredictionModal() {
   showPredictionModal.value = false;
+  gameEventStore.userUpcomingPredictions = [];
+  loadAllUserUpcomingPredictions();
 }
 </script>
 
@@ -379,16 +388,21 @@ function closePredictionModal() {
   padding: 0;
 }
 
+.up-pagination {
+  color: #5bb17c !important;
+  background-color: #5bb17c !important;
+}
+
 .pagination .up-pagination__item {
   color: #090f0b;
 }
 
 .pagination .up-pagination__item:hover {
-  color: #4c9266;
+  color: #5bb17c;
 }
 
 .section-box {
-  background-color: white;
+  background-color: #f0fff166;
   border-radius: 30px;
   padding: 1rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -398,7 +412,7 @@ function closePredictionModal() {
 .poll-rectangle {
   position: relative;
   background-color: #f9fafb;
-  height: 80px;
+  height: 70px;
   overflow: hidden;
   transition: background-color 0.3s, width 0.3s;
   border-radius: 8px;
@@ -409,17 +423,17 @@ function closePredictionModal() {
   padding: 16px 0;
   font-size: 16px;
   font-weight: bold;
-  background-color: #e5e7eb;
+  background-color: #26547C8b;
   transition: flex-grow 0.3s, background-color 0.3s;
   transition: width 0.5s ease;
 }
 
 .team-section:hover {
-  background-color: #d1d5db;
+  background-color: #B8B3E9;
 }
 
 .team-section.selected {
-  background-color: #575757;
+  background-color: #26547C8b;
   color: white;
 }
 
@@ -441,9 +455,9 @@ function closePredictionModal() {
 
 .divider {
   position: absolute;
-  z-index: 5;
-  width: 2px;
-  background-color: #B0B0B0;
+  z-index: 1;
+  width: 3.5px;
+  background-color: #26547C;
 }
 
 .static-result {
@@ -451,13 +465,13 @@ function closePredictionModal() {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #e5e7eb;
+  background-color: #26547C8b;
 }
 
 .team-name {
   position: absolute;
   z-index: 1;
-  color: #1f2937;
+  color: #f9fafb;
   font-size: 20px;
   font-weight: bold;
 }
@@ -466,7 +480,7 @@ function closePredictionModal() {
   position: absolute;
   z-index: 2;
   color: white;
-  font-size: 18px;
+  font-size: 14px;
   font-weight: bold;
 }
 
@@ -492,6 +506,7 @@ function closePredictionModal() {
 }
 
 .btn-primary {
+  /* background-color: #5bb17c; */
   background-color: #5bb17c;
   color: #fff;
   padding: 10px 28px;
@@ -517,8 +532,9 @@ function closePredictionModal() {
   padding: 5px 15px;
   font-size: 14px;
   font-weight: normal;
-  color: #fff;
+  color: #ffffff;
   background-color: #5bb17c;
+  /* background-color: #6BA292; */
   border-radius: 80px;
   border: none;
   cursor: pointer;
@@ -547,6 +563,7 @@ function closePredictionModal() {
   align-items: center;
   justify-content: center;
   z-index: 10;
+  animation: fadeIn 0.3s ease-in-out;
 }
 .modal-content {
   background: white;
@@ -559,6 +576,25 @@ function closePredictionModal() {
   overflow-y: auto;
   position: relative;
   z-index: 100;
+  animation: slideIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+  }
+  to {
+    transform: translateY(0);
+  }
 }
 
 .empty-state {
@@ -578,20 +614,6 @@ function closePredictionModal() {
     width: 100%;
     border-collapse: collapse;
     overflow: hidden;
-}
-
-.styled-table th, .styled-table td {
-    text-align: left;
-    padding: 120px;
-}
-
-.styled-table th {
-    background-color: #5bb17c;
-    color: white;
-}
-
-.styled-table td {
-    border-bottom: 1px solid #ddd;
 }
 
 .footer {

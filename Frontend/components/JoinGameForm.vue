@@ -103,7 +103,7 @@
   .join-button {
     margin-top: 1em;
     padding: 0.5em 1em;
-    background-color: #4CAF50;
+    background-color: #5bb17c;
     color: white;
     font-weight: bold;
     border: none;
@@ -112,7 +112,7 @@
   }
   
   .join-button:hover {
-    background-color: #45a049;
+    background-color: #5bb17c;
   }
   
   .success {

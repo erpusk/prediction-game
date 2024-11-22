@@ -46,8 +46,13 @@ namespace BackEnd.Data.Repos
         }
 
         public async Task<List<Prediction>> GetUserPredictionHistory(int userId) {
+            var eventsWithFinalScores = await _context.Events
+                .Where(e => e.TeamAScore.HasValue && e.TeamBScore.HasValue)
+                .Select(e => e.Id)
+                .ToListAsync();
+
             IQueryable<Prediction> query = _context.Predictions
-            .Where(p => p.PredictionMakerId == userId && p.EndScoreTeamA.HasValue && p.EndScoreTeamB.HasValue) 
+            .Where(p => p.PredictionMakerId == userId && p.EndScoreTeamA.HasValue && p.EndScoreTeamB.HasValue && eventsWithFinalScores.Contains(p.EventId))
             .AsQueryable();
 
             return await query.ToListAsync();

@@ -58,12 +58,12 @@ const route = useRoute();
 }
 
 .nav-link:hover {
-  color: #4CAF50;
+  color: #5bb17c;
   transform: scale(1.05);
 }
 
 .nav-link.active {
-  color: #4CAF50;
+  color: #5bb17c;
   font-weight: 700;
 }
 
@@ -78,7 +78,7 @@ const route = useRoute();
 }
 
 .logo-btn:hover {
-  color: #4CAF50;
+  color: #5bb17c;
 }
 
 nav {

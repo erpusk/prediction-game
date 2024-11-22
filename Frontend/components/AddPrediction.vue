@@ -1,7 +1,7 @@
 <template>
   <div class="flex justify-center items-center">
     <button 
-      @click="$emit('close')" 
+      @click="closePopup" 
       class="absolute top-2 right-2 text-black hover:text-red-600 transition duration-300">
       &times;
     </button>
@@ -45,10 +45,12 @@
 
     const { addPrediction } = usePredictionsStore();
     const gameEventStore = useGameEventsStore();
+    const emit = defineEmits(['close']);
 
     const props = defineProps<{
       gameEventId: number;
-      predictionGameId: number
+      predictionGameId: number;
+      isPopup?: boolean;
     }>();
 
     const event = await gameEventStore.loadSingleEvent(props.gameEventId)
@@ -80,12 +82,16 @@
             predictionMakerId: state.predictionMakerId,
             eventId: props.gameEventId
         };
-    const res = await addPrediction(payload);
-    if (res.status === 409) {  
-      alert("Event has already ended. Cannot add prediction"); 
-      console.log(res)
-    }
-    await navigateTo(`/gameevents/${props.predictionGameId}`);
+      const res = await addPrediction(payload);
+      if (res.status === 409) {  
+        alert("Event has already ended. Cannot add prediction"); 
+        console.log(res)
+      }
+      if (props.isPopup) {
+        emit('close');
+      } else {
+        await navigateTo(`/gameevents/${props.predictionGameId}`);
+      }
     }
   
     async function onError(prediction: FormErrorEvent) {
@@ -96,7 +102,14 @@
 
     const router = useRouter()
 
-    const navigateToGameEvent = () => {
-    router.push(`/gameevents/${props.predictionGameId}`);
-    };
+    function navigateToGameEvent() {
+      if (props.isPopup) {
+        emit('close');
+      } else {
+        router.push(`/gameevents/${props.predictionGameId}`);
+      }
+    }
+    function closePopup() {
+      emit('close');
+    }
 </script>
