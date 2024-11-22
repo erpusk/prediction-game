@@ -52,7 +52,7 @@ import GameEventsList from "./GameEventsList.vue";
 
     const { addPrediction } = usePredictionsStore();
     const gameEventStore = useGameEventsStore();
-    const emit = defineEmits(['close']);
+    const emit = defineEmits(['close','refresh']);
 
 
     const props = defineProps<{
@@ -94,7 +94,7 @@ import GameEventsList from "./GameEventsList.vue";
       alert("Event has already ended. Cannot add prediction"); 
       console.log(res)
     }
-    router.push(`/predictions/${props.predictionGameId}/${props.gameEventId}`);
+    emit('refresh')
     emit('close')
 
   }
@@ -105,7 +105,6 @@ import GameEventsList from "./GameEventsList.vue";
       element?.scrollIntoView({ behavior: "smooth", block: "center" });
     }
 
-    const router = useRouter()
 
     
 </script>

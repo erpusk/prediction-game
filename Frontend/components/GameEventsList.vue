@@ -53,7 +53,8 @@
                       v-if="showModalPrediction" 
                       :predictionGameId="props.predictionGameId" 
                       :game-event-id="row.id"
-                      @close="closeModalPrediction"/>
+                      @close="closeModalPrediction"
+                      @refresh="fetchData"/>
 
                   </div>
                   <button @click="goPredictionsList(row)" class="btn-primary-small">
@@ -167,10 +168,7 @@ const formattedGameEvents = computed(() => {
 });
 
 
-
-
-
-onMounted(async () => {
+async function fetchData() {
   const gameData = await predictionGameStore.loadPredictionGame(props.predictionGameId);
   uniqueCode.value = gameData?.uniqueCode || "Not available";
 
@@ -196,6 +194,11 @@ onMounted(async () => {
     }
     predictionStore.userPredictionsMap = predictionsMap;
   }
+}
+
+
+onMounted(async () => {
+  fetchData()
 });
 
 async function userHasMadePrediction(gameEvent: GameEvent, userId: number): Promise<boolean> {
