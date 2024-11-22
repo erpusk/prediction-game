@@ -75,6 +75,10 @@
     min-height: 100vh;
     background-color: #ffffff;
   }
+
+  .dark .join-game-container {
+    background-color: #111827;
+  }
   
   .join-game {
     max-width: 400px;
@@ -85,11 +89,19 @@
     border-radius: 10px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   }
+  .dark .join-game {
+    background-color: #1f2937;
+    box-shadow: 0px 4px 8px rgba(255, 255, 255, 0.1);
+  }
   
   h1 {
     font-size: 1.5em;
     color: black;
     margin-bottom: 0.5em;
+  }
+
+  .dark h1 {
+    color: #ffffff;
   }
   
   .input-field {
@@ -120,9 +132,17 @@
   .success {
     color: #4CAF50;
   }
+
+  .dark .success {
+    color: #81c784;
+  }
   
   .error {
     color: #FF0000;
+  }
+
+  .dark .error {
+    color: #e57373;
   }
   </style>
   

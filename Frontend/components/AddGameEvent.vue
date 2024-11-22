@@ -1,12 +1,12 @@
 <template>
   <div class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-    <div class="bg-white rounded-lg shadow-lg p-6 w-1/3 relative">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 w-1/3 relative">
       <button 
         @click="$emit('close')" 
         class="absolute top-2 right-2 text-black hover:text-red-600 transition duration-300">
         &times;
       </button>
-      <h2 class="text-2xl font-semibold text-center mb-4 text-black">Add an event</h2>
+      <h2 class="text-2xl font-semibold text-center mb-4 text-black dark:text-white">Add an event</h2>
 
       <UForm
         :validate="validate"
@@ -42,6 +42,11 @@
 <style scoped>
 div :deep(label) {
   color: black !important;
+}
+@media (prefers-color-scheme: dark) {
+  div :deep(label) {
+    color: #ffffff !important;
+  }
 }
 </style>
   
@@ -110,7 +115,7 @@ div :deep(label) {
       return errors;
     };
   
-    async function onSubmit(gameEvent: FormSubmitEvent<any>) {
+    async function onSubmit() {
         const payload = {
             id: state.id,
             teamA: state.teamA,

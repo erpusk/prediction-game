@@ -1,51 +1,6 @@
 <template>
   <div class="page-container">
     <AppHeader v-if="!isHomePage" />
-    <!-- <header :class="{'bg-transparent': isHomePage, 'bg-gray-900': !isHomePage}" v-if="$route.path !== '/login' && $route.path !== '/register'">
-      <div v-if=isHomePage class="header-bg">
-        <nav class="flex justify-between items-center p-4 bg-gray-900 text-white" :class="{'bg-transparent': isHomePage, 'bg-gray-900': !isHomePage}">
-          
-          <div class="flex items-center space-x-12">
-            <nuxt-link to="/" class="logo-btn font-inter">
-              <span>LOGO</span>
-            </nuxt-link>
-
-            <ul class="flex space-x-6 text-base font-medium">
-              <li><nuxt-link to="/predictiongames" class="nav-link" :class="{ 'active': $route.path === '/predictiongames' }">My Prediction Games</nuxt-link></li>
-              <li><nuxt-link to="/join-game" class="nav-link" :class="{ 'active': $route.path === '/join-game' }">Join a Prediction Game</nuxt-link></li>
-            </ul>
-          </div>
-          
-          <div v-if="userStore.isAuthenticated" class="flex items-center space-x-6">
-            <span class="user-info font-inter">Hello, {{ userName }}!</span>
-            <button class="btn-logout font-inter" @click="userStore.logout()">Logout</button>
-          </div>
-        </nav>
-      </div>
-
-      
-      <div v-else class="normal-header">
-        <nav class="flex justify-between items-center p-4 bg-gray-900 text-white shadow-md">
-          
-          <div class="flex items-center space-x-12">
-            <nuxt-link to="/" class="logo-btn font-inter">
-              <span>LOGO</span>
-            </nuxt-link>
-
-            <ul class="flex space-x-6 text-base font-medium">
-              <li><nuxt-link to="/predictiongames" class="nav-link" :class="{ 'active': $route.path === '/predictiongames' }">My Prediction Games</nuxt-link></li>
-              <li><nuxt-link to="/join-game" class="nav-link" :class="{ 'active': $route.path === '/join-game' }">Join a Prediction Game</nuxt-link></li>
-            </ul>
-          </div>
-
-          
-          <div v-if="userStore.isAuthenticated" class="flex items-center space-x-6">
-            <span class="user-info font-inter">Hello, {{ userName }}!</span>
-            <button class="btn-logout font-inter" @click="userStore.logout()">Logout</button>
-          </div>
-        </nav>
-      </div>
-    </header> -->
 
     <!-- Back Button for Non-Home Pages -->
     <div v-if="$route.path !== '/' && $route.path !== '/login' && $route.path !== '/register'" class="button-group fixed bottom-4 left-4 z-20">

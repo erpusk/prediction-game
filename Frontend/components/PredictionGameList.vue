@@ -1,19 +1,25 @@
 <template>
-    <div class="min-h-screen bg-white flex justify-center items-start mt-10">
-      <div class="bg-white rounded-lg shadow-lg max-w-6xl w-full relative">
+    <div class="min-h-screen bg-white dark:bg-gray-900 flex justify-center items-start">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-6xl w-full relative">
+        
       <button 
-        @click="goToCreateNewPredictionGame" 
+        @click="showModal = true" 
         class="absolute top-6 right-5 btn-primary-large">
         Create a new Prediction Game
-      </button>
-  
-      
+        </button>
+
+      <div 
+        v-if="showModal" 
+        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+        <AddPredictionGame @close="closeModal" />
+      </div>
+
       <div v-if="predictionGames.length === 0" class="mt-6">
-        <h2 class="text-lg text-center text-gray-500">Prediction games are missing</h2>
+        <h2 class="text-lg text-center text-gray-500 ">Prediction games are missing</h2>
       </div>
   
       <div v-else class="mt-8">
-        <h1 class="text-3xl font-bold text-center mb-6 text-black" >{{ title }}</h1>
+        <h1 class="text-3xl font-bold text-center mb-6 text-black dark:text-white" >{{ title }}</h1>
         <UTable :rows="formattedPredictionGames" :columns="columns">
           <template #actions-data="{ row }">
             <div class="flex items-center space-x-4">
@@ -55,30 +61,36 @@
 
   const predictionGameStore = usePredictionGameStore();
   const { predictionGames } = storeToRefs(predictionGameStore);
+
+  const showModal = ref(false);
+
+  const closeModal = () => {
+  showModal.value = false; 
+};
   
   defineProps<{ title: string }>();
   const leaveGame = async (game: PredictionGame) => {
-  // Check if uniqueCode exists
   if (!game.uniqueCode) {
-    console.error("UniqueCode is null or undefined.", game);
     return;
   }
-  
   try {
     await predictionGameStore.leavePredictionGame(game.uniqueCode);
-    console.log("Left the game successfully");
-    predictionGameStore.predictionGames = predictionGameStore.predictionGames.filter(
-      (g) => g.id !== game.id
-    );
+    predictionGames.value = predictionGames.value.filter(g => g.id !== game.id);
   } catch (error) {
-    console.error("Failed to leave the game:", error);
   }
-  };
+};
 
-  const isParticipant = (game: PredictionGame) => {
-  return game && game.participants && game.participants.some(participant => participant.id === userStore.user?.id) &&
-  game.gameCreatorId !== userStore.user?.id;
-  };
+
+const isParticipant = (game: PredictionGame) => {
+  const userId = userStore.user?.id;
+  if (!userId || !game || !game.participants) return false;
+  const found = game.participants.some(participant => participant.id === userId);
+  return found && game.gameCreatorId !== userId;
+};
+
+
+
+
   const columns = [
     {
       key: "predictionGameTitle",
@@ -115,13 +127,11 @@
   }));
 });
   
-  const isGameCreator = (game: PredictionGame) => {
-    return game.gameCreatorId === user.value?.id;
-  };
-
-  const goToCreateNewPredictionGame = () => {
-    router.push('/add-predictionGame');
-  };
+const isGameCreator = (game: PredictionGame) => {
+    const userId = userStore.user?.id;
+    const isCreator = game.gameCreatorId === userId;
+    return isCreator;
+};
   
   onMounted(async () => {
   await predictionGameStore.loadPredictionGames();
@@ -139,6 +149,7 @@
     const predictionGameId = game.id;
   router.push(`/predictiongame-details/${predictionGameId}`);
   };
+  
   </script>  
 
 <style scoped>

@@ -3,6 +3,27 @@
       
       <AppHeaderTransparent :scrollTarget="mainContentRef" v-if="isHomePage" />
     
+    
+    <!-- Background Section with Greeting -->
+    <!-- <div class="hero-section relative h-screen bg-cover bg-center flex items-center justify-center text-white">
+      <div class="overlay absolute inset-0 bg-black bg-opacity-50"></div>
+      <div class="greeting-message relative text-center">
+        <h1 class="text-6xl font-bold mb-6">Turn rivalries to memories!</h1>
+        <p class="text-xl">Kick off your Prediction Game today.</p>
+      </div>
+    </div> -->
+
+    <!-- Section for New Users with No Games -->
+    <!-- <div v-if="!hasPredictionGames" class="empty-state text-center mt-12">
+      <h2 class="empty-title">Get Started with Prediction Games!</h2>
+      <p class="empty-description">You haven't joined or created any games yet. Create or join a game to start competing with friends.</p>
+      <div class="button-group flex justify-center space-x-4 mt-4">
+        <button class="btn-primary" @click="ToCreateGame">Create Game</button>
+        <button class="btn-secondary" @click="ToJoinGame">Join Game</button>
+      </div>
+    </div> -->
+
+
     <!-- Background Section with Greeting -->
     <!-- <div class="hero-section relative h-screen bg-cover bg-center flex items-center justify-center text-white">
       <div class="overlay absolute inset-0 bg-black bg-opacity-50"></div>
@@ -31,9 +52,14 @@
             See your upcoming predictions, previous activity and more!
           </p>
           <div class="mt-6 flex space-x-6">
-            <button class="btn-primary font-bold font-weight-900" @click="ToCreateGame">CREATE YOUR OWN PREDICTION GAME</button>
+            <button class="btn-primary font-bold font-weight-900" @click="openAddPredictionGame">CREATE YOUR OWN PREDICTION GAME</button>
             <button class="btn-primary font-bold font-weight-900" @click="ToJoinGame">JOIN A PREDICTION GAME</button>
           </div>
+            <div 
+              v-if="showAddPredictionGame" 
+              class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 overflow-auto modal-overlay">
+              <AddPredictionGame @close="closeAddPredictionGame" />
+            </div>
         </div>
 
         <!-- Right Column -->
@@ -43,12 +69,6 @@
           <!-- Poll Options -->
           <div class="poll-rectangle relative flex mt-2 w-full rounded-lg border border-gray-300">
             <!-- Team A Background -->
-            <!-- <div
-              class="team-bg team-a-bg absolute h-full"
-              :style="{ 
-                width: showResults ? `${teamAPercentage}%` : '50%',
-                backgroundColor: selectedOption === 'Team A' ? '#B0B0B0' : '#E8E8E8' }">
-            </div> -->
             <div
               class="team-bg team-a-bg absolute h-full"
               :style="{ 
@@ -147,7 +167,7 @@
             <AddPrediction
               :gameEventId="selectedGameEventId"
               :predictionGameId="selectedPredictionGameId"
-              :isPopup="true"
+              
               @close="closePredictionModal" />
           </div>
         </div>
@@ -347,9 +367,14 @@ const upcomingColumns = [
   { key: "actions", label: '' },
 ];
 
-const ToCreateGame = () => {
-  router.push('/add-predictiongame');
-};
+const showAddPredictionGame = ref(false);
+function openAddPredictionGame() {
+  showAddPredictionGame.value = true;
+}
+function closeAddPredictionGame() {
+  showAddPredictionGame.value = false;
+}
+
 const ToJoinGame = () => {
   router.push('/join-game');
 };
@@ -561,20 +586,17 @@ function closePredictionModal() {
   align-items: center;
   justify-content: center;
   z-index: 10;
-  animation: fadeIn 0.3s ease-in-out;
 }
 .modal-content {
   background: white;
-  padding: 20px;
   border-radius: 4px;
   width: 90%;
   max-width: 600px;
   max-height: 80%;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  overflow-y: auto;
   position: relative;
   z-index: 100;
-  animation: slideIn 0.3s ease-in-out;
+  overflow-y: auto;
 }
 
 @keyframes fadeIn {

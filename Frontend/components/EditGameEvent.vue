@@ -1,13 +1,13 @@
 <template>
-  <div class="min-h-screen flex justify-center items-center bg-white">
+  <div class="min-h-screen flex justify-center items-center bg-white dark:bg-gray-900">
     <UForm
       :validate="validate"
       :state="state"
-      class="p-6 bg-white rounded-lg shadow-lg max-w-lg w-full"
+      class="p-6 bg-white rounded-lg shadow-lg max-w-lg w-full dark:bg-gray-800"
       @submit="onSubmit"
       @error="onError"
     >
-      <h2 class="text-2xl font-semibold text-center mb-4 text-black">Edit an event</h2>
+      <h2 class="text-2xl font-semibold text-center mb-4 text-black dark:text-white">Edit an event</h2>
       <UFormGroup label="Team A" name="teamA" class="!text-black">
         <UInput v-model="state.teamA" class="border rounded-md p-2"/>
       </UFormGroup>
@@ -33,10 +33,10 @@
       </UFormGroup>
       
       <div class="flex justify-center space-x-4 mt-6">
-        <UButton type="button" @click="navigateToListOfGameEvents" class="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-md transition duration-300">
+        <UButton type="button" @click="navigateToListOfGameEvents" class="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-md transition duration-300 dark:hover:bg-gray-500 dark:bg-gray-400">
             Back to List
         </UButton>
-        <UButton type="submit" class="confirm-button text-white font-bold py-2 px-4 rounded-md transition duration-300">
+        <UButton type="submit" class="confirm-button text-white font-bold py-2 px-4 rounded-md transition duration-300 dark:hover:bg-blue-600 dark:bg-blue-500">
           Confirm
         </UButton>
       </div>
@@ -48,6 +48,11 @@
   div :deep(label) {
     color: black !important;
   }
+  @media (prefers-color-scheme: dark) {
+  div :deep(label) {
+    color: #ffffff !important;
+  }
+}
   </style>
   
   

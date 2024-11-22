@@ -1,18 +1,21 @@
 <template>
-  <div class="flex justify-center items-center">
-    <button 
-      @click="closePopup" 
-      class="absolute top-2 right-2 text-black hover:text-red-600 transition duration-300">
-      &times;
-    </button>
+  <div class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+    <div class="relative">
+      
+      <button 
+        @click="$emit('close')" 
+        class="absolute top-2 right-2 text-black hover:text-red-600 transition duration-300">
+        &times;
+      </button>
+
     <UForm
       :validate="validate"
       :state="state"
-      class="p-6 bg-white rounded-lg shadow-lg max-w-lg w-full"
+      class=" p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-lg w-full "
       @submit="onSubmit"
       @error="onError"
     >
-      <h2 class="text-2xl font-semibold text-center mb-4 text-black">Add a prediction</h2>
+      <h2 class="text-2xl font-semibold text-center mb-4 text-black dark:text-white">Add a prediction</h2>
       <UFormGroup :label="teamALabel" name="endScoreTeamA">
         <UInput v-model="state.endScoreTeamA" class="border rounded-md p-2"/>
       </UFormGroup>
@@ -21,36 +24,43 @@
         <UInput v-model="state.endScoreTeamB" class="border rounded-md p-2"/>
       </UFormGroup>
       
-      <div class="flex justify-center space-x-4 mt-6">
-        <UButton type="button" @click="navigateToGameEvent" class="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-md transition duration-300">
-            Back to List
-        </UButton>
-        <UButton type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition duration-300">
-          Add
-        </UButton>
+      <div class="flex justify-between mt-6">
+          <UButton @click="$emit('close')" class="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-md transition duration-300">
+            Close
+          </UButton>
+          <UButton type="submit" class="add-button text-white font-bold py-2 px-4 rounded-md transition duration-300">
+            Add
+          </UButton>
       </div>
       
     </UForm>
+    </div>
   </div>
   </template>
    <style scoped>
    div :deep(label) {
-     color: black !important;
-   }
+  color: black !important;
+}
+@media (prefers-color-scheme: dark) {
+  div :deep(label) {
+    color: #ffffff !important;
+  }
+}
    </style>
   
   <script setup lang="ts">
-    import type { FormError, FormErrorEvent, FormSubmitEvent } from "#ui/types";
+    import type { FormError, FormErrorEvent } from "#ui/types";
     import type { Prediction } from "~/types/prediction";
+import GameEventsList from "./GameEventsList.vue";
 
     const { addPrediction } = usePredictionsStore();
     const gameEventStore = useGameEventsStore();
-    const emit = defineEmits(['close']);
+    const emit = defineEmits(['close','refresh']);
+
 
     const props = defineProps<{
       gameEventId: number;
       predictionGameId: number;
-      isPopup?: boolean;
     }>();
 
     const event = await gameEventStore.loadSingleEvent(props.gameEventId)
@@ -82,34 +92,27 @@
             predictionMakerId: state.predictionMakerId,
             eventId: props.gameEventId
         };
-      const res = await addPrediction(payload);
-      if (res.status === 409) {  
-        alert("Event has already ended. Cannot add prediction"); 
-        console.log(res)
-      }
-      if (props.isPopup) {
-        emit('close');
-      } else {
-        await navigateTo(`/gameevents/${props.predictionGameId}`);
-      }
+    const res = await addPrediction(payload);
+    if (res.status === 409) {  
+      alert("Event has already ended. Cannot add prediction"); 
+      console.log(res)
     }
+    emit('refresh')
+    emit('close')
+  }
   
     async function onError(prediction: FormErrorEvent) {
       const element = document.getElementById(prediction.errors[0].id);
       element?.focus();
       element?.scrollIntoView({ behavior: "smooth", block: "center" });
     }
-
-    const router = useRouter()
-
-    function navigateToGameEvent() {
-      if (props.isPopup) {
-        emit('close');
-      } else {
-        router.push(`/gameevents/${props.predictionGameId}`);
-      }
-    }
-    function closePopup() {
-      emit('close');
-    }
 </script>
+
+<style>
+.add-button{
+  background-color: #5bb17c;
+}
+.add-button:hover{
+  background-color: #26547C;
+}
+</style>
