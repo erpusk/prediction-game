@@ -3,6 +3,7 @@ import type { GameEvent } from "~/types/gameEvent";
 import type { Prediction } from "~/types/prediction";
 import type { PredictionGame } from "~/types/predictionGame";
 import { useUserStore } from '@/stores/userStore';
+import PredictionGameId from "~/pages/add-gameevents/[predictionGameId].vue";
 
 export const usePredictionGameStore = defineStore("predictionGame", () => {
   const api = useApi();
@@ -23,7 +24,7 @@ export const usePredictionGameStore = defineStore("predictionGame", () => {
         },
         body: JSON.stringify({ UserId: userStore.user!.id }),
       });
-      
+
       // After leaving, reload the prediction games list to reflect changes
       await loadPredictionGames();
     } catch (error) {
@@ -31,9 +32,19 @@ export const usePredictionGameStore = defineStore("predictionGame", () => {
     }
   };
 
-
-
-  
+  const loadUserPoints = async (predictionGameId: number) => {
+    try {
+      const points = await api.customFetch<number>(`PredictionGames/${predictionGameId}/user-points`, {
+        headers: {
+        "Authorization": `Bearer ${userStore.token}`,
+        },
+      });
+      return points;
+    } catch(error) {
+      console.error("Error with getting user points", error)
+      return null;
+    }	
+  }
 
   const loadPredictionGames = async () => {
     try {
@@ -75,6 +86,7 @@ export const usePredictionGameStore = defineStore("predictionGame", () => {
     return predictionGame || null;
   };
 
+
   return {
     predictionGames,
     loadPredictionGames,
@@ -83,6 +95,7 @@ export const usePredictionGameStore = defineStore("predictionGame", () => {
     getPredictionGameById,
     loadPredictionGame,
     leavePredictionGame,
+    loadUserPoints
   };
 });
 
