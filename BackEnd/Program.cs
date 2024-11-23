@@ -58,7 +58,8 @@ builder.Services.AddDbContext<DataContext>(options =>
     .AddScoped<PredictionGamesRepo>()
     .AddScoped<EventRepo>()
     .AddScoped<ApplicationUserRepo>()
-    .AddScoped<PredictionRepo>();
+    .AddScoped<PredictionRepo>()
+    .AddScoped<GameParticipantRepo>();
 
 builder.Services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
     {

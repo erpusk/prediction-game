@@ -1,5 +1,6 @@
 using BackEnd.Models.Classes;
 using itb2203_2024_predictiongame.Backend.Data;
+using itb2203_2024_predictiongame.Backend.Models.Classes;
 using Microsoft.EntityFrameworkCore;
 
 namespace BackEnd.Data.Repos
@@ -20,7 +21,7 @@ namespace BackEnd.Data.Repos
             return await result.ToListAsync();
         }
 
-        public async Task<Event?> GetById(int id) => await _context.Events.FindAsync(id);
+        public async Task<Event?> GetById(int id) => await _context.Events.Include(e => e.Predictions).FirstOrDefaultAsync(x => x.Id == id);
 
         public async Task<Event> AddEvent(Event eventModel){
             await _context.AddAsync(eventModel);

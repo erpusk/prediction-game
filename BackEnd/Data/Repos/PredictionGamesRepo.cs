@@ -28,7 +28,8 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
             var gameCreatorAsParticipant = new PredictionGameParticipant {
                 UserId = gameCreator.Id,
                 GameId = predictionGame.Id,
-                Role = "GameCreator"
+                Role = "GameCreator",
+                EarnedPoints = 0,
             };
 
             await context.PredictionGameParticipants.AddAsync(gameCreatorAsParticipant);
@@ -143,7 +144,11 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
             await context.SaveChangesAsync();
         }
 
+        public async Task<int?> GetUserPoints(int userId, int gameId)
+        {
+            var participant = await GetParticipantByUserIdAndGameId(userId, gameId);
 
-
+            return participant?.EarnedPoints;
+        }
     }
 }

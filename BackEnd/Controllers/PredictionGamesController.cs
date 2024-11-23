@@ -52,6 +52,24 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
             }
             return Ok(predictionGame.ToPredictionGameDto(userId));
         }
+        [HttpGet("{predictionGameId:int}/user-points")]
+        public async Task<IActionResult> GetUserPoints(int predictionGameId) {
+            var isGameExist = await repo.PredictionGameExistsInDb(predictionGameId);
+
+            if (!isGameExist) {
+                return NotFound();
+            }
+
+            var userIdClaim = User.FindFirst("userId")?.Value;
+
+            if (userIdClaim == null || !int.TryParse(userIdClaim, out int userId))
+            {
+                return Unauthorized("User id not found");
+            }
+
+            var userPoints = await repo.GetUserPoints(userId, predictionGameId);
+            return Ok(userPoints);
+        }
 
         [HttpPost]
         public async Task<IActionResult> CreatePredictionGame([FromBody] CreatePredictionGameRequestDto predictionGameDto)
@@ -157,8 +175,5 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
 
             return Ok("Successfully left the game.");
         }
-
-
-
     }
 }
