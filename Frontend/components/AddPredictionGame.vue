@@ -1,9 +1,16 @@
 <template>
-  <div class="min-h-screen bg-white dark:bg-gray-900  flex justify-center items-center">
+  <div class="min-h-screen flex justify-center items-center bg-opacity-50 relative">
+    
+    <button 
+        @click="$emit('close')" 
+        class="absolute top-2 right-2 text-black hover:text-red-600 transition duration-300">
+        &times;
+    </button>
+
     <UForm
       :validate="validate"
       :state="state"
-      class="space-y-7 p-20 bg-white dark:bg-gray-800  rounded-lg shadow-lg max-w-lg w-full text-black"
+      class="space-y-7 px-20 py-10 bg-white dark:bg-gray-800  rounded-lg shadow-lg max-w-lg w-full text-black"
       @submit="onSubmit"
       @error="onError"
     >
@@ -26,14 +33,10 @@
         <USelect v-model="state.privacy" :options="['Private game', 'Public game']" class="border rounded-md p-2"  />
       </UFormGroup>
   
-      <div class="flex justify-center space-x-4 mt-6">
-        <UButton type="button" @click="navigateToListOfPredictionGames" class="bg-gray-300 
-        hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-md transition duration-300 dark:hover:bg-gray-500 dark:bg-gray-400  ">
-            To Games List
-        </UButton>
-        <UButton type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition duration-300 dark:hover:bg-blue-600 dark:bg-blue-500">
-            Create a Game
-        </UButton>
+      <div class="flex justify-between mt-6">
+          <UButton type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition duration-300">
+            Add
+          </UButton>
       </div>
     </UForm>
   </div>
@@ -55,7 +58,7 @@ div :deep(label) {
     import type { FormError, FormErrorEvent, FormSubmitEvent } from "#ui/types";
     import { useRouter } from 'vue-router';
 
-  
+    const emit = defineEmits(['close']);
     const { addPredictionGame } = usePredictionGameStore();
     const userStore = useUserStore();
   
@@ -107,19 +110,17 @@ const endDateStr = computed({
       const errors = [];
       const currentDate = new Date();
 
-      // validate prediction game title
       if (!state.predictionGameTitle) errors.push({ path: "predictionGameTitle", message: "Required" });
       else if (state.predictionGameTitle.length < 4 || state.predictionGameTitle.length > 40) {
         errors.push({ path: "predictionGameTitle", message: "Title must be between 4 and 40 characters." });
       }
 
-      // validate start and end dates
       if (!state.startDate) errors.push({ path: "startDate", message: "Required" });
       if (!state.endDate) errors.push({ path: "endDate", message: "Required" });
       if (new Date(state.startDate) >= new Date(state.endDate)) {
         errors.push({ path: "endDate", message: "End date must be after the start date." });
       }
-      // Check if startDate and endDate are in the future
+
       if (state.startDate && new Date(state.startDate) <= currentDate) {
         errors.push({ path: "startDate", message: "Start date must be in the future." });
       }
@@ -127,7 +128,7 @@ const endDateStr = computed({
           errors.push({ path: "endDate", message: "End date must be in the future." });
       }
 
-      // validate privacy field
+
       if (!state.privacy) errors.push({ path: "privacy", message: "Please select a game privacy option." });
 
       return errors;
@@ -146,14 +147,8 @@ const endDateStr = computed({
             participants: state.participants
         };
       addPredictionGame(payload);
-      await navigateTo("/predictiongames");
+      emit('close');
     }
-
-    const router = useRouter();
-
-    const navigateToListOfPredictionGames = () => {
-    router.push('/predictiongames');
-    };
   
     async function onError(event: FormErrorEvent) {
       const element = document.getElementById(event.errors[0].id);

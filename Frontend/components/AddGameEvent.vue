@@ -115,7 +115,7 @@ div :deep(label) {
       return errors;
     };
   
-    async function onSubmit(gameEvent: FormSubmitEvent<any>) {
+    async function onSubmit() {
         const payload = {
             id: state.id,
             teamA: state.teamA,

@@ -44,9 +44,18 @@
                     </button>
                   </div>
                   <div v-else>
-                    <button @click="goToMakingAPrediction(row)" class="btn-primary-small">
+                    <button @click="showModalPrediction = true" 
+                    class="btn-primary-small">
                       Make a prediction
                     </button>
+
+                    <AddPrediction 
+                      v-if="showModalPrediction" 
+                      :predictionGameId="props.predictionGameId" 
+                      :game-event-id="row.id"
+                      @close="closeModalPrediction"
+                      @refresh="fetchData"/>
+
                   </div>
                   <button @click="goPredictionsList(row)" class="btn-primary-small">
                     View predictions
@@ -84,6 +93,8 @@ import { usePredictionGameStore } from '@/stores/stores';
 const predictionGameStore = usePredictionGameStore();
 const uniqueCode = ref('');
 const showModal = ref(false);
+const showModalPrediction = ref(false);
+
 
 const gameEventStore = useGameEventsStore();
 const { gameEvents } = storeToRefs(gameEventStore);
@@ -156,7 +167,8 @@ const formattedGameEvents = computed(() => {
   });
 });
 
-onMounted(async () => {
+
+async function fetchData() {
   const gameData = await predictionGameStore.loadPredictionGame(props.predictionGameId);
   uniqueCode.value = gameData?.uniqueCode || "Not available";
 
@@ -182,11 +194,16 @@ onMounted(async () => {
     }
     predictionStore.userPredictionsMap = predictionsMap;
   }
+}
+
+
+onMounted(async () => {
+  fetchData()
 });
 
 async function userHasMadePrediction(gameEvent: GameEvent, userId: number): Promise<boolean> {
-  const predictions = await predictionStore.getPredictions(gameEvent.id);
-  return predictions.some(element => element.predictionMakerId === userId);
+  await predictionStore.loadPredictions(gameEvent.id);
+  return predictionStore.predictions.some(element => element.predictionMakerId === userId);
 }
 
 const deletePredictionGameEvent = (gameEvent: GameEvent) => {
@@ -205,8 +222,8 @@ const closeModal = () => {
   showModal.value = false; 
 };
 
-const goToMakingAPrediction = (gameEvent: GameEvent) => {
-  router.push(`/add-prediction/${props.predictionGameId}/${gameEvent.id}`)
+const closeModalPrediction = () => {
+  showModalPrediction.value = false; 
 }
 
 const goPredictionsList = (gameEvent: GameEvent) => {
