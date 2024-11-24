@@ -16,6 +16,7 @@ public class DataContext : IdentityDbContext<ApplicationUser, IdentityRole<int>,
     public DbSet<ApplicationUser> ApplicationUsers{ get; set; }
     public DbSet<Prediction> Predictions { get; set; }
     public DbSet<PredictionGameParticipant> PredictionGameParticipants { get; set; }
+    public DbSet<ChatMessages> ChatMessages { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -47,6 +48,15 @@ public class DataContext : IdentityDbContext<ApplicationUser, IdentityRole<int>,
         roleBuilder.HasData(roles);
         
     }
+    private static void ConfigureChatMessagesEntity(EntityTypeBuilder<ChatMessages> chatMessages)
+{
+    chatMessages.Property(c => c.Id).ValueGeneratedOnAdd();
+
+    chatMessages.HasOne(c => c.Game)
+    .WithMany(pg => pg.ChatMessages)
+    .HasForeignKey(c => c.GameId)
+    .OnDelete(DeleteBehavior.Cascade);
+}
 
     private static void ConfigureEventEntity(EntityTypeBuilder<Event> Event)
     {
