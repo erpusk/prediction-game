@@ -150,5 +150,26 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
 
             return participant?.EarnedPoints;
         }
+        public async Task<List<ChatMessages>> GetChatMessagesAsync(int gameId)
+        {
+            return await context.ChatMessages
+                .Where(chat => chat.GameId == gameId)
+                .OrderBy(chat => chat.Timestamp)
+                .ToListAsync();
+        }
+        public async Task AddChatMessageAsync(ChatMessages message)
+        {
+            context.ChatMessages.Add(message);
+            await context.SaveChangesAsync();
+        }
+        public async Task<PredictionGame> GetPredictionGameWithChatsAsync(int gameId)
+        {
+            return await context.PredictionGames
+                .Include(pg => pg.ChatMessages)
+                .Include(pg => pg.Events)
+                .Include(pg => pg.Participants)
+                .FirstOrDefaultAsync(pg => pg.Id == gameId);
+        }
+
     }
 }

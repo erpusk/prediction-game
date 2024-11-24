@@ -2,6 +2,7 @@ using BackEnd.Data.Repos;
 using BackEnd.DTOs.PredictionGame;
 using BackEnd.DTOs.PredictionGameDTO;
 using BackEnd.Mappers;
+using BackEnd.Models.Classes;
 using itb2203_2024_predictiongame.Backend.Data.Repos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -175,5 +176,28 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
 
             return Ok("Successfully left the game.");
         }
+        [HttpGet("{gameId}")]
+        public async Task<IActionResult> GetChatMessages(int gameId)
+        {
+            var messages = await repo.GetChatMessagesAsync(gameId);
+            return Ok(messages);
+        }
+
+        [HttpPost("{gameId}")]
+        public async Task<IActionResult> AddChatMessage(int gameId, [FromBody] ChatMessages message)
+        {
+            if (string.IsNullOrEmpty(message.Message) || string.IsNullOrEmpty(message.Sender))
+            {
+                return BadRequest("Message and sender cannot be empty.");
+            }
+
+            message.GameId = gameId;
+            message.Timestamp = DateTime.UtcNow;
+
+            await repo.AddChatMessageAsync(message);
+
+            return Ok();
+        }
+
     }
 }

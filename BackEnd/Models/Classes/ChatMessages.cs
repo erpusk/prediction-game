@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using itb2203_2024_predictiongame.Backend.Models.Classes;
 
 namespace BackEnd.Models.Classes;
