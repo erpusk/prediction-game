@@ -1,5 +1,6 @@
 using BackEnd.DTOs.ApplicationUser;
 using BackEnd.DTOs.Event;
+using BackEnd.DTOs.PredictionGameDTO;
 
 namespace BackEnd.DTOs.PredictionGame
 {
@@ -18,5 +19,6 @@ namespace BackEnd.DTOs.PredictionGame
         public List<ApplicationUserDto>? Participants { get; set; } = new List<ApplicationUserDto>();
 
         public DateTime CreationDate { get; set; } = DateTime.Now.ToUniversalTime();
+        public List<ChatMessageDto> ChatMessages { get; set; } = new List<ChatMessageDto>();
     }
 }

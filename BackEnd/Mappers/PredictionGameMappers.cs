@@ -1,6 +1,7 @@
 using BackEnd.DTOs.ApplicationUser;
 using BackEnd.DTOs.Event;
 using BackEnd.DTOs.PredictionGame;
+using BackEnd.DTOs.PredictionGameDTO;
 using BackEnd.Models.Classes;
 using itb2203_2024_predictiongame.Backend.Models.Classes;
 
@@ -30,7 +31,13 @@ namespace BackEnd.Mappers
                     UserName = p.User?.UserName ?? "Unknown User",
                     UserId = p.UserId
                 }).ToList(),
-
+                ChatMessages = predictionGameModel.ChatMessages.Select(chat => new ChatMessageDto
+                {
+                    Id = chat.Id,
+                    Sender = chat.Sender!,
+                    Message = chat.Message!,
+                    Timestamp = chat.Timestamp
+                }).ToList()
             };
         }
 

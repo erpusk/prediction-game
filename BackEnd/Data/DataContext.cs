@@ -27,8 +27,10 @@ public class DataContext : IdentityDbContext<ApplicationUser, IdentityRole<int>,
         ConfigureEventEntity(modelBuilder.Entity<Event>());
         ConfigureApplicationUserEntity(modelBuilder.Entity<ApplicationUser>());
         ConfigurePredictionEntity(modelBuilder.Entity<Prediction>());
+        
         ConfigureAccountEntity(modelBuilder.Entity<IdentityRole<int>>());
         ConfigurePredictionGameParticipantEntity(modelBuilder.Entity<PredictionGameParticipant>());
+        ConfigureChatMessagesEntity(modelBuilder.Entity<ChatMessages>());
     }
 
     private void ConfigureAccountEntity(EntityTypeBuilder<IdentityRole<int>> roleBuilder)
@@ -49,14 +51,14 @@ public class DataContext : IdentityDbContext<ApplicationUser, IdentityRole<int>,
         
     }
     private static void ConfigureChatMessagesEntity(EntityTypeBuilder<ChatMessages> chatMessages)
-{
-    chatMessages.Property(c => c.Id).ValueGeneratedOnAdd();
+    {
+        chatMessages.Property(c => c.Id).ValueGeneratedOnAdd();
 
-    chatMessages.HasOne(c => c.Game)
-    .WithMany(pg => pg.ChatMessages)
-    .HasForeignKey(c => c.GameId)
-    .OnDelete(DeleteBehavior.Cascade);
-}
+        chatMessages.HasOne(c => c.Game)
+        .WithMany(pg => pg.ChatMessages)
+        .HasForeignKey(c => c.GameId)
+        .OnDelete(DeleteBehavior.Cascade);
+    }
 
     private static void ConfigureEventEntity(EntityTypeBuilder<Event> Event)
     {
