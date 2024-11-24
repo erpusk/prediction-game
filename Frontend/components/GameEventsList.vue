@@ -79,6 +79,11 @@
 
         </UTable>
         </div>
+        <div class="chat-box-container">
+        <h2 class="text-xl font-bold mb-2 text-black dark:text-white">Prediction Game Chat</h2>
+        <ChatBox :gameId="props.predictionGameId" :currentUserId="userStore.user?.id" />
+      </div>
+
       </div>
     </div>
   </div>
@@ -90,6 +95,15 @@ import AddGameEvent from '@/components/AddGameEvent.vue';
 import { useGameEventsStore } from '@/stores/stores';
 import { format } from 'date-fns';
 import { usePredictionGameStore } from '@/stores/stores';
+import ChatBox from '@/components/ChatBox.vue';
+const selectedEventId = ref<number | null>(null);
+  const toggleChatBox = (eventId: number) => {
+  if (selectedEventId.value === eventId) {
+    selectedEventId.value = null;
+  } else {
+    selectedEventId.value = eventId;
+  }
+};
 const predictionGameStore = usePredictionGameStore();
 const uniqueCode = ref('');
 const showModal = ref(false);
@@ -315,5 +329,17 @@ h2 {
 
 h1 {
   color: #2c3e50;
+}
+.chat-box-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 300px;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  padding: 10px;
 }
 </style>
