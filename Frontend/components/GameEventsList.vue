@@ -81,7 +81,9 @@
         </div>
         <div class="chat-box-container">
         <h2 class="text-xl font-bold mb-2 text-black dark:text-white">Prediction Game Chat</h2>
-        <ChatBox :gameId="props.predictionGameId" :currentUserId="userStore.user?.id" />
+        <ChatBox 
+  :gameId="props.predictionGameId" 
+  :currentUserId="userStore.user?.id" />
       </div>
 
       </div>
@@ -96,6 +98,7 @@ import { useGameEventsStore } from '@/stores/stores';
 import { format } from 'date-fns';
 import { usePredictionGameStore } from '@/stores/stores';
 import ChatBox from '@/components/ChatBox.vue';
+
 const selectedEventId = ref<number | null>(null);
   const toggleChatBox = (eventId: number) => {
   if (selectedEventId.value === eventId) {

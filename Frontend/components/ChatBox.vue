@@ -1,7 +1,6 @@
 <template>
     <div>
       <div class="chat-box">
-        <!-- Kuvab sõnumid -->
         <div v-for="message in messages" :key="message.id" class="message">
   <strong>{{ getSenderName(message.senderId) }}</strong>: {{ message.message }}
   <small>{{ new Date(message.timestamp).toLocaleString() }}</small>
@@ -10,7 +9,6 @@
 
       </div>
   
-      <!-- Sõnumi sisestus ja nupp -->
       <form @submit.prevent="sendMessage" class="chat-input-container">
         <input
           v-model="newMessage"
@@ -52,50 +50,48 @@
   try {
     const response = await fetch(`${backendBaseUrl}/api/PredictionGames/${props.gameId}/Chat`, {
       headers: {
-        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
         "Content-Type": "application/json",
       },
     });
 
     if (!response.ok) throw new Error(await response.text());
 
-    const gameData = await response.json();
+    const messagesFromServer = await response.json();
 
-    // Lae osalejate andmed
-    const participants = gameData.participants || [];
-    users.value = participants.reduce((acc, user) => {
-      acc[user.userId] = user.userName;
-      return acc;
-    }, {});
+    const userMap = {};
+    messagesFromServer.forEach((msg) => {
+      if (msg.senderId && msg.senderName) {
+        userMap[msg.senderId] = msg.senderName;
+      }
+    });
+    users.value = userMap;
 
-    console.log("Users loaded:", users.value); // Kontrolli osalejate andmeid
-    // Lisa igale sõnumile senderName
-    messages.value = gameData.chatMessages.map((msg) => ({
+    messages.value = messagesFromServer.map((msg) => ({
       ...msg,
       senderName: users.value[msg.senderId] || "Unknown User",
     }));
 
-    console.log("Messages loaded:", messages.value); // Kontrolli sõnumite andmeid
-
-    scrollToBottom(); // Kerib lõpuni
+    console.log("Messages after processing:", messages.value);
+    scrollToBottom();
   } catch (error) {
     console.error("Error loading messages:", error);
   }
 };
-
-
   
 const getSenderName = (userId) => {
+
   if (userId === props.currentUserId) {
     return props.currentUserName || "Me";
   }
-  return users.value[userId] || "Unknown User";
+
+  const senderName = users.value[userId] || "Unknown User";
+  return senderName;
 };
   
 const sendMessage = async () => {
   if (!newMessage.value.trim()) return;
 
-  // Lisa ajutine sõnum
   const tempMessage = {
     id: Date.now(),
     senderId: props.currentUserId,
@@ -104,8 +100,6 @@ const sendMessage = async () => {
   };
 
   messages.value.push(tempMessage);
-
-  console.log("Temporary message added:", tempMessage);
 
   try {
     const response = await fetch(`${backendBaseUrl}/api/PredictionGames/${props.gameId}/Chat`, {
@@ -123,7 +117,6 @@ const sendMessage = async () => {
     if (response.ok) {
       const savedMessage = await response.json();
 
-      // Uuenda sõnumi andmed
       messages.value = messages.value.map((msg) =>
         msg.id === tempMessage.id ? { ...savedMessage, senderName: users.value[savedMessage.senderId] || "Unknown User" } : msg
       );
@@ -131,15 +124,15 @@ const sendMessage = async () => {
       console.log("Saved message received:", savedMessage);
     } else {
       console.error("Error sending message:", await response.text());
-      messages.value.pop(); // Eemalda ajutine sõnum, kui saatmine ebaõnnestub
+      messages.value.pop();
     }
   } catch (error) {
     console.error("Error sending message:", error);
-    messages.value.pop(); // Eemalda ajutine sõnum, kui saatmine ebaõnnestub
+    messages.value.pop();
   }
 
-  newMessage.value = ""; // Tühjenda sisendväli
-  scrollToBottom(); // Kerib lõpuni
+  newMessage.value = "";
+  scrollToBottom();
 };
 
 
@@ -152,7 +145,6 @@ const scrollToBottom = () => {
   });
   console.log(messages.value);
 };
-
   </script>
   
   <style>

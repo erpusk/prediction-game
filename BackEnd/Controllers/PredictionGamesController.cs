@@ -179,8 +179,9 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
         [HttpGet("{gameId}/Chat")]
         public async Task<IActionResult> GetChatMessages(int gameId)
         {
+            
             var messages = await repo.GetChatMessagesAsync(gameId);
-            if (messages == null)
+            if (messages == null || !messages.Any())
                 return NotFound("Chat messages not found for the specified game.");
 
             return Ok(messages);
@@ -199,11 +200,12 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
                 Id = messageDto.Id,
                 GameId = gameId,
                 SenderId = messageDto.SenderId,
+                SenderName = await repo.GetSenderNameById(messageDto.SenderId),
                 Message = messageDto.Message,
                 Timestamp = DateTime.UtcNow
             };
             return Ok(addedMessage);
         }
-
+        
     }
 }

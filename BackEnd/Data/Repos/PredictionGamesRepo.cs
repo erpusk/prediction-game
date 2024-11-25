@@ -158,15 +158,25 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
 
             return participant?.EarnedPoints;
         }
-        public async Task<List<ChatMessages>> GetChatMessagesAsync(int gameId)
+        public async Task<List<ChatMessageDto>> GetChatMessagesAsync(int gameId)
         {
             return await context.ChatMessages
-            .Where(c => c.GameId == gameId)
-            .Include(c => c.Sender)
-            .Include(c => c.Game)
-            .OrderBy(c => c.Timestamp)
-            .ToListAsync();
+                .Where(m => m.GameId == gameId)
+                .OrderBy(m => m.Timestamp)
+                .Include(m => m.Sender)
+                .Select(m => new ChatMessageDto
+                {
+                    Id = m.Id,
+                    GameId = m.GameId,
+                    SenderId = m.SenderId,
+                    SenderName = m.Sender != null ? m.Sender.UserName : "Unknown User",
+                    Message = m.Message,
+                    Timestamp = m.Timestamp
+                })
+                .ToListAsync();
+                
         }
+
         public async Task<bool> AddChatMessageAsync(int gameId, ChatMessageDto messageDto)
         {
             var chatMessage = new ChatMessages
@@ -194,6 +204,13 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
                 .Include(pg => pg.Events)
                 .Include(pg => pg.Participants)
                 .FirstOrDefaultAsync(pg => pg.Id == gameId);
+        }
+        public async Task<string?> GetSenderNameById(int senderId)
+        {
+            return await context.ApplicationUsers
+                .Where(u => u.Id == senderId)
+                .Select(u => u.UserName)
+                .FirstOrDefaultAsync();
         }
 
 

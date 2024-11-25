@@ -62,6 +62,7 @@ public class DataContext : IdentityDbContext<ApplicationUser, IdentityRole<int>,
         .WithMany()
         .HasForeignKey(c => c.SenderId)
         .OnDelete(DeleteBehavior.Restrict);
+        
     }
 
     private static void ConfigureEventEntity(EntityTypeBuilder<Event> Event)
