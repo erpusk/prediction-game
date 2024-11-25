@@ -77,7 +77,7 @@ namespace BackEnd.Controllers
             if(eventModel.IsCompleted == true && eventModel.TeamAScore != null && eventModel.TeamBScore != null){
                 foreach (var prediction in eventModel.Predictions)
                 {
-                    var awardResult = await _gpRepo.AwardPoints(eventModel.PredictionGameId, prediction.PredictionMakerId);
+                    var awardResult = await _gpRepo.AwardPoints(eventModel.Id, prediction.PredictionMakerId);
                     if (!awardResult){
                         return BadRequest("Problem occured with awarding points.");
                     }
