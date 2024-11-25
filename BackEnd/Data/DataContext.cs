@@ -16,6 +16,7 @@ public class DataContext : IdentityDbContext<ApplicationUser, IdentityRole<int>,
     public DbSet<ApplicationUser> ApplicationUsers{ get; set; }
     public DbSet<Prediction> Predictions { get; set; }
     public DbSet<PredictionGameParticipant> PredictionGameParticipants { get; set; }
+    public DbSet<ChatMessages> ChatMessages { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -26,8 +27,10 @@ public class DataContext : IdentityDbContext<ApplicationUser, IdentityRole<int>,
         ConfigureEventEntity(modelBuilder.Entity<Event>());
         ConfigureApplicationUserEntity(modelBuilder.Entity<ApplicationUser>());
         ConfigurePredictionEntity(modelBuilder.Entity<Prediction>());
+        
         ConfigureAccountEntity(modelBuilder.Entity<IdentityRole<int>>());
         ConfigurePredictionGameParticipantEntity(modelBuilder.Entity<PredictionGameParticipant>());
+        ConfigureChatMessagesEntity(modelBuilder.Entity<ChatMessages>());
     }
 
     private void ConfigureAccountEntity(EntityTypeBuilder<IdentityRole<int>> roleBuilder)
@@ -45,6 +48,20 @@ public class DataContext : IdentityDbContext<ApplicationUser, IdentityRole<int>,
             }
         };
         roleBuilder.HasData(roles);
+        
+    }
+    private static void ConfigureChatMessagesEntity(EntityTypeBuilder<ChatMessages> chatMessages)
+    {
+        chatMessages.Property(c => c.Id).ValueGeneratedOnAdd();
+
+        chatMessages.HasOne(c => c.Game)
+        .WithMany(pg => pg.ChatMessages)
+        .HasForeignKey(c => c.GameId)
+        .OnDelete(DeleteBehavior.Cascade);
+        chatMessages.HasOne(c => c.Sender)
+        .WithMany()
+        .HasForeignKey(c => c.SenderId)
+        .OnDelete(DeleteBehavior.Restrict);
         
     }
 
