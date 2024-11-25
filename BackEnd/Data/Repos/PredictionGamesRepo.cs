@@ -3,6 +3,7 @@ using itb2203_2024_predictiongame.Backend.Models.Classes;
 using BackEnd.Models.Classes;
 using System.Runtime.CompilerServices;
 using System.IO.Compression;
+using BackEnd.DTOs.PredictionGameDTO;
 
 namespace itb2203_2024_predictiongame.Backend.Data.Repos
 {
@@ -60,7 +61,14 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
         }
 
         public async Task<PredictionGame?> GetPredictionGameById(int id) => 
-            await context.PredictionGames.Include(m => m.Events).Include(pg => pg.Participants).ThenInclude(participant => participant.User).Include(pg => pg.GameCreator).FirstOrDefaultAsync(x => x.Id == id);
+            await context.PredictionGames
+            .Include(m => m.Events)
+            .Include(pg => pg.Participants)
+            .ThenInclude(participant => participant.User)
+            .Include(pg => pg.GameCreator)
+            .Include(pg => pg.ChatMessages)
+            .ThenInclude(cm => cm.Sender)
+            .FirstOrDefaultAsync(x => x.Id == id);
         public async Task<bool> PredictionGameExistsInDb(int id) => await context.PredictionGames.AnyAsync(x => x.Id == id);
 
         //UPDATE
@@ -91,7 +99,7 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
             context.Remove(predictionGameInDb);
             int changesCount = await context.SaveChangesAsync();
 
-            return changesCount == 1;
+            return changesCount >= 1;
         }
 
         public async Task<ApplicationUser?> GetUserById(int userId) => await context.ApplicationUsers.FindAsync(userId); //abimeetod Kasutaja saamiseks.
@@ -134,9 +142,17 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
         }
 
         // Remove a participant from the game
-        public async Task RemoveParticipant(PredictionGameParticipant participant)
+        public async Task RemoveParticipant(PredictionGameParticipant participant, PredictionGame predictionGame)
         {
-            var userPredictions = await context.Predictions.Where(p => p.PredictionMakerId == participant.UserId).ToListAsync();
+            var userEventIds = await context.Events
+                .Where(e => e.PredictionGameId == predictionGame.Id)
+                .Select(e => e.PredictionGameId)
+                .ToListAsync();
+            
+            var userPredictions = await context.Predictions
+                .Where(p => p.PredictionMakerId == participant.UserId && userEventIds.Contains(p.EventId))
+                .ToListAsync();
+            
             context.Predictions.RemoveRange(userPredictions);
             await context.SaveChangesAsync();
             
@@ -150,5 +166,61 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
 
             return participant?.EarnedPoints;
         }
+        public async Task<List<ChatMessageDto>> GetChatMessagesAsync(int gameId)
+        {
+            return await context.ChatMessages
+                .Where(m => m.GameId == gameId)
+                .OrderBy(m => m.Timestamp)
+                .Include(m => m.Sender)
+                .Select(m => new ChatMessageDto
+                {
+                    Id = m.Id,
+                    GameId = m.GameId,
+                    SenderId = m.SenderId,
+                    SenderName = m.Sender != null ? m.Sender.UserName : "Unknown User",
+                    Message = m.Message,
+                    Timestamp = m.Timestamp
+                })
+                .ToListAsync();
+                
+        }
+
+        public async Task<bool> AddChatMessageAsync(int gameId, ChatMessageDto messageDto)
+        {
+            var chatMessage = new ChatMessages
+            {
+                GameId = gameId,
+                SenderId = messageDto.SenderId,
+                Message = messageDto.Message,
+                Timestamp = DateTime.UtcNow,
+                SenderName = context.ApplicationUsers
+                    .Where(u => u.Id == messageDto.SenderId)
+                    .Select(u => u.UserName)
+                    .FirstOrDefault() ?? "Unknown User",
+            };
+
+            await context.ChatMessages.AddAsync(chatMessage);
+            await context.SaveChangesAsync();
+
+            return true;
+        }
+        public async Task<PredictionGame?> GetPredictionGameWithChatsAsync(int gameId)
+        {
+            return await context.PredictionGames
+                .Include(pg => pg.ChatMessages)
+                    .ThenInclude(cm => cm.Sender)
+                .Include(pg => pg.Events)
+                .Include(pg => pg.Participants)
+                .FirstOrDefaultAsync(pg => pg.Id == gameId);
+        }
+        public async Task<string?> GetSenderNameById(int senderId)
+        {
+            return await context.ApplicationUsers
+                .Where(u => u.Id == senderId)
+                .Select(u => u.UserName)
+                .FirstOrDefaultAsync();
+        }
+
+
     }
 }

@@ -2,6 +2,7 @@ using BackEnd.Data.Repos;
 using BackEnd.DTOs.PredictionGame;
 using BackEnd.DTOs.PredictionGameDTO;
 using BackEnd.Mappers;
+using BackEnd.Models.Classes;
 using itb2203_2024_predictiongame.Backend.Data.Repos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -157,23 +158,54 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
         public async Task<IActionResult> LeaveGame(string uniqueCode, [FromBody] LeaveGameRequestDto request)
         {
             // Find the game by unique code
-            var game = await repo.GetPredictionGameByCode(uniqueCode);
-            if (game == null)
+            var predictionGame = await repo.GetPredictionGameByCode(uniqueCode);
+            if (predictionGame == null)
             {
                 return NotFound("Game not found.");
             }
 
             // Find the participant record
-            var participant = await repo.GetParticipantByUserIdAndGameId(request.UserId, game.Id);
+            var participant = await repo.GetParticipantByUserIdAndGameId(request.UserId, predictionGame.Id);
             if (participant == null)
             {
                 return NotFound("User is not a participant in this game.");
             }
 
             // Remove the participant from the game
-            await repo.RemoveParticipant(participant);
+            await repo.RemoveParticipant(participant, predictionGame);
 
             return Ok("Successfully left the game.");
         }
+        [HttpGet("{gameId}/Chat")]
+        public async Task<IActionResult> GetChatMessages(int gameId)
+        {
+            
+            var messages = await repo.GetChatMessagesAsync(gameId);
+            if (messages == null || !messages.Any())
+                return NotFound("Chat messages not found for the specified game.");
+
+            return Ok(messages);
+        }
+
+        [HttpPost("{gameId}/Chat")]
+        public async Task<IActionResult> AddChatMessage(int gameId, [FromBody] ChatMessageDto messageDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var success = await repo.AddChatMessageAsync(gameId, messageDto);
+            if (!success) return BadRequest("Could not add chat message.");
+             var addedMessage = new ChatMessageDto
+            {
+                Id = messageDto.Id,
+                GameId = gameId,
+                SenderId = messageDto.SenderId,
+                SenderName = await repo.GetSenderNameById(messageDto.SenderId),
+                Message = messageDto.Message,
+                Timestamp = DateTime.UtcNow
+            };
+            return Ok(addedMessage);
+        }
+        
     }
 }

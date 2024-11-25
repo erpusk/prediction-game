@@ -77,7 +77,7 @@ namespace BackEnd.Controllers
             if(eventModel.IsCompleted == true && eventModel.TeamAScore != null && eventModel.TeamBScore != null){
                 foreach (var prediction in eventModel.Predictions)
                 {
-                    var awardResult = await _gpRepo.AwardPoints(eventModel.PredictionGameId, prediction.PredictionMakerId);
+                    var awardResult = await _gpRepo.AwardPoints(eventModel.Id, prediction.PredictionMakerId);
                     if (!awardResult){
                         return BadRequest("Problem occured with awarding points.");
                     }
@@ -104,6 +104,25 @@ namespace BackEnd.Controllers
             var result = await _repo.GetUserUpcomingPredictions(userId, predictionGameId);
             var resultAsDto = result.Select(e => e.ToEventDto()).ToList();
             return Ok(resultAsDto);
+        }
+
+        [HttpGet("{eventId:int}/event-user-points")]
+        public async Task<IActionResult> GetUserPointsForEvent([FromRoute]int eventId) {
+            var predictionGameEvent = await _repo.GetById(eventId);
+
+            if (predictionGameEvent == null) {
+                return NotFound("Prediction game event not found");
+            }
+
+            var userIdClaim = User.FindFirst("userId")?.Value;
+
+            if (userIdClaim == null || !int.TryParse(userIdClaim, out int userId))
+            {
+                return Unauthorized("User id not found");
+            }
+
+            var userPointsForEvent = await _gpRepo.GetParticipantEarnedPointsForEvent(userId, eventId);
+            return Ok(userPointsForEvent);
         }
     }
 }
