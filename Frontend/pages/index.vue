@@ -251,7 +251,7 @@ const paginatedUpcomingPredictions = computed(() => {
   return formattedUpcomingPredictions.value.slice(start, start + upcomingPageSize);
 });
 
-type PredictionWithScoreTeamnamesEventdate = {
+type PredictionWithScoreTeamnamesPoints = {
   id: number;
   endScoreTeamA: number;
   endScoreTeamB: number;
@@ -259,9 +259,10 @@ type PredictionWithScoreTeamnamesEventdate = {
   eventId: number;
   score?: string;
   teamNames? : [string, string];
+  points?: number;
 };
 
-const predictionHistoryWithScores = ref<PredictionWithScoreTeamnamesEventdate[]>([]);
+const predictionHistoryWithScores = ref<PredictionWithScoreTeamnamesPoints[]>([]);
 
 const formattedPredictionGamesHistory = computed(() => {
   const latestFivePredictions = predictionHistoryWithScores.value
@@ -275,6 +276,7 @@ const formattedPredictionGamesHistory = computed(() => {
         : "Error loading teams",
       yourPrediction: `${prediction.endScoreTeamA} - ${prediction.endScoreTeamB}`,
       score: prediction.score || "Not available",
+      points: prediction.points,
     };
   });
 });
@@ -305,8 +307,9 @@ onMounted(async () => {
   predictionHistoryWithScores.value = await Promise.all(
     predictionHistory.value.map(async (prediction) => {
       const score = await getScore(prediction.eventId);
-      const teamNames: [string, string] = await getTeamNames(prediction.eventId)
-      return { ...prediction, score, teamNames };
+      const teamNames: [string, string] = await getTeamNames(prediction.eventId);
+      const points: number = await getEventPoints(prediction.eventId);
+      return { ...prediction, score, teamNames, points };
     })
   );
 });
@@ -318,7 +321,7 @@ onBeforeRouteLeave(() => {
 const getScore = async (eventId: number): Promise<string> => {
   try {
     const event = await gameEventStore.loadSingleEvent(eventId) as GameEvent;
-    if (event && event.teamAScore && event.teamBScore) {
+    if (event && event.teamAScore !== null && event.teamBScore !== null) {
       const score = `${event.teamAScore} - ${event.teamBScore}`
       return score;
     }
@@ -341,17 +344,21 @@ const getTeamNames = async (eventId: number): Promise<[string, string]> => {
   }
 }
 
-// const getEventDate = async (eventId: number): Promise<Date | string> => {
-//   try {
-//     const event = await gameEventStore.loadSingleEvent(eventId) as GameEvent;
-//     if (event && event.eventDate) {
-//       return event.eventDate;
-//     }
-//     return "Event date not found";
-//   } catch (error) {
-//     return "Error loading event date";
-//   }
-// }
+const getEventPoints = async (eventId: number): Promise<number> => {
+  try {
+    const event = await gameEventStore.loadSingleEvent(eventId) as GameEvent;
+    if (event) {
+      const predictionGame = await predictionGameStore.getPredictionGameById(event.predictionGameId);
+      if (predictionGame) {
+        const points: number = await gameEventStore.loadUserPointsForEvent(predictionGame.id, event.id);
+        return points;
+      }
+    }
+    return 0;
+  } catch (error) {
+    return 0;
+  }
+}
 
 const columns = [
   { key: "teamNames", label: "Teams" },
@@ -620,6 +627,6 @@ function closePredictionModal() {
 .styled-table {
     width: 100%;
     border-collapse: collapse;
-    overflow: hidden;
+    overflow-x: auto;
 }
 </style>

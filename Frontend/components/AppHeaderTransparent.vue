@@ -69,7 +69,7 @@ const scrollToTarget = () => {
   position: relative;
   width: 100%;
   height: 100vh;
-  background-image: url('images/soccer-fans-cheering-gradient.png');
+  background-image: url('/images/soccer-fans-cheering-gradient.png');
   background-position: center top;
   background-size: cover;
   background-repeat: no-repeat;
