@@ -21,7 +21,7 @@ WORKDIR /app
 COPY --from=builder /publish .
 
 EXPOSE 8080
-
+    
 RUN addgroup -S runner && adduser -S runner -G runner
 USER runner
 ENTRYPOINT ["dotnet", "itb2203_2024_predictiongame.dll"]

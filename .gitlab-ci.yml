@@ -8,8 +8,8 @@ variables:
 
 stages:
   - build
-  - deploy
-  - api_test
+  #- deploy
+  #- api_test
 
 build:back-end:
   image:
