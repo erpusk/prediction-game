@@ -103,6 +103,7 @@ export const usePredictionGameStore = defineStore("predictionGame", () => {
 export const useGameEventsStore = defineStore("gameEvent", () => {
   const api = useApi();
   const gameEvents = ref<GameEvent[]>([]);
+  const userUpcomingPredictions = ref<GameEvent[]>([]);
   
   const loadGameEvents = async (predictionGameId: number) => {
     const url = `PredictionGames/${predictionGameId}/Event`;
@@ -143,15 +144,30 @@ export const useGameEventsStore = defineStore("gameEvent", () => {
     return event;
   }
 
-  
+  const loadUserUpcomingPredictions = async (predictionGameId: number) => {
+    const response : GameEvent[] = await api.customFetch<GameEvent[]>(`PredictionGames/${predictionGameId}/Event/upcoming`);
+    for (const event of response) {
+        userUpcomingPredictions.value.push(event);
+    }
+  };
 
-  return { gameEvents, loadGameEvents, addGameEvent, deletePredictionGameEvent, editPredictionGameEvent, loadSingleEvent };
+  return { 
+    gameEvents, 
+    loadGameEvents, 
+    addGameEvent, 
+    deletePredictionGameEvent, 
+    editPredictionGameEvent, 
+    loadSingleEvent, 
+    loadUserUpcomingPredictions,
+    userUpcomingPredictions  
+  };
 })
 
 export const usePredictionsStore = defineStore("prediction", () => {
   const api = useApi();
   const predictions = ref<Prediction[]>([]);
   const userPrediction = ref<Prediction>();
+  const userPredictionHistory = ref<Prediction[]>([]);
   const userPredictionsMap = ref<Record<number, Prediction | null>>({});
   
   const addPrediction = async (prediction: Prediction) => {
@@ -168,7 +184,11 @@ export const usePredictionsStore = defineStore("prediction", () => {
       predictions.value = await api.customFetch<Prediction[]>(url);
   };
 
-  
+  const getPredictions= async (gameEventId: number) => {
+    const url = gameEventId ? `Prediction?eventId=${gameEventId}` : 'Prediction';
+      const predictionsList = await api.customFetch<Prediction[]>(url)
+    return predictionsList
+  };  
 
   const loadUserPrediction = async (eventId: number) => {
     const prediction = await api.customFetch<Prediction>(`Prediction/user/event/${eventId}`)
@@ -178,5 +198,19 @@ export const usePredictionsStore = defineStore("prediction", () => {
     }
   }
 
-  return {predictions, addPrediction, loadPredictions, userPrediction, userPredictionsMap, loadUserPrediction}
+  const loadUserPredictionHistory = async () => {
+    userPredictionHistory.value = await api.customFetch<Prediction[]>(`Prediction/history`);
+  };
+
+  return {
+    predictions, 
+    addPrediction, 
+    loadPredictions, 
+    getPredictions, 
+    userPrediction, 
+    userPredictionsMap, 
+    loadUserPrediction, 
+    loadUserPredictionHistory,
+    userPredictionHistory
+  }
 })

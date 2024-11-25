@@ -115,16 +115,18 @@
   .join-button {
     margin-top: 1em;
     padding: 0.5em 1em;
-    background-color: #4CAF50;
+    background-color: #5bb17c;
     color: white;
     font-weight: bold;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
   }
   
   .join-button:hover {
-    background-color: #45a049;
+    background-color: #26547C;
+    transform: scale(1.05);
+    animation: slideIn 0.3s ease-in-out;
   }
   
   .success {

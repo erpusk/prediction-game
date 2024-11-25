@@ -1,6 +1,6 @@
 <template>
-  <div class="min-h-screen flex justify-center items-center bg-opacity-50 relative">
-    
+  <div class="min-h-screen flex justify-center items-center bg-opacity-50">
+    <div class="relative">
     <button 
         @click="$emit('close')" 
         class="absolute top-2 right-2 text-black hover:text-red-600 transition duration-300">
@@ -33,12 +33,16 @@
         <USelect v-model="state.privacy" :options="['Private game', 'Public game']" class="border rounded-md p-2"  />
       </UFormGroup>
   
-      <div class="flex justify-between mt-6">
-          <UButton type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition duration-300">
-            Add
-          </UButton>
+      <div class="flex justify-between gap-6 mt-6">
+        <UButton @click="$emit('close')" class="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-md transition duration-300">
+            Close
+        </UButton>
+        <UButton type="submit" class="create-button text-white font-bold py-2 px-4 rounded-md transition duration-300">
+            Create a Game
+        </UButton>
       </div>
     </UForm>
+    </div>
   </div>
   </template>
 <style scoped>
@@ -79,13 +83,13 @@ div :deep(label) {
         if (state.startDate) {
             return (new Date(state.startDate)).toISOString().split('T')[0];
         }
-        return ''; // Tagasta tühi string, kui kuupäeva pole
+        return '';
     },
     set: (value: string) => {
         if (value) {
-            state.startDate = new Date(value).toISOString();  // Määrame kuupäeva ISO formaadis
+            state.startDate = new Date(value).toISOString();
         } else {
-            state.startDate = ''; // Tühjenda väärtus, kui kuupäev on määramata
+            state.startDate = '';
         }
     }
 });
@@ -156,4 +160,13 @@ const endDateStr = computed({
       element?.scrollIntoView({ behavior: "smooth", block: "center" });
     }
   </script>
+
+<style>
+.create-button{
+  background-color: #5bb17c;
+}
+.create-button:hover{
+  background-color: #26547C;
+}
+</style>
   

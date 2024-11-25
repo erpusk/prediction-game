@@ -1,85 +1,44 @@
 <template>
-  <div class="page-container">
-    <AppHeader v-if="!isHomePage" />
+  <header class="bg-gray-900" v-if="$route.path !== '/login' && $route.path !== '/register'">
+    <div class="normal-header">
+      <nav class="flex justify-between items-center p-4 bg-gray-900 text-white shadow-md">
+        <div class="flex items-center space-x-12">
+          <nuxt-link to="/" class="logo-btn font-inter">
+            <i class='fas fa-futbol text-black bg-white' style='font-size:30px'></i>
+            <span>     LOGO</span>
+          </nuxt-link>
 
-    <!-- Back Button for Non-Home Pages -->
-    <div v-if="$route.path !== '/' && $route.path !== '/login' && $route.path !== '/register'" class="button-group fixed bottom-4 left-4 z-20">
-      <button class="btn-primary" @click="goBack">Back</button>
+          <ul class="flex space-x-4 text-base font-medium">
+            <li><nuxt-link to="/predictiongames" class="nav-link" :class="{ 'active': $route.path === '/predictiongames' }">My Prediction Games</nuxt-link></li>
+            <li><nuxt-link to="/join-game" class="nav-link" :class="{ 'active': $route.path === '/join-game' }">Join a Prediction Game</nuxt-link></li>
+          </ul>
+        </div>
+
+        <div v-if="userStore.isAuthenticated" class="flex items-center space-x-6">
+          <span class="user-info font-inter">Hello, {{ userName }}!</span>
+          <button class="btn-logout font-inter" @click="userStore.logout()">Logout</button>
+        </div>
+      </nav>
     </div>
-
-    <div class="content-wrap">
-      <main class="content mt-0">
-        <NuxtPage />
-      </main>
-    </div>
-
-    <footer class="footer">
-      <div class="footer-content p-4 text-white text-center">
-        &copy; 2024 PredictionGames. All rights reserved.
-      </div>
-    </footer>
-  </div>
+  </header>
 </template>
 
 <script setup lang="ts">
-import { useRouter, useRoute } from 'vue-router';
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
+import { useUserStore } from '#imports';
 
 const userStore = useUserStore();
 const userName = computed(() => userStore.user?.userName);
-
-const router = useRouter();
 const route = useRoute();
-
-const isHomePage = computed(() => route.path === '/');
-
-const goBack = () => {
-  router.go(-1); 
-};
 </script>
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-.page-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-.header-bg {
-  position: relative;
-  width: 100%;
-  height: 100vh;
-  background-image: url('images/soccer-fans-cheering-team-monochrome (1).jpg');
-  background-position: center top;
-  background-size: cover;
-  background-repeat: no-repeat;
-}
-
 .normal-header {
   position: relative;
   width: 100%;
-  background-color: #1F1F1F;
-}
-
-.content-wrap {
-  flex-grow: 1;
-  padding-bottom: 3rem;
-}
-
-.footer {
-  position: relative;
-  width: 100%;
-  height: 3rem;
-  background-color: #1F1F1F;
-  color: white;
-  text-align: center;
-  z-index: 1;
-  margin-top: auto;
-}
-
-footer .footer-content {
-  padding: 16px;
   background-color: #1F1F1F;
 }
 
@@ -88,21 +47,23 @@ footer .footer-content {
 }
 
 .nav-link {
-  color: #fff;
+  color: #ffffff;
   text-decoration: none;
+  font-weight: bold;
+  font-weight:700;
   padding: 8px 16px;
   border-radius: 4px;
-  font-weight: 500;
   transition: all 0.3s ease;
+  text-transform: uppercase;
 }
 
 .nav-link:hover {
-  color: #4CAF50;
+  color: #5bb17c;
   transform: scale(1.05);
 }
 
 .nav-link.active {
-  color: #4CAF50;
+  color: #5bb17c;
   font-weight: 700;
 }
 
@@ -117,7 +78,7 @@ footer .footer-content {
 }
 
 .logo-btn:hover {
-  color: #4CAF50;
+  color: #5bb17c;
 }
 
 nav {
@@ -151,7 +112,7 @@ nav {
 
 .user-info {
   color: #fff;
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: 500;
   transition: color 0.3s ease;
 }
@@ -175,4 +136,5 @@ nav {
 button:focus {
   outline: none;
 }
+
 </style>

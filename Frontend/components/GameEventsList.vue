@@ -254,12 +254,12 @@ const goPredictionsList = (gameEvent: GameEvent) => {
 }
 
 .copy-button:hover {
-  background-color: #4d6bac;
+  background-color: #26547C;
   transform: scale(1.05);
 }
 
 .copy-button:active {
-  background-color: #3f6b96;
+  background-color: #26547C;
   transform: scale(1);
 }
 
@@ -277,12 +277,12 @@ const goPredictionsList = (gameEvent: GameEvent) => {
 }
 
 .btn-primary-large:hover {
-  background-color: #4d6bac;
+  background-color: #26547C;
   transform: scale(1.05);
 }
 
 .btn-primary-large:active {
-  background-color: #3f6b96;
+  background-color: #26547C;
   transform: scale(1);
 }
 
@@ -300,12 +300,12 @@ const goPredictionsList = (gameEvent: GameEvent) => {
 }
 
 .btn-primary-small:hover {
-  background-color: #4d6bac;
+  background-color: #26547C;
   transform: scale(1.05);
 }
 
 .btn-primary-small:active {
-  background-color: #3f6b96;
+  background-color: #26547C;
   transform: scale(1);
 }
 

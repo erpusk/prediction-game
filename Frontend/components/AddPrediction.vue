@@ -2,11 +2,11 @@
   <div class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
     <div class="relative">
       
-       <button 
+      <button 
         @click="$emit('close')" 
         class="absolute top-2 right-2 text-black hover:text-red-600 transition duration-300">
         &times;
-    </button>
+      </button>
 
     <UForm
       :validate="validate"
@@ -25,7 +25,10 @@
       </UFormGroup>
       
       <div class="flex justify-between mt-6">
-          <UButton type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition duration-300">
+          <UButton @click="$emit('close')" class="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-md transition duration-300">
+            Close
+          </UButton>
+          <UButton type="submit" class="add-button text-white font-bold py-2 px-4 rounded-md transition duration-300">
             Add
           </UButton>
       </div>
@@ -57,7 +60,7 @@ import GameEventsList from "./GameEventsList.vue";
 
     const props = defineProps<{
       gameEventId: number;
-      predictionGameId: number
+      predictionGameId: number;
     }>();
 
     const event = await gameEventStore.loadSingleEvent(props.gameEventId)
@@ -96,7 +99,6 @@ import GameEventsList from "./GameEventsList.vue";
     }
     emit('refresh')
     emit('close')
-
   }
   
     async function onError(prediction: FormErrorEvent) {
@@ -104,7 +106,13 @@ import GameEventsList from "./GameEventsList.vue";
       element?.focus();
       element?.scrollIntoView({ behavior: "smooth", block: "center" });
     }
-
-
-    
 </script>
+
+<style>
+.add-button{
+  background-color: #5bb17c;
+}
+.add-button:hover{
+  background-color: #26547C;
+}
+</style>
