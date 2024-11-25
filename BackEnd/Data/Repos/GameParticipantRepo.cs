@@ -75,12 +75,6 @@ namespace BackEnd.Data.Repos
             
             if(predictionGame == null) return false;
 
-            // var userPrediction = completedEvent.Predictions.FirstOrDefault(p => p.PredictionMakerId == userId);
-            // if (userPrediction == null) return false;
-
-            // PointsCalculator pointsCalculator = new PointsCalculator();
-
-            // var calculatedPoints = pointsCalculator.CalculatePoints(completedEvent, userPrediction);
             var calculatedPoints = GetCalculatedPoints(completedEvent, userId);
             if (calculatedPoints == null) return false;
 
