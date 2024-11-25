@@ -79,12 +79,26 @@
 
         </UTable>
         </div>
-        <div class="chat-box-container">
-        <h2 class="text-xl font-bold mb-2 text-black dark:text-white">Prediction Game Chat</h2>
-        <ChatBox 
-  :gameId="props.predictionGameId" 
-  :currentUserId="userStore.user?.id" />
-      </div>
+        <button 
+        v-if="!isChatOpen" @click="toggleChat" class="chat-toggle-button">
+        <i class="fas fa-comments"></i>
+        </button>
+
+
+    <!-- Chat Window -->
+    <div v-if="isChatOpen" class="chat-box-container">
+  <div class="chat-header">
+    <h2 class="text-xl font-bold mb-2 text-black dark:text-white">Chat</h2>
+    <button @click="toggleChat" class="close-button">-</button>
+  </div>
+  <!-- Add the closing div for chat-header -->
+  <div v-if="!isChatMinimized" class="chat-content">
+    <ChatBox 
+      :gameId="props.predictionGameId" 
+      :currentUserId="userStore.user?.id" 
+    />
+  </div>
+</div>
 
       </div>
     </div>
@@ -106,6 +120,15 @@ const selectedEventId = ref<number | null>(null);
   } else {
     selectedEventId.value = eventId;
   }
+};
+const isChatMinimized = ref(false);
+
+const minimizeChat = () => {
+  isChatMinimized.value = !isChatMinimized.value;
+};
+const isChatOpen = ref(false);
+const toggleChat = () => {
+  isChatOpen.value = !isChatOpen.value;
 };
 const predictionGameStore = usePredictionGameStore();
 const uniqueCode = ref('');
@@ -345,4 +368,61 @@ h1 {
   z-index: 1000;
   padding: 10px;
 }
+.chat-toggle-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  background-color: #f1f1f1;
+  border-radius: 50%;
+  border: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  z-index: 1100;
+}
+
+.chat-toggle-button:hover {
+  background-color: #333;
+}
+
+.chat-toggle-button i {
+  font-size: 20px;
+  color: #333;
+}
+
+.chat-header-wrapper {
+  position: relative; 
+  background-color: #ffffff; 
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; 
+}
+
+.minimize-button,
+.close-button {
+  position: absolute;
+  top: 1px;
+  background: none;
+  border: none;
+  color: black; 
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 1200; 
+}
+
+
+.close-button {
+  left: 20px; 
+}
+
 </style>
