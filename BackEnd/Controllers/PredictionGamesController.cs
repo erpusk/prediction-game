@@ -194,8 +194,15 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
 
             var success = await repo.AddChatMessageAsync(gameId, messageDto);
             if (!success) return BadRequest("Could not add chat message.");
-             var updatedMessages = await repo.GetChatMessagesAsync(gameId);
-            return Ok(updatedMessages);
+             var addedMessage = new ChatMessageDto
+            {
+                Id = messageDto.Id,
+                GameId = gameId,
+                SenderId = messageDto.SenderId,
+                Message = messageDto.Message,
+                Timestamp = DateTime.UtcNow
+            };
+            return Ok(addedMessage);
         }
 
     }

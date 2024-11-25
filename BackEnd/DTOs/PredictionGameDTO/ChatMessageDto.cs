@@ -8,6 +8,7 @@ public class ChatMessageDto
     public int SenderId { get; set; }
     public string? Sender { get; set; }
     public string? Message { get; set; }
+    public string? SenderName { get; set; }
     public DateTime Timestamp { get; set; }
     public int GameId { get; internal set; }
 }

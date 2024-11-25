@@ -61,7 +61,14 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
         }
 
         public async Task<PredictionGame?> GetPredictionGameById(int id) => 
-            await context.PredictionGames.Include(m => m.Events).Include(pg => pg.Participants).ThenInclude(participant => participant.User).Include(pg => pg.GameCreator).FirstOrDefaultAsync(x => x.Id == id);
+            await context.PredictionGames
+            .Include(m => m.Events)
+            .Include(pg => pg.Participants)
+            .ThenInclude(participant => participant.User)
+            .Include(pg => pg.GameCreator)
+            .Include(pg => pg.ChatMessages)
+            .ThenInclude(cm => cm.Sender)
+            .FirstOrDefaultAsync(x => x.Id == id);
         public async Task<bool> PredictionGameExistsInDb(int id) => await context.PredictionGames.AnyAsync(x => x.Id == id);
 
         //UPDATE
@@ -154,9 +161,11 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
         public async Task<List<ChatMessages>> GetChatMessagesAsync(int gameId)
         {
             return await context.ChatMessages
-                .Where(c => c.GameId == gameId)
-                .OrderBy(c => c.Timestamp)
-                .ToListAsync();
+            .Where(c => c.GameId == gameId)
+            .Include(c => c.Sender)
+            .Include(c => c.Game)
+            .OrderBy(c => c.Timestamp)
+            .ToListAsync();
         }
         public async Task<bool> AddChatMessageAsync(int gameId, ChatMessageDto messageDto)
         {
@@ -165,7 +174,11 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
                 GameId = gameId,
                 SenderId = messageDto.SenderId,
                 Message = messageDto.Message,
-                Timestamp = DateTime.UtcNow
+                Timestamp = DateTime.UtcNow,
+                SenderName = context.ApplicationUsers
+                    .Where(u => u.Id == messageDto.SenderId)
+                    .Select(u => u.UserName)
+                    .FirstOrDefault() ?? "Unknown User",
             };
 
             await context.ChatMessages.AddAsync(chatMessage);
@@ -173,14 +186,16 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
 
             return true;
         }
-        public async Task<PredictionGame> GetPredictionGameWithChatsAsync(int gameId)
+        public async Task<PredictionGame?> GetPredictionGameWithChatsAsync(int gameId)
         {
             return await context.PredictionGames
                 .Include(pg => pg.ChatMessages)
+                    .ThenInclude(cm => cm.Sender)
                 .Include(pg => pg.Events)
                 .Include(pg => pg.Participants)
                 .FirstOrDefaultAsync(pg => pg.Id == gameId);
         }
+
 
     }
 }

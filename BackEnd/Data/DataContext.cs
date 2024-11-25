@@ -58,6 +58,10 @@ public class DataContext : IdentityDbContext<ApplicationUser, IdentityRole<int>,
         .WithMany(pg => pg.ChatMessages)
         .HasForeignKey(c => c.GameId)
         .OnDelete(DeleteBehavior.Cascade);
+        chatMessages.HasOne(c => c.Sender)
+        .WithMany()
+        .HasForeignKey(c => c.SenderId)
+        .OnDelete(DeleteBehavior.Restrict);
     }
 
     private static void ConfigureEventEntity(EntityTypeBuilder<Event> Event)
