@@ -176,27 +176,26 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
 
             return Ok("Successfully left the game.");
         }
-        [HttpGet("{gameId}")]
+        [HttpGet("{gameId}/Chat")]
         public async Task<IActionResult> GetChatMessages(int gameId)
         {
             var messages = await repo.GetChatMessagesAsync(gameId);
+            if (messages == null)
+                return NotFound("Chat messages not found for the specified game.");
+
             return Ok(messages);
         }
 
-        [HttpPost("{gameId}")]
-        public async Task<IActionResult> AddChatMessage(int gameId, [FromBody] ChatMessages message)
+        [HttpPost("{gameId}/Chat")]
+        public async Task<IActionResult> AddChatMessage(int gameId, [FromBody] ChatMessageDto messageDto)
         {
-            if (string.IsNullOrEmpty(message.Message) || string.IsNullOrEmpty(message.Sender))
-            {
-                return BadRequest("Message and sender cannot be empty.");
-            }
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            message.GameId = gameId;
-            message.Timestamp = DateTime.UtcNow;
-
-            await repo.AddChatMessageAsync(message);
-
-            return Ok();
+            var success = await repo.AddChatMessageAsync(gameId, messageDto);
+            if (!success) return BadRequest("Could not add chat message.");
+             var updatedMessages = await repo.GetChatMessagesAsync(gameId);
+            return Ok(updatedMessages);
         }
 
     }

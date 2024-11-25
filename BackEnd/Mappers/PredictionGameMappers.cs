@@ -31,11 +31,14 @@ namespace BackEnd.Mappers
                     UserName = p.User?.UserName ?? "Unknown User",
                     UserId = p.UserId
                 }).ToList(),
-                ChatMessages = predictionGameModel.ChatMessages.Select(chat => new ChatMessageDto
+                ChatMessages = predictionGameModel.ChatMessages
+                .Select(chat => new ChatMessageDto
                 {
                     Id = chat.Id,
-                    Sender = chat.Sender!,
-                    Message = chat.Message!,
+                    GameId = chat.GameId,
+                    SenderId = chat.SenderId,
+                    Sender = chat.SenderName != null ? chat.Sender!.UserName : "Unknown User",
+                    Message = chat.Message,
                     Timestamp = chat.Timestamp
                 }).ToList()
             };

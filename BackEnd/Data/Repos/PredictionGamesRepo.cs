@@ -3,6 +3,7 @@ using itb2203_2024_predictiongame.Backend.Models.Classes;
 using BackEnd.Models.Classes;
 using System.Runtime.CompilerServices;
 using System.IO.Compression;
+using BackEnd.DTOs.PredictionGameDTO;
 
 namespace itb2203_2024_predictiongame.Backend.Data.Repos
 {
@@ -153,14 +154,24 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
         public async Task<List<ChatMessages>> GetChatMessagesAsync(int gameId)
         {
             return await context.ChatMessages
-                .Where(chat => chat.GameId == gameId)
-                .OrderBy(chat => chat.Timestamp)
+                .Where(c => c.GameId == gameId)
+                .OrderBy(c => c.Timestamp)
                 .ToListAsync();
         }
-        public async Task AddChatMessageAsync(ChatMessages message)
+        public async Task<bool> AddChatMessageAsync(int gameId, ChatMessageDto messageDto)
         {
-            context.ChatMessages.Add(message);
+            var chatMessage = new ChatMessages
+            {
+                GameId = gameId,
+                SenderId = messageDto.SenderId,
+                Message = messageDto.Message,
+                Timestamp = DateTime.UtcNow
+            };
+
+            await context.ChatMessages.AddAsync(chatMessage);
             await context.SaveChangesAsync();
+
+            return true;
         }
         public async Task<PredictionGame> GetPredictionGameWithChatsAsync(int gameId)
         {
