@@ -13,6 +13,8 @@ using Microsoft.OpenApi.Models;
 using BackEnd.Authorization;
 using Microsoft.AspNetCore.Authorization;
 
+//suva kommentaar runneri jaoks
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
