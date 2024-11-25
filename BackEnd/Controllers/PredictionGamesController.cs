@@ -157,21 +157,21 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
         public async Task<IActionResult> LeaveGame(string uniqueCode, [FromBody] LeaveGameRequestDto request)
         {
             // Find the game by unique code
-            var game = await repo.GetPredictionGameByCode(uniqueCode);
-            if (game == null)
+            var predictionGame = await repo.GetPredictionGameByCode(uniqueCode);
+            if (predictionGame == null)
             {
                 return NotFound("Game not found.");
             }
 
             // Find the participant record
-            var participant = await repo.GetParticipantByUserIdAndGameId(request.UserId, game.Id);
+            var participant = await repo.GetParticipantByUserIdAndGameId(request.UserId, predictionGame.Id);
             if (participant == null)
             {
                 return NotFound("User is not a participant in this game.");
             }
 
             // Remove the participant from the game
-            await repo.RemoveParticipant(participant);
+            await repo.RemoveParticipant(participant, predictionGame);
 
             return Ok("Successfully left the game.");
         }

@@ -75,16 +75,39 @@ namespace BackEnd.Data.Repos
             
             if(predictionGame == null) return false;
 
+            // var userPrediction = completedEvent.Predictions.FirstOrDefault(p => p.PredictionMakerId == userId);
+            // if (userPrediction == null) return false;
+
+            // PointsCalculator pointsCalculator = new PointsCalculator();
+
+            // var calculatedPoints = pointsCalculator.CalculatePoints(completedEvent, userPrediction);
+            var calculatedPoints = GetCalculatedPoints(completedEvent, userId);
+            if (calculatedPoints == null) return false;
+
+            var result = await UpdateGameParticipantPoints(userId, predictionGame.Id, (int)calculatedPoints);
+
+            return result;
+        }
+
+        public async Task<int?> GetParticipantEarnedPointsForEvent(int userId, int eventId) {
+            var completedEvent = await _context.Events
+            .Include(x => x.Predictions)
+            .FirstOrDefaultAsync(e => e.Id == eventId && e.IsCompleted == true);
+    
+            if (completedEvent == null) return null;
+
+            var earnedPoints = GetCalculatedPoints(completedEvent, userId);
+            return earnedPoints;
+        }
+
+        private int? GetCalculatedPoints(Event completedEvent, int userId) {
             var userPrediction = completedEvent.Predictions.FirstOrDefault(p => p.PredictionMakerId == userId);
-            if (userPrediction == null) return false;
+            if (userPrediction == null) return null;
 
             PointsCalculator pointsCalculator = new PointsCalculator();
 
             var calculatedPoints = pointsCalculator.CalculatePoints(completedEvent, userPrediction);
-
-            var result = await UpdateGameParticipantPoints(userId, predictionGame.Id, calculatedPoints);
-
-            return result;
+            return calculatedPoints;
         }
     }
 }

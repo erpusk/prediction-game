@@ -91,7 +91,7 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
             context.Remove(predictionGameInDb);
             int changesCount = await context.SaveChangesAsync();
 
-            return changesCount == 1;
+            return changesCount >= 1;
         }
 
         public async Task<ApplicationUser?> GetUserById(int userId) => await context.ApplicationUsers.FindAsync(userId); //abimeetod Kasutaja saamiseks.
@@ -134,9 +134,17 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
         }
 
         // Remove a participant from the game
-        public async Task RemoveParticipant(PredictionGameParticipant participant)
+        public async Task RemoveParticipant(PredictionGameParticipant participant, PredictionGame predictionGame)
         {
-            var userPredictions = await context.Predictions.Where(p => p.PredictionMakerId == participant.UserId).ToListAsync();
+            var userEventIds = await context.Events
+                .Where(e => e.PredictionGameId == predictionGame.Id)
+                .Select(e => e.PredictionGameId)
+                .ToListAsync();
+            
+            var userPredictions = await context.Predictions
+                .Where(p => p.PredictionMakerId == participant.UserId && userEventIds.Contains(p.EventId))
+                .ToListAsync();
+            
             context.Predictions.RemoveRange(userPredictions);
             await context.SaveChangesAsync();
             

@@ -44,16 +44,16 @@
                     </button>
                   </div>
                   <div v-else>
-                    <button @click="showModalPrediction = true" 
+                    <button @click="showModalPrediction[row.id] = true" 
                     class="btn-primary-small">
                       Make a prediction
                     </button>
 
                     <AddPrediction 
-                      v-if="showModalPrediction" 
+                      v-if="showModalPrediction[row.id]" 
                       :predictionGameId="props.predictionGameId" 
                       :game-event-id="row.id"
-                      @close="closeModalPrediction"
+                      @close="closeModalPrediction(row.id)"
                       @refresh="fetchData"/>
 
                   </div>
@@ -93,7 +93,7 @@ import { usePredictionGameStore } from '@/stores/stores';
 const predictionGameStore = usePredictionGameStore();
 const uniqueCode = ref('');
 const showModal = ref(false);
-const showModalPrediction = ref(false);
+const showModalPrediction = ref<{ [key: number]: boolean }>({});
 
 
 const gameEventStore = useGameEventsStore();
@@ -154,7 +154,7 @@ const formattedGameEvents = computed(() => {
     return {
       ...event,
       teams: `${event.teamA} \n ${event.teamB}`,
-      score: event.teamAScore || event.teamBScore
+      score: event.teamAScore !== null || event.teamBScore !== null
         ? `${event.teamAScore} - ${event.teamBScore}`
         : "",
       yourPrediction: userPrediction
@@ -222,8 +222,8 @@ const closeModal = () => {
   showModal.value = false; 
 };
 
-const closeModalPrediction = () => {
-  showModalPrediction.value = false; 
+const closeModalPrediction = (eventId: number) => {
+  showModalPrediction.value[eventId] = false; 
 }
 
 const goPredictionsList = (gameEvent: GameEvent) => {

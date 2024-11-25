@@ -47,7 +47,7 @@ namespace BackEnd.Data.Repos
             }
             _context.Remove(result);
             int changesCount = await _context.SaveChangesAsync();
-            return changesCount == 1;
+            return changesCount >= 1;
         }
 
         public async Task<List<Event>> GetUserUpcomingPredictions(int userId, int predictionGameId) {

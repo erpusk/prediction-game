@@ -3,7 +3,6 @@ import type { GameEvent } from "~/types/gameEvent";
 import type { Prediction } from "~/types/prediction";
 import type { PredictionGame } from "~/types/predictionGame";
 import { useUserStore } from '@/stores/userStore';
-import PredictionGameId from "~/pages/add-gameevents/[predictionGameId].vue";
 
 export const usePredictionGameStore = defineStore("predictionGame", () => {
   const api = useApi();
@@ -102,6 +101,7 @@ export const usePredictionGameStore = defineStore("predictionGame", () => {
 
 export const useGameEventsStore = defineStore("gameEvent", () => {
   const api = useApi();
+  const userStore = useUserStore();
   const gameEvents = ref<GameEvent[]>([]);
   const userUpcomingPredictions = ref<GameEvent[]>([]);
   
@@ -151,6 +151,15 @@ export const useGameEventsStore = defineStore("gameEvent", () => {
     }
   };
 
+  const loadUserPointsForEvent = async (predictionGameId: number, gameEventId: number) => {
+    const points = await api.customFetch<number>(`PredictionGames/${predictionGameId}/Event/${gameEventId}/event-user-points`, {
+      headers: {
+        "Authorization": `Bearer ${userStore.token}`,
+      },
+    });
+    return points;
+  }
+
   return { 
     gameEvents, 
     loadGameEvents, 
@@ -159,7 +168,8 @@ export const useGameEventsStore = defineStore("gameEvent", () => {
     editPredictionGameEvent, 
     loadSingleEvent, 
     loadUserUpcomingPredictions,
-    userUpcomingPredictions  
+    userUpcomingPredictions,
+    loadUserPointsForEvent
   };
 })
 
