@@ -9,5 +9,6 @@ namespace BackEnd.DTOs.ApplicationUser
     {
         public string? UserName { get; set; }
         public DateTime DateOfBirth { get; set; } 
+        public IFormFile? ProfilePicture { get; set; }
     }
 }

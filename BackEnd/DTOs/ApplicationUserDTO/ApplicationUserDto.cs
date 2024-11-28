@@ -17,5 +17,6 @@ namespace BackEnd.DTOs.ApplicationUser
         public DateTime DateOfBirth { get; set; } = DateTime.Now.ToUniversalTime();
         public List<PredictionGameDto> CreatedPredictionGames { get; set; } = new List<PredictionGameDto>();
         //public List<PredictionGameDto> JoinedPredictionGames { get; set; } = new List<PredictionGameDto>();
+        public FormFile? ProfilePicture { get; set; }
     }
 }
