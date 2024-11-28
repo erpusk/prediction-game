@@ -14,9 +14,12 @@
           </ul>
         </div>
 
-        <div v-if="userStore.isAuthenticated" class="flex items-center space-x-6">
-          <span class="user-info font-inter">Hello, {{ userName }}!</span>
-          <button class="btn-logout font-inter" @click="userStore.logout()">Logout</button>
+        <div v-if="userStore.isAuthenticated" >
+          <div class="flex items-center space-x-6">
+            <span class="user-info font-inter">Hello, {{ userName }}!</span>
+            <button class="btn-logout font-inter" @click="userStore.logout()">Logout</button>
+            <button class="btn-settings font-inter" @click="goToSettings()">...</button>
+          </div>
         </div>
       </nav>
     </div>
@@ -25,12 +28,16 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useRoute } from 'vue-router';
 import { useUserStore } from '#imports';
 
 const userStore = useUserStore();
 const userName = computed(() => userStore.user?.userName);
-const route = useRoute();
+const router = useRouter();
+
+function goToSettings(){
+    router.push('settings') //siia tuleb veel lisada route
+}
+
 </script>
 
 <style scoped>
@@ -128,10 +135,31 @@ nav {
   cursor: pointer;
   transition: background-color 0.3s;
 }
+
 .btn-logout:hover {
   background-color: #c0392b;
   transform: scale(1.05);
 }
+
+.btn-settings {
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  width: 2rem;
+  height: 2rem; 
+  background-color: #6e7278; 
+  border: none; 
+  border-radius: 50%; 
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.btn-settings:hover {
+  background-color: #8c8f93;
+  transform: scale(1.05); 
+}
+
+
 
 button:focus {
   outline: none;

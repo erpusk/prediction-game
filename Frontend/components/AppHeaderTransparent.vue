@@ -17,6 +17,7 @@
         <div v-if="userStore.isAuthenticated" class="flex items-center space-x-6">
           <span class="user-info font-inter">Hello, {{ userName }}!</span>
           <button class="btn-logout font-inter" @click="userStore.logout()">LOGOUT</button>
+          <button class="btn-settings font-inter" @click="">...</button>
         </div>
       </nav>
 
@@ -224,5 +225,24 @@ button:focus {
   background-color: #d3d3d34e;
   transform: scale(1.05);
 }
+
+.btn-settings {
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  width: 2rem;
+  height: 2rem; 
+  background-color: #6e7278; 
+  border: none; 
+  border-radius: 50%; 
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.btn-settings:hover {
+  background-color: #8c8f93;
+  transform: scale(1.05); 
+}
+
 
 </style>
