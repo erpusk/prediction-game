@@ -18,12 +18,12 @@
           <div class="flex items-center space-x-6">
             <span class="user-info font-inter">Hello, {{ userName }}!</span>
             <button class="btn-logout font-inter" @click="userStore.logout()">Logout</button>
-            <button @click="goToSettings()">
-            <img v-if="userStore.user?.profilePicture"
-              :src="encodeProfilePicture(userStore.user?.profilePicture)"
+            <button v-if="userStore.user?.profilePicture" @click="goToSettings()">
+            <img :src="encodeProfilePicture(userStore.user?.profilePicture)"
               alt="Profile Picture"
                class="profile-picture" />
             </button>
+            <button v-else @click="goToSettings()" class="btn-settings font-inter">...</button>
           </div>
         </div>
       </nav>
@@ -151,8 +151,23 @@ nav {
   transform: scale(1.05);
 }
 
+.btn-settings {
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  width: 40px; 
+  height: 40px; 
+  background-color: #6e7278; 
+  border: none; 
+  border-radius: 50%; 
+  font-size: 1rem;
+  cursor: pointer;
+}
 
-
+.btn-settings:hover {
+  background-color: #8c8f93;
+  transform: scale(1.05); 
+}
 
 
 button:focus {
