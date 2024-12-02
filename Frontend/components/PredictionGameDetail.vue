@@ -47,13 +47,22 @@
           </div>
           <div
             class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm md:col-span-2 dark:bg-gray-700 dark:border-gray-500">
-            <h3 class="text-lg font-medium text-gray-700 text-center mb-4 dark:text-white"><strong>Leaderboard:</strong>
+            <h3 class="text-lg font-medium text-gray-700 text-center mb-4 dark:text-white">
+              <strong>Leaderboard:</strong>
             </h3>
             <ul class="space-y-2">
-              <li v-if="game.leaderBoard.length > 0" 
-                v-for="(entry, index) in game.leaderBoard" :key="index"
+              <li v-for="(entry, index) in game.leaderBoard" :key="index"
                 class="flex justify-between items-center p-2 bg-gray-100 rounded-lg dark:bg-gray-600">
-                <span class="font-semibold dark:text-white">{{ index + 1 }}. {{ entry.username }}</span>
+
+                <div class="flex items-center">
+                  <span class="mr-2">
+                    <span v-if="index === 0">🥇</span>
+                    <span v-else-if="index === 1">🥈</span>
+                    <span v-else-if="index === 2">🥉</span>
+                    <span v-else class="font-semibold mr-1  " style="margin-left: 7px;">{{ index + 1 }}.</span>
+                  </span> 
+                  <span class="font-semibold dark:text-white">{{ entry.username }}</span>
+                </div>
                 <span class="font-semibold dark:text-white">{{ entry.points }} points</span>
               </li>
             </ul>
