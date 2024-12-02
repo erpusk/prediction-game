@@ -17,7 +17,12 @@
         <div v-if="userStore.isAuthenticated" class="flex items-center space-x-6">
           <span class="user-info font-inter">Hello, {{ userName }}!</span>
           <button class="btn-logout font-inter" @click="userStore.logout()">LOGOUT</button>
-          <button class="btn-settings font-inter" @click="">...</button>
+          <button @click="goToSettings()">
+            <img v-if="userStore.user?.profilePicture"
+              :src="encodeProfilePicture(userStore.user?.profilePicture)"
+              alt="Profile Picture"
+               class="profile-picture" />
+          </button>
         </div>
       </nav>
 
@@ -48,13 +53,22 @@ const props = defineProps({
 
 const userStore = useUserStore();
 const userName = computed(() => userStore.user?.userName);
-const route = useRoute();
+const router = useRouter();
 
 const scrollToTarget = () => {
   if (props.scrollTarget) {
     props.scrollTarget.scrollIntoView({ behavior: "smooth" });
   }
 };
+
+function encodeProfilePicture(array: any){
+  return `data:image/jpeg;base64,${array}`;
+}
+
+function goToSettings(){
+    router.push('settings') 
+}
+
 </script>
 
 <style scoped>
@@ -244,5 +258,15 @@ button:focus {
   transform: scale(1.05); 
 }
 
+.profile-picture {
+  width: 40px; 
+  height: 40px;
+  border-radius: 50%; 
+  object-fit: cover; 
+  border: 2px solid #ddd; 
+}
 
+.profile-picture:hover {
+  transform: scale(1.05); 
+}
 </style>

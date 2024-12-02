@@ -24,7 +24,8 @@ const userStore = useUserStore();
 const state = reactive<AppUser>({
     id: 0,
     userName: '',
-    email: ''
+    email: '',
+    profilePicture: ''
 })
 
 onMounted(async () => {
@@ -40,7 +41,8 @@ async function onSubmit() {
         const payload = {
             id: state.id,
             userName: state.userName,
-            email: state.email
+            email: state.email,
+            profilePicture: state.profilePicture
         };
       userStore.updateUser(payload);
     }

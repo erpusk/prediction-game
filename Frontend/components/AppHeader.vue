@@ -18,7 +18,12 @@
           <div class="flex items-center space-x-6">
             <span class="user-info font-inter">Hello, {{ userName }}!</span>
             <button class="btn-logout font-inter" @click="userStore.logout()">Logout</button>
-            <button class="btn-settings font-inter" @click="goToSettings()">...</button>
+            <button @click="goToSettings()">
+            <img v-if="userStore.user?.profilePicture"
+              :src="encodeProfilePicture(userStore.user?.profilePicture)"
+              alt="Profile Picture"
+               class="profile-picture" />
+            </button>
           </div>
         </div>
       </nav>
@@ -33,9 +38,14 @@ import { useUserStore } from '#imports';
 const userStore = useUserStore();
 const userName = computed(() => userStore.user?.userName);
 const router = useRouter();
+const decoder = new TextDecoder()
 
 function goToSettings(){
-    router.push('settings') //siia tuleb veel lisada route
+    router.push('settings') 
+}
+
+function encodeProfilePicture(array: any){
+  return `data:image/jpeg;base64,${array}`;
 }
 
 </script>
@@ -141,28 +151,24 @@ nav {
   transform: scale(1.05);
 }
 
-.btn-settings {
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  width: 2rem;
-  height: 2rem; 
-  background-color: #6e7278; 
-  border: none; 
-  border-radius: 50%; 
-  font-size: 1rem;
-  cursor: pointer;
-}
 
-.btn-settings:hover {
-  background-color: #8c8f93;
-  transform: scale(1.05); 
-}
 
 
 
 button:focus {
   outline: none;
+}
+
+.profile-picture {
+  width: 40px; 
+  height: 40px;
+  border-radius: 50%; 
+  object-fit: cover; 
+  border: 2px solid #ddd; 
+}
+
+.profile-picture:hover {
+  transform: scale(1.05); 
 }
 
 </style>
