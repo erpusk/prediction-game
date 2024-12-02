@@ -48,7 +48,7 @@ namespace BackEnd.Controllers
         }
 
         [HttpPut("{id}")] //Kasutaja andmete uuendamine, kontstantseid andmeid nagu sünnipäev ei muudaks.
-        public async Task<IActionResult> UpdateApplicationUser(int id, [FromForm] UpdateApplicationUserDto userDto){ 
+        public async Task<IActionResult> UpdateApplicationUser(int id, [FromBody] UpdateApplicationUserDto userDto){ 
             var userModel = await repo.GetUserById(id);
 
             if (userModel == null){
@@ -57,23 +57,11 @@ namespace BackEnd.Controllers
 
             userModel.UserName = userDto.UserName;
             userModel.DateOfBirth = userDto.DateOfBirth;
-            userModel.ProfilePicture = pictureToByteArray(userDto.ProfilePicture);
+            userModel.ProfilePicture = userDto.ProfilePicture;
             
 
             var result = await repo.UpdateApplicationUser(id, userModel);
             return result ? NoContent() : NotFound();
-        }
-
-        public static byte[]? pictureToByteArray(IFormFile? File){
-            if (File == null){
-                return null;
-            }
-            using (var memoryStream = new MemoryStream())
-            {
-                File.CopyTo(memoryStream);
-                var profilePicture = memoryStream.ToArray(); // Store as byte[]
-                return profilePicture;
-            }
         }
 
         [HttpDelete("{id}")] // Kasutaja kustutamine, kas on vaja?

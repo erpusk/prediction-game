@@ -9,6 +9,18 @@
       <UFormGroup label="Username" name="userName" class="!text-black">
         <UInput v-model="state.userName" class="border rounded-md p-2"/>
       </UFormGroup>
+
+      <UFormGroup label="Profile picture" name="profilePicture" class="!text-black">
+        <div class="mb-4">
+          <img
+            v-if="state.profilePicture"
+            :src="`data:image/png;base64,${state.profilePicture}`"
+            alt="Current Profile Picture"
+            class="w-20 h-20 object-cover rounded-full mb-2 border"
+          />
+        </div>
+        <input type="file" accept="image/*" class="border rounded-md p-2" @change="onFileChange" />
+      </UFormGroup>
       
       <UButton type="submit" class="confirm-button text-white font-bold py-2 px-4 rounded-md transition duration-300 dark:hover:bg-blue-600 dark:bg-blue-500">
           Confirm
@@ -18,8 +30,9 @@
   </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
 const userStore = useUserStore();
+const router = useRouter();
+
 
 const state = reactive<AppUser>({
     id: 0,
@@ -34,20 +47,36 @@ onMounted(async () => {
         state.id = userStore.user.id
         state.userName = userStore.user.userName    
         state.email = userStore.user.email
+        state.profilePicture = userStore.user.profilePicture
     }
 })
 
+
 async function onSubmit() {
-        const payload = {
-            id: state.id,
-            userName: state.userName,
-            email: state.email,
-            profilePicture: state.profilePicture
-        };
-      userStore.updateUser(payload);
-    }
+    const payload = {
+        id: state.id,
+        userName: state.userName,
+        email: state.email,
+        profilePicture: state.profilePicture,
+    };
 
+    console.log(payload)
 
+    await userStore.updateUser(payload);
+
+    window.location.reload();
+}
+
+function onFileChange(event: Event) {
+  const file = (event.target as HTMLInputElement).files?.[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      state.profilePicture = (reader.result as string).split(',')[1]; // Base64 string
+    };
+    reader.readAsDataURL(file);
+  }
+}
 
 </script>
 

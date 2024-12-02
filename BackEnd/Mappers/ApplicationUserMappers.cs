@@ -53,7 +53,7 @@ namespace BackEnd.Mappers
             {
                 UserName = applicationUserDto.UserName,
                 DateOfBirth = applicationUserDto.DateOfBirth,
-                ProfilePicture = PictureToByteArray(applicationUserDto.ProfilePicture)
+                ProfilePicture = applicationUserDto.ProfilePicture
             };
         }
 

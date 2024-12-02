@@ -95,9 +95,8 @@ export const useUserStore = defineStore('user', () => {
               method: 'PUT', 
               headers: {
                   Authorization: `Bearer ${token.value}`,
-                  'Content-Type': 'application/json',
               },
-              body: JSON.stringify(updatedData),
+              body: updatedData,
           });
 
           user.value = { ...user.value, ...updatedUser };

@@ -43,7 +43,7 @@ builder.Services.AddSwaggerGen(option =>
             new string[]{}
         }
     });
-    option.MapType<IFormFile>(() => new OpenApiSchema { Type = "string", Format = "binary" });
+    
 });
 
 builder.Services.AddSwaggerGen();
