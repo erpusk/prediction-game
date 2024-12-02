@@ -18,6 +18,7 @@
             alt="Current Profile Picture"
             class="w-20 h-20 object-cover rounded-full mb-2 border"
           />
+          <div v-else class="dark:text-white text-black ">No profile picture </div>
         </div>
         <input type="file" accept="image/*" class="border rounded-md p-2" @change="onFileChange" />
       </UFormGroup>
