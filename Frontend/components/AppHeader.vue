@@ -184,23 +184,6 @@ nav {
   transition: color 0.3s ease;
 }
 
-.btn-logout {
-  padding: 9px 18px;
-  font-size: 16px;
-  font-weight: bold;
-  color: #ffffff;
-  background-color: #e74c3c;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.btn-logout:hover {
-  background-color: #c0392b;
-  transform: scale(1.05);
-}
-
 .btn-settings {
   display: flex; 
   align-items: center; 
