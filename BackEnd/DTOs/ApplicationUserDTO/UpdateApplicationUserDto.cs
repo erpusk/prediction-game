@@ -9,6 +9,6 @@ namespace BackEnd.DTOs.ApplicationUser
     {
         public string? UserName { get; set; }
         public DateTime DateOfBirth { get; set; } 
-        public byte[]? ProfilePicture { get; set; }
+        public string? ProfilePicture { get; set; }
     }
 }

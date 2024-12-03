@@ -14,6 +14,6 @@ namespace BackEnd.Models.Classes
         public List<PredictionGame> CreatedPredictionGames { get; set; } = new List<PredictionGame>();
         //public List<PredictionGame> JoinedPredictionGames { get; set; } = new List<PredictionGame>();
         public List<PredictionGameParticipant> Games { get; set; } = new List<PredictionGameParticipant>();
-        public byte[]? ProfilePicture { get; set; }
+        public string? ProfilePicture { get; set; }
     }
 }
