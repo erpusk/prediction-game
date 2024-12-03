@@ -2,46 +2,6 @@
     <div class="main-page">
       
       <AppHeaderTransparent :scrollTarget="mainContentRef" v-if="isHomePage" />
-    
-    
-    <!-- Background Section with Greeting -->
-    <!-- <div class="hero-section relative h-screen bg-cover bg-center flex items-center justify-center text-white">
-      <div class="overlay absolute inset-0 bg-black bg-opacity-50"></div>
-      <div class="greeting-message relative text-center">
-        <h1 class="text-6xl font-bold mb-6">Turn rivalries to memories!</h1>
-        <p class="text-xl">Kick off your Prediction Game today.</p>
-      </div>
-    </div> -->
-
-    <!-- Section for New Users with No Games -->
-    <!-- <div v-if="!hasPredictionGames" class="empty-state text-center mt-12">
-      <h2 class="empty-title">Get Started with Prediction Games!</h2>
-      <p class="empty-description">You haven't joined or created any games yet. Create or join a game to start competing with friends.</p>
-      <div class="button-group flex justify-center space-x-4 mt-4">
-        <button class="btn-primary" @click="ToCreateGame">Create Game</button>
-        <button class="btn-secondary" @click="ToJoinGame">Join Game</button>
-      </div>
-    </div> -->
-
-
-    <!-- Background Section with Greeting -->
-    <!-- <div class="hero-section relative h-screen bg-cover bg-center flex items-center justify-center text-white">
-      <div class="overlay absolute inset-0 bg-black bg-opacity-50"></div>
-      <div class="greeting-message relative text-center">
-        <h1 class="text-6xl font-bold mb-6">Turn rivalries to memories!</h1>
-        <p class="text-xl">Kick off your Prediction Game today.</p>
-      </div>
-    </div> -->
-
-    <!-- Section for New Users with No Games -->
-    <!-- <div v-if="!hasPredictionGames" class="empty-state text-center mt-12">
-      <h2 class="empty-title">Get Started with Prediction Games!</h2>
-      <p class="empty-description">You haven't joined or created any games yet. Create or join a game to start competing with friends.</p>
-      <div class="button-group flex justify-center space-x-4 mt-4">
-        <button class="btn-primary" @click="ToCreateGame">Create Game</button>
-        <button class="btn-secondary" @click="ToJoinGame">Join Game</button>
-      </div>
-    </div> -->
 
       <!-- Top Section -->
       <div ref="mainContentRef" class="grid grid-cols-1 sm:grid-cols-2 gap-8 mt-12 p-8">
@@ -96,7 +56,7 @@
               :class="{ selected: selectedOption === 'Team A', 'static-result': showResults }"
               @click="vote('Team A')">
               <span class="team-name font-merriweather-400 absolute inset-0 flex items-center justify-center">
-                Manchester City
+                {{ homeTeamName }}
               </span>
               <div
                 v-if="showResults"
@@ -111,7 +71,7 @@
               :class="{ selected: selectedOption === 'Team B', 'static-result': showResults }"
               @click="vote('Team B')">
               <span class="team-name font-merriweather-400 absolute inset-0 flex items-center justify-center">
-                Liverpool FC
+                {{ awayTeamName }}
               </span>
               <div
                 v-if="showResults"
@@ -198,6 +158,7 @@ import { errorMessages } from 'vue/compiler-sfc';
 import { onBeforeRouteLeave } from 'vue-router';
 import AppHeaderTransparent from '~/components/AppHeaderTransparent.vue';
 import { _width } from '#tailwind-config/theme';
+import { useDailyPollStore } from '~/stores/dailyPollStore';
 
 const route = useRoute();
 const isHomePage = computed(() => route.path === '/');
@@ -207,6 +168,7 @@ const userStore = useUserStore();
 const predictionGameStore = usePredictionGameStore();
 const gameEventStore = useGameEventsStore();
 const predictionsStore = usePredictionsStore();
+const dailyPollStore = useDailyPollStore();
 const router = useRouter();
 
 const showPredictionModal = ref(false);
@@ -214,6 +176,10 @@ const selectedGameEventId = ref(0);
 const selectedPredictionGameId = ref(0);
 const selectedOption = ref("");
 const showResults = ref(false);
+
+const homeTeamName = ref<string | null>(null);
+const awayTeamName = ref<string | null>(null);
+
 const votes = ref({ teamA: 0, teamB: 0 });
 const totalVotes = computed(() => votes.value.teamA + votes.value.teamB);
 
@@ -312,6 +278,10 @@ onMounted(async () => {
       return { ...prediction, score, teamNames, points };
     })
   );
+
+  await dailyPollStore.getDailyPollTeams();
+  homeTeamName.value = dailyPollStore.homeTeamName;
+  awayTeamName.value = dailyPollStore.awayTeamName;
 });
 
 onBeforeRouteLeave(() => {
