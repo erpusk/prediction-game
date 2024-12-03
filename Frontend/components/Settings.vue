@@ -11,16 +11,23 @@
       </UFormGroup>
 
       <UFormGroup label="Profile picture" name="profilePicture" class="!text-black">
-        <div class="mb-4">
-          <img
-            v-if="state.profilePicture"
-            :src="`data:image/png;base64,${state.profilePicture}`"
-            alt="Current Profile Picture"
-            class="w-20 h-20 object-cover rounded-full mb-2 border"
-          />
-          <div v-else class="dark:text-white text-black ">No profile picture </div>
+        <div>
+          <div v-if="state.profilePicture" class="relative inline-block">
+            <img
+              :src="`data:image/png;base64,${state.profilePicture}`"
+              alt="Current Profile Picture"
+              class="w-20 h-20 object-cover rounded-full mb-2 border"
+            />
+            <button
+              @click="removeProfilePicture"
+              class="absolute top-0 right-0 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs shadow-md hover:bg-red-700 focus:outline-none"
+            >
+            X
+            </button>
+          </div>
+
         </div>
-        <input type="file" accept="image/*" class="border rounded-md p-2" @change="onFileChange" />
+        <input v-if="!state.profilePicture" type="file" accept="image/*" class="border rounded-md p-2" @change="onFileChange" />
       </UFormGroup>
       
       <UButton type="submit" class="confirm-button text-white font-bold py-2 px-4 rounded-md transition duration-300 dark:hover:bg-blue-600 dark:bg-blue-500">
@@ -66,6 +73,10 @@ async function onSubmit() {
     await userStore.updateUser(payload);
 
     window.location.reload();
+}
+
+function removeProfilePicture(){
+  state.profilePicture = ''
 }
 
 function onFileChange(event: Event) {
