@@ -3,11 +3,11 @@
       <div class="detail-page">
         <h2 class="text-4xl font-semibold text-center mb-8 text-gray-800 dark:text-white">Account</h2>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="grid md:grid-cols-2 gap-3">
 
-            <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm dark:bg-gray-700 dark:border-gray-500">
+          <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm dark:bg-gray-700 dark:border-gray-500">
             <p class="text-lg font-medium text-gray-700 text-center dark:text-white"><strong>Profile picture:</strong> 
-                <img v-if="user.profilePicture != null"
+                <img v-if="user.profilePicture != ''"
                   :src="decodeProfilePicture(user.profilePicture)"
                   class="profile-picture"
                 />
@@ -16,19 +16,21 @@
                 </div>
             </p>
           </div>
-          <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm dark:bg-gray-700 dark:border-gray-500">
+          <p class="">
+          <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm dark:bg-gray-700 dark:border-gray-500 mb-4">
             <p class="text-lg font-medium text-gray-700 text-center dark:text-white"><strong>Email:</strong> {{ user.email }}</p>
           </div>
 
-          <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm dark:bg-gray-700 dark:border-gray-500">
+          <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm dark:bg-gray-700 dark:border-gray-500 mb-4">
             <p class="text-lg font-medium text-gray-700 text-center dark:text-white"><strong>Username:</strong> {{ user.userName }}</p>
           </div>
         
-          <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm dark:bg-gray-700 dark:border-gray-500">
+          <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm dark:bg-gray-700 dark:border-gray-500 mb-4">
             <p class="text-lg font-medium text-gray-700 text-center dark:text-white"><strong>Date of birth:</strong> {{ user.dob }}</p>
           </div>
+            </p>
 
-          <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm dark:bg-gray-700 dark:border-gray-500">
+          <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm dark:bg-gray-700 dark:border-gray-500 md:col-span-2">
             <p class="text-lg font-medium text-gray-700 text-center dark:text-white" style="white-space: pre-line;"><strong>Created predictiongames:</strong> {{ user.createdPredictionGames }}</p>
           </div>
 
@@ -91,7 +93,8 @@ import PredictiongameId from '~/pages/predictiongame-details/[predictiongameId].
     }
 
     .profile-picture {
-    height: 240px;
+    height: 200px;
+    width: 200px;
     border-radius: 50%; 
     object-fit: cover; 
     border: 2px solid #ddd; 
