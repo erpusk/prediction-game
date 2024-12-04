@@ -42,6 +42,12 @@
                 </li>
                 <li
                   class="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                  @click="goToAccountDetails"
+                >
+                  Account
+                </li>
+                <li
+                  class="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                   @click="userStore.logout"
                 >
                   Logout
@@ -108,6 +114,11 @@ onUnmounted(() => {
 
 function goToSettings(){
   router.push({ name: 'settings' });
+    closeDropdown()
+}
+
+function goToAccountDetails(){
+  router.push({ name: 'account-details' });
     closeDropdown()
 }
 

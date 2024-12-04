@@ -28,7 +28,9 @@ namespace BackEnd.Mappers
                         UniqueCode = x.UniqueCode
                     })
                     .ToList(),
-                ProfilePicture = applicationUserModel.ProfilePicture
+                ProfilePicture = applicationUserModel.ProfilePicture,
+                DateOfBirth = applicationUserModel.DateOfBirth,
+                Email = applicationUserModel.Email
             };
         }
         public static ApplicationUser ToApplicationUserFromDto(this ApplicationUserDto applicationUserDto)
