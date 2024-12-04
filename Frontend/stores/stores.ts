@@ -48,7 +48,6 @@ export const usePredictionGameStore = defineStore("predictionGame", () => {
   const loadPredictionGames = async () => {
     try {
         const response = await api.customFetch<PredictionGame[]>("PredictionGames");
-        console.log("Loaded Prediction Games:", response);
         predictionGames.value = response;
     } catch (error) {
         console.error("Error loading prediction games:", error);
