@@ -7,7 +7,7 @@
 
           <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm dark:bg-gray-700 dark:border-gray-500">
             <p class="text-lg font-medium text-gray-700 text-center dark:text-white"><strong>Profile picture:</strong> 
-                <img v-if="user.profilePicture != ''"
+                <img v-if="user.profilePicture != '' && user.profilePicture != null"
                   :src="decodeProfilePicture(user.profilePicture)"
                   class="profile-picture"
                 />

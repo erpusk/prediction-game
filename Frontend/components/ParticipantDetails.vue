@@ -1,51 +1,36 @@
 <template>
-    <div class="min-h-screen bg-gray-100 flex justify-center items-start  dark:bg-gray-900">
-      <div class="detail-page">
-        <h2 class="text-4xl font-semibold text-center mb-8 text-gray-800 dark:text-white">Account</h2>
-
-        <div class="grid md:grid-cols-2 gap-3">
-
-          <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm dark:bg-gray-700 dark:border-gray-500">
-            <p class="text-lg font-medium text-gray-700 text-center dark:text-white"><strong>Profile picture:</strong> 
-                <img v-if="user.profilePicture != ''"
-                  :src="decodeProfilePicture(user.profilePicture)"
-                  class="profile-picture"
-                />
-                <div v-else>
-                    No picture added
-                </div>
-            </p>
-          </div>
-          <p class="">
-          <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm dark:bg-gray-700 dark:border-gray-500 mb-4">
-            <p class="text-lg font-medium text-gray-700 text-center dark:text-white"><strong>Email:</strong> {{ user.email }}</p>
-          </div>
-
-          <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm dark:bg-gray-700 dark:border-gray-500 mb-4">
-            <p class="text-lg font-medium text-gray-700 text-center dark:text-white"><strong>Username:</strong> {{ user.userName }}</p>
-          </div>
+    <div class="flex justify-center items-start bg-gray-100 dark:bg-gray-900">
         
-          <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm dark:bg-gray-700 dark:border-gray-500 mb-4">
-            <p class="text-lg font-medium text-gray-700 text-center dark:text-white"><strong>Date of birth:</strong> {{ user.dob }}</p>
-          </div>
-            </p>
+      <div class="w-full max-w-md p-4 relative bg-white dark:bg-gray-800 rounded-lg shadow-lg">
 
-          <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm dark:bg-gray-700 dark:border-gray-500 md:col-span-2">
-            <p class="text-lg font-medium text-gray-700 text-center dark:text-white" style="white-space: pre-line;"><strong>Created predictiongames:</strong> {{ user.createdPredictionGames }}</p>
-          </div>
-
+        <button @click="$emit('close')" class="absolute top-2 right-2 text-gray-500 dark:text-white text-xl">
+        &times;
+      </button>
+        
+        <h2 class="text-3xl font-semibold text-center text-gray-800 dark:text-white mb-6">{{ user.userName }}</h2>
+  
+        <div class="bg-gray-50 dark:bg-gray-700 p-4 mb-4 border border-gray-200 rounded-lg shadow-sm">
+          <p class="text-lg font-medium text-gray-700 dark:text-white text-center">
+            <strong>Profile picture:</strong>
+            <img v-if="user.profilePicture" :src="decodeProfilePicture(user.profilePicture)" class="w-32 h-32 rounded-full mx-auto mb-4" />
+            <div v-else>No picture added</div>
+          </p>
+        </div>
+  
+        <div class="bg-gray-50 dark:bg-gray-700 p-4 mb-4 border border-gray-200 rounded-lg shadow-sm">
+          <p class="text-lg font-medium text-gray-700 dark:text-white text-center"><strong>Date of birth:</strong> {{ user.dob }}</p>
+        </div>
+  
+        <div v-if="user.createdPredictionGames.trim()" class="bg-gray-50 dark:bg-gray-700 p-4 border border-gray-200 rounded-lg shadow-sm">
+          <p class="text-lg font-medium text-gray-700 dark:text-white text-center" style="white-space: pre-line;"><strong>Created predictiongames:</strong> {{ user.createdPredictionGames }}</p>
         </div>
       </div>
     </div>
-</template>
+  </template>
     
 <script setup lang="ts">
   import { ref, onMounted } from 'vue';
-  import { useRoute } from 'vue-router';
-  import { usePredictionGameStore } from '@/stores/stores';
   const userStore = useUserStore();
-
-  
 
   const props = defineProps<{
     id: number
@@ -80,6 +65,8 @@
   function decodeProfilePicture(picString: any){
   return `data:image/jpeg;base64,${picString}`;
     }
+
+   
 </script>
     
 <style scoped>

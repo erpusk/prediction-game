@@ -39,7 +39,7 @@
 
               <div 
                 v-if="showModal && selectedParticipant" 
-                class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 z-50">
                <ParticipantDetails :id="selectedParticipant[2]" @close="closeModal" />
               </div>
 
