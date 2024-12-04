@@ -23,42 +23,34 @@ namespace BackEnd.Service
         }
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            var targetTime = DateTime.UtcNow.Date.AddDays(1).AddHours(3);
-            var initialDelay = targetTime - DateTime.UtcNow;
-
             try
             {
                 using var scope = _serviceProvider.CreateScope();
                 var dailyPollRepo = scope.ServiceProvider.GetRequiredService<DailyPollRepo>();
 
-                await FetchAndStoreMatchData(dailyPollRepo);
+                while (!stoppingToken.IsCancellationRequested)
+                {
+                    var latestMatch = await dailyPollRepo.GetLatestActiveMatch();
+                    var now = DateTime.UtcNow;
+
+                    if (latestMatch == null || latestMatch.UtcDate.Date.AddDays(1).AddHours(3) <= now)
+                    {
+                        try
+                        {
+                            await FetchAndStoreMatchData(dailyPollRepo);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("Error during data fetch: " + ex);
+                        }
+                    }
+
+                    await Task.Delay(TimeSpan.FromMinutes(10), stoppingToken);
+                }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error during initial data fetch: " + ex);
-            }
-
-            await Task.Delay(initialDelay, stoppingToken);
-
-            while (!stoppingToken.IsCancellationRequested)
-            {
-                try
-                {
-                    using var scope = _serviceProvider.CreateScope();
-                    var dailyPollRepo = scope.ServiceProvider.GetRequiredService<DailyPollRepo>();
-
-                    var activeMatch = await FetchAndStoreMatchData(dailyPollRepo);
-
-                    var now = DateTime.UtcNow;
-                    targetTime = now.Date.AddDays(1).AddHours(3);
-                    var delay = targetTime - now;
-
-                    await Task.Delay(delay, stoppingToken);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.ToString());
-                }
+                Console.WriteLine("Error during service execution: " + ex);
             }
         }
 
@@ -68,10 +60,10 @@ namespace BackEnd.Service
             var twoDaysAfterTomorrow = DateTime.UtcNow.AddDays(3).ToString("yyyy-MM-dd");
 
             var rawData = await GetDataFromApi("https://api.football-data.org/v4/matches");
-            if (!rawData.Matches.Any())
+            if (rawData?.Matches == null || !rawData.Matches.Any())
             {
                 rawData = await GetDataFromApi($"https://api.football-data.org/v4/matches?dateFrom={tomorrow}&dateTo={dayAfterTomorrow}");
-                if (!rawData.Matches.Any())
+                if (rawData?.Matches == null || !rawData.Matches.Any())
                 {
                     rawData = await GetDataFromApi($"https://api.football-data.org/v4/matches?dateFrom={dayAfterTomorrow}&dateTo={twoDaysAfterTomorrow}");
                     if (rawData == null || !rawData.Matches.Any())

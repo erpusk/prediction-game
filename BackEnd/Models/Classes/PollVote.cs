@@ -12,7 +12,6 @@ namespace BackEnd.Models.Classes
         public int UserId { get; set; }
         public ApplicationUser? User { get; set; }
         public bool IsForHomeTeam { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        
+        public DateTime VoteCreatedAt { get; set; }
     }
 }

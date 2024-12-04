@@ -22,82 +22,11 @@
             </div>
         </div>
 
-        <!-- Right Column -->
+        <!-- Right Column, Daily Poll section -->
         <div class="section-box bg-white p-2 rounded shadow sm:col-span-1 sm:w-2/3 ml-20">
-          <h2 class="text-lg font-bold font-merriweather-400 text-center">Who wins tonight?</h2>
-
-          <!-- Poll Options -->
-          <div class="poll-rectangle relative flex mt-2 w-full rounded-lg border border-gray-300">
-            <!-- Team A Background -->
-            <div
-              class="team-bg team-a-bg absolute h-full"
-              :style="{ 
-                width: showResults ? `${teamAPercentage}%` : '50%',
-                backgroundColor: selectedOption === 'Team A' ? '#26547C' : '#26547C8b' }">
-            </div>
-
-            <!-- Team B Background -->
-            <div
-              class="team-bg team-b-bg absolute h-full"
-              :style="{ 
-                width: showResults ? `${teamBPercentage}%` : '50%',
-                backgroundColor: selectedOption === 'Team B' ? '#26547C' : '#26547C8b' }">
-            </div>
-
-            <!-- Divider -->
-            <div
-              class="divider absolute h-full"
-              :style="{ left: showResults ? `${teamAPercentage}%` : '50%', transition: 'left 0.5s ease' }">
-            </div>
-
-            <!-- Team A Section -->
-            <div
-              class="team-section flex relative items-center text-center cursor-pointer w-1/2"
-              :class="{ selected: selectedOption === 'Team A', 'static-result': showResults }"
-              @click="vote('Team A')">
-              <span class="team-name font-merriweather-400 absolute inset-0 flex items-center justify-center">
-                {{ homeTeamName }}
-              </span>
-              <div
-                v-if="showResults"
-                class="percentage-overlay absolute inset-0 flex items-end justify-center">
-                <span><strong>{{ `${teamAPercentage}%` }}</strong></span>
-              </div>
-            </div>
-
-            <!-- Team B Section -->
-            <div
-              class="team-section flex-1 relative text-center cursor-pointer"
-              :class="{ selected: selectedOption === 'Team B', 'static-result': showResults }"
-              @click="vote('Team B')">
-              <span class="team-name font-merriweather-400 absolute inset-0 flex items-center justify-center">
-                {{ awayTeamName }}
-              </span>
-              <div
-                v-if="showResults"
-                class="percentage-overlay absolute inset-0 flex items-end justify-center">
-                <span><strong>{{ `${teamBPercentage}%` }}</strong></span>
-              </div>
-            </div>
-          </div>
-          <div v-if="showResults" class="text-center mt-4">
-            <p class="text-sm text-gray-600 font-merriweather-400">
-              Based on {{ totalVotes }} votes
-            </p>
-          </div>
+          <DailyPoll />
         </div>
       </div>  
-
-      <!-- Leaderboards -->
-      <!-- <div class="section-box bg-white p-6 rounded shadow">
-        <h2 class="section-title">Your Leaderboards</h2>
-        <ul v-if="leaderboards.length" class="leaderboard-list mt-4">
-          <li v-for="(board, index) in leaderboards" :key="index" class="leaderboard-item">
-            <span>{{ board.gameName }}</span> - <strong>{{ board.rank }}</strong>
-          </li>
-        </ul>
-        <p v-else class="empty-text">You're not currently ranked in any games.</p>
-      </div> -->
 
       <!-- Bottom Section -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-16 mt-12 p-8">
@@ -168,47 +97,16 @@ const userStore = useUserStore();
 const predictionGameStore = usePredictionGameStore();
 const gameEventStore = useGameEventsStore();
 const predictionsStore = usePredictionsStore();
-const dailyPollStore = useDailyPollStore();
 const router = useRouter();
 
 const showPredictionModal = ref(false);
 const selectedGameEventId = ref(0);
 const selectedPredictionGameId = ref(0);
-const selectedOption = ref("");
-const showResults = ref(false);
-
-const homeTeamName = ref<string | null>(null);
-const awayTeamName = ref<string | null>(null);
-
-const votes = ref({ teamA: 0, teamB: 0 });
-const totalVotes = computed(() => votes.value.teamA + votes.value.teamB);
-
-const vote = (team: "Team A" | "Team B") => {
-  // if (showResults.value) return; tulevikus maha votta, kui iga kasutaja ainult uhe ennustuse teeb
-  selectedOption.value = team;
-  showResults.value = true;
-
-  if (team === "Team A") votes.value.teamA++;
-  else votes.value.teamB++;
-};
-
-const teamAPercentage = computed(() => totalVotes.value === 0 ? 50 : Math.round((votes.value.teamA / totalVotes.value) * 100));
-const teamBPercentage = computed(() => {
-  if (totalVotes.value === 0) return 50;
-  const percentageB = (votes.value.teamB / totalVotes.value) * 100;
-  
-  if (percentageB + teamAPercentage.value !== 100) {
-    const adjustedB = 100 - teamAPercentage.value;
-    return Math.round(adjustedB);
-  }
-  return percentageB;
-});
 
 const userName = computed(() => userStore.user?.userName || 'User');
 const hasPredictionGames = computed(() => predictionGameStore.predictionGames.length > 0);
 const predictionHistory = computed(() => predictionsStore.userPredictionHistory || []);
 const upcomingPredictions = computed(() => gameEventStore.userUpcomingPredictions || []);
-//const leaderboards = computed(() => userStore.user?.leaderboards || []);
 
 const upcomingPage = ref(1);
 const upcomingPageSize = 4;
@@ -278,10 +176,6 @@ onMounted(async () => {
       return { ...prediction, score, teamNames, points };
     })
   );
-
-  await dailyPollStore.getDailyPollTeams();
-  homeTeamName.value = dailyPollStore.homeTeamName;
-  awayTeamName.value = dailyPollStore.awayTeamName;
 });
 
 onBeforeRouteLeave(() => {
@@ -408,103 +302,7 @@ function closePredictionModal() {
   border-radius: 30px;
   padding: 1rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  
-}
-
-.poll-rectangle {
-  position: relative;
-  background-color: #f9fafb;
-  height: 70px;
-  overflow: hidden;
-  transition: background-color 0.3s, width 0.3s;
-  border-radius: 8px;
-}
-
-.team-section {
-  position: relative;
-  padding: 16px 0;
-  font-size: 16px;
-  font-weight: bold;
-  background-color: #26547C8b;
-  transition: flex-grow 0.3s, background-color 0.3s;
-  transition: width 0.5s ease;
-}
-
-.team-section:hover {
-  background-color: #B8B3E9;
-}
-
-.team-section.selected {
-  background-color: #26547C8b;
-  color: white;
-}
-
-.team-bg {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  z-index: 1;
-  transition: width 0.5s ease;
-}
-
-.team-a-bg {
-  left: 0;
-}
-
-.team-b-bg {
-  right: 0;
-}
-
-.divider {
-  position: absolute;
-  z-index: 1;
-  width: 3.5px;
-  background-color: #26547C;
-}
-
-.static-result {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #26547C8b;
-}
-
-.team-name {
-  position: absolute;
-  z-index: 1;
-  color: #f9fafb;
-  font-size: 20px;
-  font-weight: bold;
-}
-
-.percentage-overlay {
-  position: absolute;
-  z-index: 2;
-  color: white;
-  font-size: 14px;
-  font-weight: bold;
-}
-
-.title-text {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #2e3747;
-}
-
-.subtitle-text {
-  font-size: 1.25rem;
-  color: #5a6677;
-}
-
-.section-box {
   border: 1px solid #ddd;
-}
-
-.section-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #34495e;
 }
 
 .btn-primary {
