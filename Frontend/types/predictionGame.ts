@@ -7,7 +7,7 @@ export interface PredictionGame {
     gameCreatorId: number;
     privacy: string;
     uniqueCode: string;
-    participants: Array<{ id: number; userId: number; userName: string }>;
+    participants: Array<{ id: number; userId: number; userName: string; profilePicture: string}>;
     chatMessages?: Array<{
       id: number;
       gameId: number;

@@ -27,9 +27,23 @@
           </div>
 
           <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm md:col-span-2 dark:bg-gray-700 dark:border-gray-500">
-          <p class="text-lg font-medium text-gray-700 text-center dark:text-white" style="white-space: pre-line;">
-            <strong>Joined players:</strong> {{ game.participants }}
+          <p class="text-lg font-medium text-gray-700 text-center dark:text-white" >
+            <strong>Joined players:</strong>
           </p>
+          <div class="flex flex-col items-center">
+            
+            <div v-for="(participant, index) in game.participants" :key="index" class="flex items-center space-x-3">
+              <span class="text-lg font-medium text-gray-700 dark:text-white">{{ participant[0] }}</span>
+              <img 
+              v-if="participant[1] != ''"
+              :src="decodeProfilePicture(participant[1])" 
+              alt="Profile Picture" 
+              class="w-7 h-7 rounded-full object-cover">
+              <div v-else class="w-7 h-7 rounded-full bg-gray-400 flex items-center justify-center text-white text-lg">
+                <span>{{ participant[0][0] }}</span> <!-- Display first letter of username -->
+              </div>
+            </div>
+          </div>
           </div>
 
           <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm md:col-span-2 dark:bg-gray-700 dark:border-gray-500">
@@ -63,9 +77,9 @@
     creationDate: '',
     privacy: '',
     title: '',
-    participants: '',
+    participants: [] as [string, string][],
     gameCreator: '',
-    userEarnedPoints: ''
+    userEarnedPoints: '',
   });
 
   onMounted(async () => {
@@ -77,21 +91,27 @@
     game.value.privacy = predictionGame.privacy;
     game.value.title = predictionGame.predictionGameTitle
 
-    const participantsUsernames = [] as string[];
+    const participants: [string, string][] = [];
     predictionGame.participants.forEach(async element => {
-      participantsUsernames.push(element.userName)
+      console.log(element)
+      participants.push([element.userName, element.profilePicture])
       if (element.userId === predictionGame.gameCreatorId){
         game.value.gameCreator = element.userName
       }
     });
     
-    game.value.participants = "\n" + participantsUsernames.join('\n');
+    game.value.participants = participants
 
     const userPoints = await predictionGameStore.loadUserPoints(parseInt(props.id.toString()));
     game.value.userEarnedPoints = userPoints !== null ? `${userPoints} points` : 'No points available';
 
     
+    
   });
+
+  function decodeProfilePicture(picString: any){
+      return `data:image/jpeg;base64,${picString}`;
+    }
   </script>
     
     <style scoped>
