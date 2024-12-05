@@ -29,7 +29,8 @@ namespace BackEnd.Mappers
                 {
                     Id = p.UserId,
                     UserName = p.User?.UserName ?? "Unknown User",
-                    UserId = p.UserId
+                    UserId = p.UserId,
+                    ProfilePicture = p.User?.ProfilePicture ?? ""
                 }).ToList(),
                 ChatMessages = predictionGameModel.ChatMessages
                 .Select(chat => new ChatMessageDto

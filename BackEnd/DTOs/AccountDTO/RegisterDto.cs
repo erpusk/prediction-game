@@ -18,5 +18,6 @@ namespace BackEnd.DTOs.AccountDTO
         [Required]
         [MinLength(8)]
         public string? Password { get; set; }
+        
     }
 }

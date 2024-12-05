@@ -28,6 +28,9 @@ namespace BackEnd.Mappers
                         UniqueCode = x.UniqueCode
                     })
                     .ToList(),
+                ProfilePicture = applicationUserModel.ProfilePicture,
+                DateOfBirth = applicationUserModel.DateOfBirth,
+                Email = applicationUserModel.Email
             };
         }
         public static ApplicationUser ToApplicationUserFromDto(this ApplicationUserDto applicationUserDto)
@@ -52,7 +55,22 @@ namespace BackEnd.Mappers
             {
                 UserName = applicationUserDto.UserName,
                 DateOfBirth = applicationUserDto.DateOfBirth,
+                ProfilePicture = applicationUserDto.ProfilePicture
             };
+        }
+
+        
+
+        public static byte[]? PictureToByteArray(IFormFile? File){
+            if (File == null){
+                return null;
+            }
+            using (var memoryStream = new MemoryStream())
+            {
+                File.CopyTo(memoryStream);
+                var profilePicture = memoryStream.ToArray(); // Store as byte[]
+                return profilePicture;
+            }
         }
     }
 }

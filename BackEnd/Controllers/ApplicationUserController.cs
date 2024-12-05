@@ -57,6 +57,8 @@ namespace BackEnd.Controllers
 
             userModel.UserName = userDto.UserName;
             userModel.DateOfBirth = userDto.DateOfBirth;
+            userModel.ProfilePicture = userDto.ProfilePicture;
+            
 
             var result = await repo.UpdateApplicationUser(id, userModel);
             return result ? NoContent() : NotFound();
@@ -67,5 +69,7 @@ namespace BackEnd.Controllers
             var result = await repo.DeleteUserById(id);
             return result ? NoContent() : NotFound();
         }
+
+        
     }
 }

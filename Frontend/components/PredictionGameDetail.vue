@@ -27,9 +27,32 @@
           </div>
 
           <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm md:col-span-2 dark:bg-gray-700 dark:border-gray-500">
-          <p class="text-lg font-medium text-gray-700 text-center dark:text-white" style="white-space: pre-line;">
-            <strong>Joined players:</strong> {{ game.participants }}
+          <p class="text-lg font-medium text-gray-700 text-center dark:text-white" >
+            <strong>Joined players:</strong>
           </p>
+          <div class="flex flex-col items-center">
+            
+            <div v-for="(participant, index) in game.participants" :key="index" class="flex items-center space-x-3">
+              <button @click="openModal(participant)">
+                <span class="text-lg font-medium text-gray-700 dark:text-white">{{ participant[0] }}</span>
+              </button>
+
+              <div 
+                v-if="showModal && selectedParticipant" 
+                class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 z-50">
+               <ParticipantDetails :id="selectedParticipant[2]" @close="closeModal" />
+              </div>
+
+              <img 
+              v-if="participant[1] != ''"
+              :src="decodeProfilePicture(participant[1])" 
+              alt="Profile Picture" 
+              class="w-7 h-7 rounded-full object-cover">
+              <div v-else class="w-7 h-7 rounded-full bg-gray-400 flex items-center justify-center text-white text-lg">
+                <span>{{ participant[0][0] }}</span> <!-- Display first letter of username -->
+              </div>
+            </div>
+          </div>
           </div>
 
           <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm md:col-span-2 dark:bg-gray-700 dark:border-gray-500">
@@ -45,16 +68,25 @@
     
     <script setup lang="ts">
   import { ref, onMounted } from 'vue';
-  import { useRoute } from 'vue-router';
   import { usePredictionGameStore } from '@/stores/stores';
 
   const props = defineProps<{
-      id: string | string[];
-    }>();
-  const route = useRoute();
-  const predictionGameStore = usePredictionGameStore();
-  const userStore = useUserStore();
+    id: string | string[];
+  }>();
 
+  const predictionGameStore = usePredictionGameStore();
+  const showModal = ref(false);
+  const selectedParticipant = ref<[string, string, number] | null>(null);
+
+  const closeModal = () => {
+    showModal.value = false; 
+    selectedParticipant.value = null;
+  };
+
+  const openModal = (participant: [string, string, number]) => {
+    selectedParticipant.value = participant;
+    showModal.value = true;
+  };
 
   const game = ref({
     id: parseInt(props.id.toString(), 10),
@@ -63,35 +95,38 @@
     creationDate: '',
     privacy: '',
     title: '',
-    participants: '',
+    participants: [] as [string, string, number][],
     gameCreator: '',
-    userEarnedPoints: ''
+    userEarnedPoints: '',
   });
 
   onMounted(async () => {
     const predictionGame = await predictionGameStore.loadPredictionGame(parseInt(props.id.toString()));
-    //creationdate, startdate, enddate, privacy, predictiongametitle 
     game.value.startDate = predictionGame.startDate ? new Date(predictionGame.startDate).toLocaleDateString() : '';
     game.value.endDate = predictionGame.endDate ? new Date(predictionGame.endDate).toLocaleDateString() : '';
     game.value.creationDate = predictionGame.creationDate ? new Date(predictionGame.creationDate).toLocaleDateString() : '';
     game.value.privacy = predictionGame.privacy;
     game.value.title = predictionGame.predictionGameTitle
 
-    const participantsUsernames = [] as string[];
+    const participants: [string, string, number][] = [];
     predictionGame.participants.forEach(async element => {
-      participantsUsernames.push(element.userName)
+      participants.push([element.userName, element.profilePicture, element.userId])
       if (element.userId === predictionGame.gameCreatorId){
         game.value.gameCreator = element.userName
       }
     });
     
-    game.value.participants = "\n" + participantsUsernames.join('\n');
+    game.value.participants = participants
 
     const userPoints = await predictionGameStore.loadUserPoints(parseInt(props.id.toString()));
     game.value.userEarnedPoints = userPoints !== null ? `${userPoints} points` : 'No points available';
-
     
   });
+
+  function decodeProfilePicture(picString: any){
+    return `data:image/jpeg;base64,${picString}`;
+  }
+
   </script>
     
     <style scoped>

@@ -85,7 +85,35 @@ export const useUserStore = defineStore('user', () => {
         router.push('/login');
     }
 
-    //loadUser();
+    const updateUser = async (updatedData: AppUser) => {
+      if (!user.value || !token.value) {
+          throw new Error('User is not authenticated.');
+      }
 
-    return { user, token, isAuthenticated, setUser, setToken, loadUser, login, register, logout }
+      try {
+          const updatedUser = await api.customFetch<AppUser>(`ApplicationUser/${user.value.id}`, {
+              method: 'PUT', 
+              headers: {
+                  Authorization: `Bearer ${token.value}`,
+              },
+              body: updatedData,
+          });
+
+          user.value = { ...user.value, ...updatedUser };
+      } catch (error) {
+          console.error("User update failed", error)
+      }
+    };
+
+    const getUserById = async (id: number) => {
+      try {
+        const userData = await api.customFetch<AppUser>(`ApplicationUser/${id}`);
+        user.value = userData;
+    } catch(error) {
+        console.error("Error loading user: ", error)
+        user.value = null;
+    }
+    }
+
+    return { user, token, isAuthenticated, setUser, setToken, loadUser, login, register, logout, updateUser, getUserById }
 });
