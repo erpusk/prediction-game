@@ -11,24 +11,10 @@ namespace BackEnd.Data.Repos
     public class DailyPollRepo(DataContext context) {
         private readonly DataContext _context = context;
 
-        public async Task AddVoteAsync(PollVote vote)
+        public async Task AddVoteAsync(PollVote vote, DailyPollMatch match)
         {
-            _context.PollVotes.Add(vote);
+            match.PollVotes.Add(vote);
             await _context.SaveChangesAsync();
-        }
-
-        public async Task<int> GetTotalVotesAsync(int matchId)
-        {
-            return await _context.PollVotes
-                .Where(v => v.DailyPollMatchId == matchId)
-                .CountAsync();
-        }
-
-        public async Task<int> GetHomeTeamVotesAsync(int matchId)
-        {
-            return await _context.PollVotes
-                .Where(v => v.DailyPollMatchId == matchId && v.IsForHomeTeam)
-                .CountAsync();
         }
 
         public async Task AddMatchToDb(DailyPollMatch match)
@@ -64,7 +50,7 @@ namespace BackEnd.Data.Repos
             .OrderByDescending(m => m.UtcDate)
             .FirstOrDefaultAsync();
 
-        public async Task<DailyPollMatch?> GetMatchById(int matchId) => await _context.DailyPollMatches.FirstOrDefaultAsync(m => m.Id == matchId);
+        public async Task<DailyPollMatch?> GetMatchById(int matchId) => await _context.DailyPollMatches.Include(m => m.PollVotes).FirstOrDefaultAsync(m => m.Id == matchId);
 
         public async Task<PollVote?> HasUserVotedTodayAsync(int userId, int matchId)
         {

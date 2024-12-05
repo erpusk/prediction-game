@@ -41,8 +41,15 @@ namespace BackEnd.Controllers
                 return BadRequest("Invalid vote data.");
             }
 
-            var hasVoted = await _dailyPollRepo.HasUserVotedTodayAsync(userId, pollVoteRequest.DailyPollMatchId);
-            if (hasVoted != null) {
+            var dailyPollMatch = await _dailyPollRepo.GetMatchById(pollVoteRequest.DailyPollMatchId);
+            if (dailyPollMatch == null) {
+                return BadRequest("Match with that id does not exist");
+            }
+
+            var hasVoted = dailyPollMatch.PollVotes
+                .Any(v => v.UserId == userId && v.VoteCreatedAt.Date == DateTime.UtcNow.Date);
+
+            if (hasVoted) {
                 return BadRequest("User has already voted for this match today.");
             }
 
@@ -53,7 +60,7 @@ namespace BackEnd.Controllers
                 VoteCreatedAt = DateTime.UtcNow
             };
 
-            await _dailyPollRepo.AddVoteAsync(vote);
+            await _dailyPollRepo.AddVoteAsync(vote, dailyPollMatch);
             return Ok("Vote submitted successfully.");
         }
 
@@ -72,20 +79,25 @@ namespace BackEnd.Controllers
         [HttpGet("{matchId:int}/results")]
         public async Task<IActionResult> GetVoteResults(int matchId)
         {
-            var totalVotes = await _dailyPollRepo.GetTotalVotesAsync(matchId);
+            var match = await _dailyPollRepo.GetMatchById(matchId);
 
-            if (totalVotes == 0) {
+            if (match == null || !match.PollVotes.Any())
+            {
                 return Ok(new {
-                    TotalVotes = totalVotes,
+                    TotalVotes = 0,
                     HomeTeamVotes = 0,
                     AwayTeamVotes = 0,
                     HomeTeamPercentage = 0,
                     AwayTeamPercentage = 0
                 });
-    }
+            }
 
-            var homeVotes = await _dailyPollRepo.GetHomeTeamVotesAsync(matchId);
-            var awayVotes = totalVotes - homeVotes;
+            var totalVotes = match.PollVotes.Count;
+            var homeVotes = match.PollVotes.Count(v => v.IsForHomeTeam);
+            var awayVotes = match.PollVotes.Count(v => !v.IsForHomeTeam);
+            if (homeVotes + awayVotes != totalVotes) {
+                awayVotes = totalVotes - homeVotes;
+            }
 
             var homeTeamPercentage = Math.Round((double)homeVotes / totalVotes * 100, 1);
             var awayTeamPercentage = Math.Round((double)awayVotes / totalVotes * 100, 1);
