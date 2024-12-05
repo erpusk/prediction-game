@@ -14,7 +14,7 @@
 
       <div class="flex justify-center space-x-4 mt-6">
         <UButton type="submit"
-          class="bg-green-500 hover:bg-gray-400 dark:hover:bg-gray-400 text-white font-bold py-3 px-6 rounded-lg transition duration-300">
+          class="btn-primary font-bold transition duration-300">
           Login
         </UButton>
       </div>
@@ -29,18 +29,6 @@
     </form>
   </div>
 </template>
-
-<style scoped>
-div :deep(label) {
-  color: black !important;
-}
-@media (prefers-color-scheme: dark) {
-  div :deep(label) {
-    color: #ffffff !important;
-  }
-}
-</style>
-
 
 <script setup>
 import { ref } from 'vue';
@@ -74,3 +62,35 @@ const goToRegister = () => {
 };
 </script>
 
+<style scoped>
+div :deep(label) {
+  color: black !important;
+}
+@media (prefers-color-scheme: dark) {
+  div :deep(label) {
+    color: #ffffff !important;
+  }
+}
+
+.btn-primary {
+  background-color: #5bb17c;
+  color: #fff;
+  padding: 10px 28px;
+  border: none;
+  border-radius: 80px;
+  cursor: pointer;
+  font-family: 'Merriweather', sans-serif;
+  transition: background-color 0.3s, transform 0.3s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary:hover {
+  background-color: #26547C;
+  transform: scale(1.05)
+}
+
+.btn-primary:active {
+  background-color: #26547C;
+  transform: scale(1);
+}
+</style>

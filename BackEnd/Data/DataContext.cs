@@ -17,7 +17,8 @@ public class DataContext : IdentityDbContext<ApplicationUser, IdentityRole<int>,
     public DbSet<Prediction> Predictions { get; set; }
     public DbSet<PredictionGameParticipant> PredictionGameParticipants { get; set; }
     public DbSet<ChatMessages> ChatMessages { get; set; }
-
+    public DbSet<DailyPollMatch> DailyPollMatches { get; set; }
+    public DbSet<PollVote> PollVotes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -27,10 +28,11 @@ public class DataContext : IdentityDbContext<ApplicationUser, IdentityRole<int>,
         ConfigureEventEntity(modelBuilder.Entity<Event>());
         ConfigureApplicationUserEntity(modelBuilder.Entity<ApplicationUser>());
         ConfigurePredictionEntity(modelBuilder.Entity<Prediction>());
-        
         ConfigureAccountEntity(modelBuilder.Entity<IdentityRole<int>>());
         ConfigurePredictionGameParticipantEntity(modelBuilder.Entity<PredictionGameParticipant>());
         ConfigureChatMessagesEntity(modelBuilder.Entity<ChatMessages>());
+        ConfigurePollVoteEntity(modelBuilder.Entity<PollVote>());
+        ConfigureDailyPollMatchEntity(modelBuilder.Entity<DailyPollMatch>());
     }
 
     private void ConfigureAccountEntity(EntityTypeBuilder<IdentityRole<int>> roleBuilder)
@@ -63,6 +65,20 @@ public class DataContext : IdentityDbContext<ApplicationUser, IdentityRole<int>,
         .HasForeignKey(c => c.SenderId)
         .OnDelete(DeleteBehavior.Restrict);
         
+    }
+
+    private static void ConfigurePollVoteEntity(EntityTypeBuilder<PollVote> pollVote) {
+        pollVote.HasOne<DailyPollMatch>()
+        .WithMany()
+        .HasForeignKey(v => v.DailyPollMatchId)
+        .OnDelete(DeleteBehavior.Cascade);
+    }
+
+    private static void ConfigureDailyPollMatchEntity(EntityTypeBuilder<DailyPollMatch> dailyPollMatch) {
+        dailyPollMatch.HasMany(dm => dm.PollVotes)
+        .WithOne()
+        .HasForeignKey(pv => pv.DailyPollMatchId)
+        .OnDelete(DeleteBehavior.Cascade);
     }
 
     private static void ConfigureEventEntity(EntityTypeBuilder<Event> Event)

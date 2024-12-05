@@ -12,6 +12,7 @@ using itb2203_2024_predictiongame.Service;
 using Microsoft.OpenApi.Models;
 using BackEnd.Authorization;
 using Microsoft.AspNetCore.Authorization;
+using BackEnd.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -60,7 +61,11 @@ builder.Services.AddDbContext<DataContext>(options =>
     .AddScoped<EventRepo>()
     .AddScoped<ApplicationUserRepo>()
     .AddScoped<PredictionRepo>()
-    .AddScoped<GameParticipantRepo>();
+    .AddScoped<GameParticipantRepo>()
+    .AddScoped<DailyPollRepo>();
+
+builder.Services.AddHttpClient<DailyPollMatchFetcherService>();
+builder.Services.AddHostedService<DailyPollMatchFetcherService>();
 
 builder.Services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
     {
