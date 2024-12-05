@@ -103,9 +103,17 @@ export const useUserStore = defineStore('user', () => {
       } catch (error) {
           console.error("User update failed", error)
       }
-  };
+    };
 
-    //loadUser();
+    const getUserById = async (id: number) => {
+      try {
+        const userData = await api.customFetch<AppUser>(`ApplicationUser/${id}`);
+        user.value = userData;
+    } catch(error) {
+        console.error("Error loading user: ", error)
+        user.value = null;
+    }
+    }
 
-    return { user, token, isAuthenticated, setUser, setToken, loadUser, login, register, logout, updateUser }
+    return { user, token, isAuthenticated, setUser, setToken, loadUser, login, register, logout, updateUser, getUserById }
 });

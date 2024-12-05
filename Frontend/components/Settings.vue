@@ -46,7 +46,9 @@ const state = reactive<AppUser>({
     id: 0,
     userName: '',
     email: '',
-    profilePicture: ''
+    profilePicture: '',
+    dateOfBirth: new Date(),
+    createdPredictionGames: []
 })
 
 onMounted(async () => {
@@ -56,6 +58,8 @@ onMounted(async () => {
         state.userName = userStore.user.userName    
         state.email = userStore.user.email
         state.profilePicture = userStore.user.profilePicture
+        state.dateOfBirth = userStore.user.dateOfBirth
+        state.createdPredictionGames = userStore.user.createdPredictionGames
     }
 })
 
@@ -66,6 +70,8 @@ async function onSubmit() {
         userName: state.userName,
         email: state.email,
         profilePicture: state.profilePicture,
+        dateOfBirth: state.dateOfBirth,
+        createdPredictionGames: state.createdPredictionGames
     };
 
     console.log(payload)

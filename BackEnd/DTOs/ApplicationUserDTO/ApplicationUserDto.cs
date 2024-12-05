@@ -18,5 +18,6 @@ namespace BackEnd.DTOs.ApplicationUser
         public List<PredictionGameDto> CreatedPredictionGames { get; set; } = new List<PredictionGameDto>();
         //public List<PredictionGameDto> JoinedPredictionGames { get; set; } = new List<PredictionGameDto>();
         public string? ProfilePicture { get; set; }
+        public string? Email { get; set; }
     }
 }
