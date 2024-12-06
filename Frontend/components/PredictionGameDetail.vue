@@ -48,10 +48,10 @@
           <div
             class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm md:col-span-2 dark:bg-gray-700 dark:border-gray-500">
             <h3 class="text-lg font-medium text-gray-700 text-center mb-4 dark:text-white">
-              <strong>Leaderboard:</strong>
+              <strong>Top 5 players:</strong>
             </h3>
             <ul class="space-y-2">
-              <li v-for="(entry, index) in game.leaderBoard" :key="index"
+              <li v-for="(entry, index) in game.leaderBoard.splice(0, 5)" :key="index"
                 class="flex justify-between items-center p-2 bg-gray-100 rounded-lg dark:bg-gray-600">
 
                 <div class="flex items-center">
