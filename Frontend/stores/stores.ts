@@ -31,6 +31,23 @@ export const usePredictionGameStore = defineStore("predictionGame", () => {
     }
   };
 
+  const joinPredictionGame = async (gameCode: string) => {
+    try {
+      const response = await api.customFetch(`PredictionGames/${gameCode}/join`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${userStore.token}`,
+        },
+      });
+  
+      return { success: true, message: "Successfully joined the game." };
+    } catch (error) {
+      const errorMessage = "An error occurred while joining the game.";
+      console.error(errorMessage);
+      return { success: false, message: errorMessage };
+    }
+  };
+
   const loadUserPoints = async (predictionGameId: number) => {
     try {
       const points = await api.customFetch<number>(`PredictionGames/${predictionGameId}/user-points`, {
@@ -90,7 +107,8 @@ export const usePredictionGameStore = defineStore("predictionGame", () => {
     getPredictionGameById,
     loadPredictionGame,
     leavePredictionGame,
-    loadUserPoints
+    loadUserPoints,
+    joinPredictionGame
   };
 });
 

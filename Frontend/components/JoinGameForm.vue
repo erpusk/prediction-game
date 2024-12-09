@@ -18,51 +18,30 @@
   <script setup lang="ts">
   import { ref } from 'vue';
   import { useRouter } from 'vue-router';
-  import { useUserStore } from '@/stores/userStore';
   
   const router = useRouter();
-  const userStore = useUserStore();
+  const predictionGameStore = usePredictionGameStore();
   
   const gameCode = ref('');
   const message = ref('');
   const messageClass = ref('');
   
   async function joinGame() {
-    try {
-      const userId = userStore.user?.id;
-      if (!userId) {
-        message.value = 'You must be logged in to join a game.';
-        messageClass.value = 'error';
-        return;
-      }
-  
-      const response = await fetch(
-        `http://localhost:5160/api/PredictionGames/${gameCode.value}/join`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${userStore.token}`,
-          },
-          body: JSON.stringify({ userId }),
-        }
-      );
-  
-      if (response.ok) {
-        message.value = 'Successfully joined the game.';
-        messageClass.value = 'success';
-        setTimeout(() => {
-          router.push('/predictiongames');
-        }, 2000);
-      } else {
-        const errorData = await response.json();
-        message.value = errorData.message || 'No games with the provided code';
-        messageClass.value = 'error';
-      }
-    } catch (error) {
-      message.value = 'An error occurred while joining the game.';
+    const { success, message: responseMessage } = await predictionGameStore.joinPredictionGame(gameCode.value);
+
+    message.value = responseMessage;
+    messageClass.value = success ? 'success' : 'error';
+
+    if (success) {
+      message.value = responseMessage;
+      messageClass.value = 'success';
+
+      setTimeout(() => {
+        router.push('/predictiongames');
+      }, 1500);
+    } else {
+      message.value = responseMessage || 'Failed to join the game. Please try again.';
       messageClass.value = 'error';
-      console.error(error);
     }
   }
   </script>
