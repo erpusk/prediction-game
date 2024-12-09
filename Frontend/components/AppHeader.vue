@@ -14,9 +14,48 @@
           </ul>
         </div>
 
-        <div v-if="userStore.isAuthenticated" class="flex items-center space-x-6">
-          <span class="user-info font-inter">Hello, {{ userName }}!</span>
-          <button class="btn-logout font-inter" @click="userStore.logout()">Logout</button>
+        <div v-if="userStore.isAuthenticated" >
+          <div class="flex items-center space-x-6">
+            <span class="user-info font-inter">Hello, {{ userName }}!</span>
+            <div class="relative dropdown-container">
+            <button
+                class="btn-settings font-inter"
+                @click="toggleDropdown"
+              >
+                <img
+                  v-if="userStore.user?.profilePicture"
+                  :src="encodeProfilePicture(userStore.user?.profilePicture)"
+                  alt="Profile Picture"
+                  class="profile-picture"
+                />
+                <span v-else>...</span>
+              </button>
+              <!-- Dropdown menu -->
+              <ul
+                v-show="isDropdownOpen"
+                class="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded shadow-md text-black"
+              >
+                <li
+                  class="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                  @click="goToSettings"
+                >
+                  Settings
+                </li>
+                <li
+                  class="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                  @click="goToAccountDetails"
+                >
+                  Account
+                </li>
+                <li
+                  class="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                  @click="userStore.logout"
+                >
+                  Logout
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
       </nav>
     </div>
@@ -25,12 +64,51 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useRoute } from 'vue-router';
 import { useUserStore } from '#imports';
 
 const userStore = useUserStore();
 const userName = computed(() => userStore.user?.userName);
-const route = useRoute();
+const router = useRouter();
+const isDropdownOpen = ref(false);
+
+
+function toggleDropdown() {
+  isDropdownOpen.value = !isDropdownOpen.value;
+}
+
+function closeDropdown() {
+  isDropdownOpen.value = false;
+}
+
+function goToSettings(){
+  router.push({ name: 'settings' });
+    closeDropdown()
+}
+
+function goToAccountDetails(){
+  router.push({ name: 'account-details' });
+    closeDropdown()
+}
+
+function handleClickOutside(event: MouseEvent) {
+  const dropdownElement = document.querySelector('.dropdown-container');
+  if (dropdownElement && !dropdownElement.contains(event.target as Node)) {
+    closeDropdown();
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside);
+});
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside);
+});
+
+function encodeProfilePicture(array: any){
+  return `data:image/jpeg;base64,${array}`;
+}
+
 </script>
 
 <style scoped>
@@ -117,24 +195,64 @@ nav {
   transition: color 0.3s ease;
 }
 
-.btn-logout {
-  padding: 9px 18px;
-  font-size: 16px;
-  font-weight: bold;
-  color: #ffffff;
-  background-color: #e74c3c;
-  border-radius: 8px;
-  border: none;
+.btn-settings {
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  width: 40px; 
+  height: 40px; 
+  background-color: #6e7278; 
+  border: none; 
+  border-radius: 50%; 
+  font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.3s;
 }
-.btn-logout:hover {
-  background-color: #c0392b;
-  transform: scale(1.05);
+
+.btn-settings:hover {
+  background-color: #8c8f93;
+  transform: scale(1.05); 
 }
+
 
 button:focus {
   outline: none;
+}
+
+.profile-picture {
+  width: 40px; 
+  height: 40px;
+  border-radius: 50%; 
+  object-fit: cover; 
+  border: 2px solid #ddd; 
+}
+
+.profile-picture:hover {
+  transform: scale(1.05); 
+}
+
+.dropdown-container {
+  position: relative; 
+}
+
+.dropdown-container ul {
+  position: absolute;
+  top: 100%; 
+  right: 0;
+  z-index: 1000; 
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-container ul li {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  white-space: nowrap; 
+}
+
+.dropdown-container ul li:hover {
+  background-color: #f1f1f1;
 }
 
 </style>

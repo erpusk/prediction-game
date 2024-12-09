@@ -1,4 +1,5 @@
 
+using System.Reflection;
 using itb2203_2024_predictiongame.Backend.Models.Classes;
 using Microsoft.AspNetCore.Identity;
 
@@ -13,5 +14,6 @@ namespace BackEnd.Models.Classes
         public List<PredictionGame> CreatedPredictionGames { get; set; } = new List<PredictionGame>();
         //public List<PredictionGame> JoinedPredictionGames { get; set; } = new List<PredictionGame>();
         public List<PredictionGameParticipant> Games { get; set; } = new List<PredictionGameParticipant>();
+        public string? ProfilePicture { get; set; }
     }
 }
