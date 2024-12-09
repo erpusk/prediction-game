@@ -127,7 +127,8 @@ import { parse } from 'date-fns';
     title: '',
     participants: [] as [string, string, number][],
     gameCreator: '',
-    userEarnedPoints: ''
+    userEarnedPoints: '',
+    leaderBoard: [] as { username: string, points: number }[],
   });
 
 onMounted(async () => {
@@ -163,6 +164,10 @@ onMounted(async () => {
     console.log("Updated leaderBoard in game:", game.value.leaderBoard);
   }
 });
+
+function decodeProfilePicture(picString: any){
+  return `data:image/jpeg;base64,${picString}`;
+}
 
 </script>
 
