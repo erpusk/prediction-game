@@ -3,6 +3,7 @@ import type { GameEvent } from "~/types/gameEvent";
 import type { Prediction } from "~/types/prediction";
 import type { PredictionGame } from "~/types/predictionGame";
 import { useUserStore } from '@/stores/userStore';
+import type { BonusQuestion } from "~/types/bonusQuestion";
 
 export const usePredictionGameStore = defineStore("predictionGame", () => {
   const api = useApi();
@@ -112,6 +113,17 @@ export const usePredictionGameStore = defineStore("predictionGame", () => {
     return predictionGame || null;
   };
 
+  const getPredictionGameBonusQuestions = async (predictionGameId: number) => {
+    const questions = await api.customFetch<BonusQuestion[]>(`BonusQuestion/predictionGame/${predictionGameId}`);
+    return questions
+  }
+
+  const addPredictionGameBonusQuestion = async (bonusQuestion: BonusQuestion) => {
+    const res = await api.customFetch("BonusQuestion", {
+      method: "POST",
+      body: bonusQuestion,
+    });
+  };
 
   return {
     predictionGames,
@@ -123,7 +135,9 @@ export const usePredictionGameStore = defineStore("predictionGame", () => {
     leavePredictionGame,
     loadUserPoints,
     getLeaderboard,
-    joinPredictionGame
+    joinPredictionGame,
+    getPredictionGameBonusQuestions,
+    addPredictionGameBonusQuestion
   };
 });
 
