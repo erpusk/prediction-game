@@ -411,6 +411,7 @@ h1 {
 .minimize-button,
 .close-button {
   position: absolute;
+  right: 20px;
   top: 1px;
   background: none;
   border: none;
@@ -419,10 +420,4 @@ h1 {
   cursor: pointer;
   z-index: 1200; 
 }
-
-
-.close-button {
-  left: 20px; 
-}
-
 </style>

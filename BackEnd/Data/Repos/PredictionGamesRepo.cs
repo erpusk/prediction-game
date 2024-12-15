@@ -176,25 +176,23 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
                 {
                     Id = m.Id,
                     GameId = m.GameId,
-                    SenderId = m.SenderId,
                     SenderName = m.Sender != null ? m.Sender.UserName : "Unknown User",
                     Message = m.Message,
                     Timestamp = m.Timestamp
                 })
                 .ToListAsync();
-                
         }
 
-        public async Task<bool> AddChatMessageAsync(int gameId, ChatMessageDto messageDto)
+        public async Task<bool> AddChatMessageAsync(int gameId, ChatMessageDto messageDto, int userId)
         {
             var chatMessage = new ChatMessages
             {
                 GameId = gameId,
-                SenderId = messageDto.SenderId,
+                SenderId = userId,
                 Message = messageDto.Message,
                 Timestamp = DateTime.UtcNow,
                 SenderName = context.ApplicationUsers
-                    .Where(u => u.Id == messageDto.SenderId)
+                    .Where(u => u.Id == userId)
                     .Select(u => u.UserName)
                     .FirstOrDefault() ?? "Unknown User",
             };
@@ -204,15 +202,6 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
 
             return true;
         }
-        public async Task<PredictionGame?> GetPredictionGameWithChatsAsync(int gameId)
-        {
-            return await context.PredictionGames
-                .Include(pg => pg.ChatMessages)
-                    .ThenInclude(cm => cm.Sender)
-                .Include(pg => pg.Events)
-                .Include(pg => pg.Participants)
-                .FirstOrDefaultAsync(pg => pg.Id == gameId);
-        }
         public async Task<string?> GetSenderNameById(int senderId)
         {
             return await context.ApplicationUsers
@@ -220,7 +209,5 @@ namespace itb2203_2024_predictiongame.Backend.Data.Repos
                 .Select(u => u.UserName)
                 .FirstOrDefaultAsync();
         }
-
-
     }
 }
