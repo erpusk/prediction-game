@@ -99,7 +99,21 @@ export const usePredictionGameStore = defineStore("predictionGame", () => {
       console.error("Error with getting user points", error)
       return null;
     }	
-  }
+  };
+
+  const getLeaderboard = async (predictionGameId: number) => {
+    try {
+      const leaderboard = await api.customFetch<{ username: string; points: number }[]>(`PredictionGames/${predictionGameId}/leaderboard`, {
+        headers: {
+        "Authorization": `Bearer ${userStore.token}`,
+        },
+      });
+      return leaderboard;
+    } catch(error) {
+      console.error("Error with getting leaderboard", error)
+      return null;
+    }	
+  };
 
   const loadPredictionGames = async () => {
     try {
@@ -147,6 +161,7 @@ export const usePredictionGameStore = defineStore("predictionGame", () => {
     loadPredictionGame,
     leavePredictionGame,
     loadUserPoints,
+    getLeaderboard,
     joinPredictionGame,
     loadChatMessages,
     sendChatMessage,

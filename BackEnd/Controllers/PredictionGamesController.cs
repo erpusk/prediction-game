@@ -18,18 +18,20 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
     {
         private readonly PredictionGamesRepo repo = repo;
 
-            [HttpGet]
-            public async Task<IActionResult> GetOnlyRelatedGames() {
+        [HttpGet]
+        public async Task<IActionResult> GetOnlyRelatedGames()
+        {
 
-                var userIdClaim = User.FindFirst("userId")?.Value;
-                if (userIdClaim == null || !int.TryParse(userIdClaim, out int userId)) {
-                    return Unauthorized("User id not found");
-                }
-
-                var result = await repo.GetPredictionGamesRelatedWithUser(userId);
-                var resultAsDto = result.Select(s => s.ToPredictionGameDto(userId)).ToList();
-                return Ok(resultAsDto);
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            if (userIdClaim == null || !int.TryParse(userIdClaim, out int userId))
+            {
+                return Unauthorized("User id not found");
             }
+
+            var result = await repo.GetPredictionGamesRelatedWithUser(userId);
+            var resultAsDto = result.Select(s => s.ToPredictionGameDto(userId)).ToList();
+            return Ok(resultAsDto);
+        }
 
         //[HttpGet]
         //public async Task<IActionResult> GetAll()
@@ -48,16 +50,19 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
                 return NotFound();
             }
             var userIdClaim = User.FindFirst("userId")?.Value;
-            if (userIdClaim == null || !int.TryParse(userIdClaim, out int userId)) {
+            if (userIdClaim == null || !int.TryParse(userIdClaim, out int userId))
+            {
                 return Unauthorized("User id is not correct");
             }
             return Ok(predictionGame.ToPredictionGameDto(userId));
         }
         [HttpGet("{predictionGameId:int}/user-points")]
-        public async Task<IActionResult> GetUserPoints(int predictionGameId) {
+        public async Task<IActionResult> GetUserPoints(int predictionGameId)
+        {
             var isGameExist = await repo.PredictionGameExistsInDb(predictionGameId);
 
-            if (!isGameExist) {
+            if (!isGameExist)
+            {
                 return NotFound();
             }
 
@@ -76,7 +81,8 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
         public async Task<IActionResult> CreatePredictionGame([FromBody] CreatePredictionGameRequestDto predictionGameDto)
         {
             var userIdClaim = User.FindFirst("userId")?.Value;
-            if (userIdClaim == null || !int.TryParse(userIdClaim, out int userId)) {
+            if (userIdClaim == null || !int.TryParse(userIdClaim, out int userId))
+            {
                 return Unauthorized("User id is not correct");
             }
             var gameCreator = await repo.GetUserById(userId);
@@ -86,7 +92,8 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
             }
 
             string uniqueCode;
-            do {
+            do
+            {
                 uniqueCode = RandomString.GetString(Types.ALPHABET_LOWERCASE, 6);
             } while (await repo.PredictionGameExistsWithCode(uniqueCode));
 
@@ -108,17 +115,18 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
         public async Task<IActionResult> UpdatePredictionGame(int predictionGameId, [FromBody] UpdatePredictionGameDto predictionGameDto)
         {
             var predictionGameModel = await repo.GetPredictionGameById(predictionGameId);
-            if (predictionGameModel == null) {
+            if (predictionGameModel == null)
+            {
                 return NotFound();
             }
-            
+
             predictionGameModel.PredictionGameTitle = predictionGameDto.PredictionGameTitle;
             predictionGameModel.StartDate = predictionGameDto.StartDate;
             predictionGameModel.EndDate = predictionGameDto.EndDate;
             predictionGameModel.Privacy = predictionGameDto.Privacy;
             predictionGameModel.Events = predictionGameDto.Events?.Select(e => e.ToEvent()).ToList();
             predictionGameModel.UniqueCode = predictionGameDto.UniqueCode;
-            
+
             bool result = await repo.UpdatePredictionGame(predictionGameId, predictionGameModel);
             return result ? NoContent() : NotFound();
         }
@@ -182,7 +190,7 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
         [HttpGet("{gameId}/Chat")]
         public async Task<IActionResult> GetChatMessages(int gameId)
         {
-            
+
             var messages = await repo.GetChatMessagesAsync(gameId);
             if (messages == null || !messages.Any())
                 return NotFound("Chat messages not found for the specified game.");
@@ -212,6 +220,26 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
             };
             return Ok(addedMessage);
         }
-        
+
+        [HttpGet("{predictionGameId:int}/leaderboard")]
+        public async Task<IActionResult> GetLeaderBoard(int predictionGameId)
+        {
+            var isGameExist = await repo.PredictionGameExistsInDb(predictionGameId);
+
+            if (!isGameExist)
+            {
+                return NotFound();
+            }
+
+            var leaderboard = await repo.GetLeaderboardOfParticipants(predictionGameId);
+
+            var result = leaderboard.Select(gp => new
+            {
+                Username = gp.User!.UserName,
+                Points = gp.EarnedPoints
+            });
+
+            return Ok(result);
+        }
     }
 }
