@@ -14,10 +14,10 @@
           @submit="onSubmit"
           @error="onError"
         >
-          <h2 class="text-2xl font-semibold text-center mb-4 text-black dark:text-white">Add a Bonus Question</h2>
+          <h2 class="text-2xl font-semibold text-center mb-4 text-black dark:text-white">Answer</h2>
   
-          <UFormGroup label="Question" name="question">
-            <UInput v-model="state.question" class="border rounded-md p-2" placeholder="Enter your question here"/>
+          <UFormGroup label="Answer" name="answer">
+            <UInput v-model="state.answerText" class="border rounded-md p-2" placeholder="Enter your answer here"/>
           </UFormGroup>
   
           <div class="flex justify-between mt-6">
@@ -36,39 +36,40 @@
   <script setup lang="ts">
   import { reactive } from 'vue';
   import type { FormError, FormErrorEvent } from "#ui/types";
-  import type { BonusQuestion } from "~/types/bonusQuestion";
-  import { usePredictionGameStore } from '@/stores/stores';
+import type { Answer } from '~/types/answer';
   
-  const { addPredictionGameBonusQuestion } = useBonusStore();
+  const { addAnswer } = useBonusStore();
   const emit = defineEmits(['close', 'refresh']);
   
-  const props = defineProps<{ predictionGameId: number }>();
+  const props = defineProps<{ questionId: number }>();
   
-  const state = reactive<BonusQuestion>({
+  const state = reactive<Answer>({
     id: 0,
-    predictionGameId: 0,
-    question: ""
+    questionId: 0,
+    answerText: "",
+    answerMakerId: 0
   });
   
   const validate = (state: any): FormError[] => {
     const errors = [];
-    if (!state.question.trim()) errors.push({ path: "question", message: "Question cannot be empty" });
+    if (!state.answerText.trim()) errors.push({ path: "answerText", message: "Answer cannot be empty" });
     return errors;
   };
   
   async function onSubmit() {
     const payload = {
       id: state.id,
-      question: state.question,
-      predictionGameId: props.predictionGameId,
+      answerText: state.answerText,
+      questionId: props.questionId,
+      answerMakerId: state.answerMakerId
     };
   
     try {
-      await addPredictionGameBonusQuestion(payload);
+      await addAnswer(payload);
       emit('refresh');
       emit('close');
     } catch (error) {
-      console.error("Error adding bonus question:", error);
+      console.error("Error adding answer:", error);
     }
 
     window.location.reload();
@@ -99,4 +100,3 @@
     }
   }
   </style>
-  

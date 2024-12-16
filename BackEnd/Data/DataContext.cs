@@ -20,6 +20,7 @@ public class DataContext : IdentityDbContext<ApplicationUser, IdentityRole<int>,
     public DbSet<DailyPollMatch> DailyPollMatches { get; set; }
     public DbSet<PollVote> PollVotes { get; set; }
     public DbSet<BonusQuestion> BonusQuestions { get; set; }
+    public DbSet<Answer> Answers { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

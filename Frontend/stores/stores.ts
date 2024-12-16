@@ -4,6 +4,7 @@ import type { Prediction } from "~/types/prediction";
 import type { PredictionGame } from "~/types/predictionGame";
 import { useUserStore } from '@/stores/userStore';
 import type { BonusQuestion } from "~/types/bonusQuestion";
+import type { Answer } from "~/types/answer";
 
 export const usePredictionGameStore = defineStore("predictionGame", () => {
   const api = useApi();
@@ -113,17 +114,7 @@ export const usePredictionGameStore = defineStore("predictionGame", () => {
     return predictionGame || null;
   };
 
-  const getPredictionGameBonusQuestions = async (predictionGameId: number) => {
-    const questions = await api.customFetch<BonusQuestion[]>(`BonusQuestion/predictionGame/${predictionGameId}`);
-    return questions
-  }
-
-  const addPredictionGameBonusQuestion = async (bonusQuestion: BonusQuestion) => {
-    const res = await api.customFetch("BonusQuestion", {
-      method: "POST",
-      body: bonusQuestion,
-    });
-  };
+  
 
   return {
     predictionGames,
@@ -136,8 +127,6 @@ export const usePredictionGameStore = defineStore("predictionGame", () => {
     loadUserPoints,
     getLeaderboard,
     joinPredictionGame,
-    getPredictionGameBonusQuestions,
-    addPredictionGameBonusQuestion
   };
 });
 
@@ -265,5 +254,58 @@ export const usePredictionsStore = defineStore("prediction", () => {
     loadUserPrediction, 
     loadUserPredictionHistory,
     userPredictionHistory
+  }
+})
+
+export const useBonusStore = defineStore("bonus", () => {
+  const api = useApi();
+  const userAnswersMap = ref<Record<number, Answer | null>>({});
+  const userAnswer = ref<Answer>();
+  const answers = ref<Answer[]>([]);
+
+  const getPredictionGameBonusQuestions = async (predictionGameId: number) => {
+    const questions = await api.customFetch<BonusQuestion[]>(`BonusQuestion/predictionGame/${predictionGameId}`);
+    return questions
+  }
+
+  const addPredictionGameBonusQuestion = async (bonusQuestion: BonusQuestion) => {
+    const res = await api.customFetch("BonusQuestion", {
+      method: "POST",
+      body: bonusQuestion,
+    });
+  };
+
+  const addAnswer = async (answer: Answer) => {
+    const res = await api.customFetch("Answer",{
+      method: "POST",
+      body: answer,
+    })
+  }
+
+  const loadUserAnswer = async (questionId: number) => {
+    const answer = await api.customFetch<Answer>(`Answer/user/question/${questionId}`)
+    userAnswer.value = answer;
+    if (answer) {
+      userAnswersMap.value[questionId] = answer;
+    }
+  }
+
+  const loadAnswers = async (questionId: number) => {
+    const url = questionId ? `Answer?questionId=${questionId}` : 'Answer';
+      answers.value = await api.customFetch<Answer[]>(url);
+    answers.value.forEach(answer => {
+      console.log(answer.answerMakerId)
+    });
+  };
+
+  return {
+    answers,
+    getPredictionGameBonusQuestions,
+    addPredictionGameBonusQuestion,
+    addAnswer,
+    loadUserAnswer,
+    userAnswer,
+    userAnswersMap,
+    loadAnswers
   }
 })
