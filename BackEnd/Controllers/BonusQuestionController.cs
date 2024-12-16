@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using BackEnd.Data.Repos;
 using BackEnd.Models.Classes;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Any;
 
@@ -13,14 +14,14 @@ namespace BackEnd.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
-    public class BonusQuestionController(BonusQuestionRepo repo) : ControllerBase
+    [EnableCors("MyPolicy")]
+    public class BonusQuestionController(BonusQuestionRepo repo) : ControllerBase()
     {
         private readonly BonusQuestionRepo _repo = repo;
 
         [HttpGet]
         public async Task<IActionResult> GetbonusQuestions(){
             var result = await _repo.GetBonusQuestions();
-            // lisa dto loogika
             return Ok(result);
         }
 

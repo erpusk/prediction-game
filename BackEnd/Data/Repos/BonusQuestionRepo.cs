@@ -16,9 +16,9 @@ namespace BackEnd.Data.Repos
             _context = context;
         }
 
-        public async Task<List<BonusQuestion>> GetBonusQuestions(){
-            var BonusQuestions = await _context.BonusQuestions.ToListAsync();
-            return BonusQuestions;
+        public async Task<List<BonusQuestion>?> GetBonusQuestions() {
+            var bonusQuestions = await _context.BonusQuestions.ToListAsync();
+            return bonusQuestions;
         }
 
         public async Task<BonusQuestion?> GetBonusQuestion(int Id){
