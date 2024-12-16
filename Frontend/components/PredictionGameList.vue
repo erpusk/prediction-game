@@ -47,10 +47,20 @@
         </UTable>
       </div>
     </div>
+    <div>
+    <button @click="confirmDelete">Erase</button>
+    <ConfirmationDialog
+      :is-visible="showDialog"
+      message="Erase game from your list?"
+      @confirmed="deleteGame"
+      @cancelled="cancelDelete"
+    />
+  </div>
     </div>
   </template>
   
   <script setup lang="ts">
+  import { ref } from 'vue';
   import { usePredictionGameStore } from '@/stores/stores';
   import DeleteIconComponent from '@/components/DeleteIconComponent.vue';
   import { useRouter } from 'vue-router';
@@ -58,7 +68,21 @@
   import type { PredictionGame } from '~/types/predictionGame';
   import { useUserStore } from '@/stores/userStore';
   import { storeToRefs } from 'pinia';
+  import ConfirmationDialog from '@/components/ConfirmationDialog.vue';
 
+  const showDialog = ref(false);
+  const currentGameToDelete = ref(null);
+  const confirmDelete = () => {
+  showDialog.value = true;
+  console.log("Confirm delete clicked, showDialog:", showDialog.value);
+};
+const deleteGame = () => {
+  console.log("Mäng on kustutatud");
+  showDialog.value = false;
+};
+const cancelDelete = () => {
+  showDialog.value = false;
+};
   const predictionGameStore = usePredictionGameStore();
   const { predictionGames } = storeToRefs(predictionGameStore);
 
@@ -137,9 +161,13 @@ const isGameCreator = (game: PredictionGame) => {
   await predictionGameStore.loadPredictionGames();
   });
   
-  const deletePredictionGame = (game: PredictionGame) => {
-    predictionGameStore.deletePredictionGame(game);
-  };
+  const deletePredictionGame = () => {
+  if (currentGameToDelete.value) {
+    predictionGameStore.deletePredictionGame(currentGameToDelete.value);
+    showDialog.value = false;
+    currentGameToDelete.value = null;
+  }
+};
 
   const showEvents = (game: PredictionGame) => {
     const predictionGameId = game.id;
