@@ -35,10 +35,9 @@
         class="btn-primary-small !bg-red-600 !hover:bg-red-700 !text-white">
         Leave Game
       </button>
-
-            <button 
+     <button 
               v-if="isGameCreator(row)" 
-              @click="deletePredictionGame(row)" 
+              @click="confirmDelete(row)" 
               class="flex items-center text-red-500 hover:text-red-700">
               <DeleteIconComponent />
             </button>
@@ -47,15 +46,12 @@
         </UTable>
       </div>
     </div>
-    <div>
-    <button @click="confirmDelete">Erase</button>
     <ConfirmationDialog
       :is-visible="showDialog"
       message="Erase game from your list?"
       @confirmed="deleteGame"
       @cancelled="cancelDelete"
     />
-  </div>
     </div>
   </template>
   
@@ -70,17 +66,25 @@
   import { storeToRefs } from 'pinia';
   import ConfirmationDialog from '@/components/ConfirmationDialog.vue';
 
+
+  const showEraseButton = ref(false);
   const showDialog = ref(false);
-  const currentGameToDelete = ref(null);
-  const confirmDelete = () => {
+  const currentGameToDelete = ref<PredictionGame | null>(null);
+  const confirmDelete = (game: PredictionGame) => {
+  currentGameToDelete.value = game;
   showDialog.value = true;
-  console.log("Confirm delete clicked, showDialog:", showDialog.value);
 };
 const deleteGame = () => {
-  console.log("Mäng on kustutatud");
-  showDialog.value = false;
+  if (currentGameToDelete.value) {
+    deletePredictionGame();
+    showEraseButton.value = false;
+    console.log("Mäng on kustutatud");
+    showDialog.value = false;
+  }
 };
+
 const cancelDelete = () => {
+  showEraseButton.value = false;
   showDialog.value = false;
 };
   const predictionGameStore = usePredictionGameStore();
