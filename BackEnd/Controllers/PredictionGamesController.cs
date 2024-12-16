@@ -204,14 +204,17 @@ namespace itb2203_2024_predictiongame.Backend.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var success = await repo.AddChatMessageAsync(gameId, messageDto);
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            if (userIdClaim == null || !int.TryParse(userIdClaim, out int userId)) {
+                return Unauthorized("User ID not found in claims.");
+            }
+
+            var success = await repo.AddChatMessageAsync(gameId, messageDto, userId);
             if (!success) return BadRequest("Could not add chat message.");
-            var addedMessage = new ChatMessageDto
-            {
+            var addedMessage = new ChatMessageDto {
                 Id = messageDto.Id,
                 GameId = gameId,
-                SenderId = messageDto.SenderId,
-                SenderName = await repo.GetSenderNameById(messageDto.SenderId),
+                SenderName = await repo.GetSenderNameById(userId),
                 Message = messageDto.Message,
                 Timestamp = DateTime.UtcNow
             };
