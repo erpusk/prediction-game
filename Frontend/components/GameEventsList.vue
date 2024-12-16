@@ -19,6 +19,9 @@
           <button @click="copyToClipboard" class="copy-button">
             <i class="fas fa-copy mr-1"></i>
           </button>
+          <div v-if="copiedMessage" class="copied-message">
+            Copied!
+          </div>
         </div>
         <div class="mt-8">
           <h1 class="text-3xl font-bold text-center mb-6 text-black dark:text-white">{{ title }}</h1>
@@ -70,7 +73,7 @@
                   <button @click="goToEditPredictionGameEvent(row)" class="btn-primary-small">
                     Edit
                   </button>
-                  <button @click="deletePredictionGameEvent(row)" class="flex items-center text-red-500 hover:text-red-700">
+                  <button @click="confirmDeleteEvent(row)" class="flex items-center text-red-500 hover:text-red-700">
                     <DeleteIconComponent />
                   </button>
                 </template>
@@ -102,6 +105,12 @@
 
       </div>
     </div>
+    <ConfirmationDialog
+  :is-visible="showDeleteEventDialog"
+  message="Are you sure you want to delete this event?"
+  @confirmed="deleteEvent"
+  @cancelled="cancelDeleteEvent"
+/>
   </div>
 </template>
 
@@ -112,7 +121,29 @@ import { useGameEventsStore } from '@/stores/stores';
 import { format } from 'date-fns';
 import { usePredictionGameStore } from '@/stores/stores';
 import ChatBox from '@/components/ChatBox.vue';
+import ConfirmationDialog from '@/components/ConfirmationDialog.vue';
+import type { GameEvent } from '~/types/gameEvent'; 
 
+const copiedMessage = ref(false);
+
+const showDeleteEventDialog = ref(false);
+const currentEventToDelete = ref<GameEvent | null>(null);
+  const confirmDeleteEvent = (event: GameEvent) => {
+  currentEventToDelete.value = event;
+  showDeleteEventDialog.value = true;
+};
+const deleteEvent = () => {
+  if (currentEventToDelete.value) {
+    gameEventStore.deletePredictionGameEvent(currentEventToDelete.value);
+    showDeleteEventDialog.value = false;
+    currentEventToDelete.value = null;
+  }
+};
+
+const cancelDeleteEvent = () => {
+  showDeleteEventDialog.value = false;
+  currentEventToDelete.value = null;
+};
 const selectedEventId = ref<number | null>(null);
   const toggleChatBox = (eventId: number) => {
   if (selectedEventId.value === eventId) {
@@ -148,8 +179,10 @@ const copySuccess = ref(false);
 const copyToClipboard = async () => {
   try {
     await navigator.clipboard.writeText(uniqueCode.value);
-    copySuccess.value = true;
-    setTimeout(() => (copySuccess.value = false), 2000);
+    copiedMessage.value = true;
+    setTimeout(() => {
+      copiedMessage.value = false; 
+    }, 2000);
   } catch (err) {
     console.error('Failed to copy: ', err);
   }
@@ -420,4 +453,41 @@ h1 {
   cursor: pointer;
   z-index: 1200; 
 }
+
+
+.close-button {
+  left: 20px; 
+}
+.copied-message {
+  position: absolute;
+  top: -10px;
+  right: 0;
+  background-color: #737b76;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  opacity: 0;
+  animation: fadeInOut 2s forwards;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  90% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
 </style>

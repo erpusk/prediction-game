@@ -34,14 +34,13 @@
             </button>
             <button 
         v-if="isParticipant(row)"
-        @click="leaveGame(row)"
+        @click="confirmLeaveGame(row)"
         class="btn-primary-small !bg-red-600 !hover:bg-red-700 !text-white">
         Leave Game
       </button>
-
-            <button 
+     <button 
               v-if="isGameCreator(row)" 
-              @click="deletePredictionGame(row)" 
+              @click="confirmDelete(row)" 
               class="flex items-center text-red-500 hover:text-red-700">
               <DeleteIconComponent />
             </button>
@@ -50,10 +49,23 @@
         </UTable>
       </div>
     </div>
+    <ConfirmationDialog
+      :is-visible="showDialog"
+      message="Erase game from your list?"
+      @confirmed="deleteGame"
+      @cancelled="cancelDelete"
+    />
+    <ConfirmationDialog
+        :is-visible="showLeaveDialog"
+        message="Are you sure you want to leave this game?"
+        @confirmed="leaveGameConfirmed"
+        @cancelled="cancelLeaveGame"
+      />
     </div>
   </template>
   
   <script setup lang="ts">
+  import { ref } from 'vue';
   import { usePredictionGameStore } from '@/stores/stores';
   import DeleteIconComponent from '@/components/DeleteIconComponent.vue';
   import { useRouter } from 'vue-router';
@@ -61,7 +73,40 @@
   import type { PredictionGame } from '~/types/predictionGame';
   import { useUserStore } from '@/stores/userStore';
   import { storeToRefs } from 'pinia';
+  import ConfirmationDialog from '@/components/ConfirmationDialog.vue';
 
+  const showLeaveDialog = ref(false);
+  const gameToLeave = ref<PredictionGame | null>(null);
+  const showEraseButton = ref(false);
+  const showDialog = ref(false);
+  const currentGameToDelete = ref<PredictionGame | null>(null);
+
+  const cancelLeaveGame = () => {
+  showLeaveDialog.value = false;
+  gameToLeave.value = null;
+};
+  const confirmLeaveGame = (game: PredictionGame) => {
+  gameToLeave.value = game;
+  showLeaveDialog.value = true;
+};
+  const confirmDelete = (game: PredictionGame) => {
+  currentGameToDelete.value = game;
+  showDialog.value = true;
+};
+
+const deleteGame = () => {
+  if (currentGameToDelete.value) {
+    deletePredictionGame();
+    showEraseButton.value = false;
+    console.log("Mäng on kustutatud");
+    showDialog.value = false;
+  }
+};
+
+const cancelDelete = () => {
+  showEraseButton.value = false;
+  showDialog.value = false;
+};
   const predictionGameStore = usePredictionGameStore();
   const { predictionGames } = storeToRefs(predictionGameStore);
 
@@ -121,7 +166,18 @@ const isParticipant = (game: PredictionGame) => {
   const userStore = useUserStore();
   const { user } = storeToRefs(userStore);
   
-
+  const leaveGameConfirmed = async () => {
+  if (!gameToLeave.value) return;
+  try {
+    await predictionGameStore.leavePredictionGame(gameToLeave.value.uniqueCode);
+    predictionGames.value = predictionGames.value.filter(g => g.id !== gameToLeave.value?.id);
+  } catch (error) {
+    console.error('Error leaving the game:', error);
+  } finally {
+    showLeaveDialog.value = false;
+    gameToLeave.value = null;
+  }
+};
   const formattedPredictionGames = computed(() => {
   return predictionGames.value.map(game => ({
     ...game,
@@ -140,9 +196,13 @@ const isGameCreator = (game: PredictionGame) => {
   await predictionGameStore.loadPredictionGames();
   });
   
-  const deletePredictionGame = (game: PredictionGame) => {
-    predictionGameStore.deletePredictionGame(game);
-  };
+  const deletePredictionGame = () => {
+  if (currentGameToDelete.value) {
+    predictionGameStore.deletePredictionGame(currentGameToDelete.value);
+    showDialog.value = false;
+    currentGameToDelete.value = null;
+  }
+};
 
   const showEvents = (game: PredictionGame) => {
     const predictionGameId = game.id;
