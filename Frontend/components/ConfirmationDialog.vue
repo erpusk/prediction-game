@@ -65,11 +65,11 @@
   transition: background-color 0.3s;
 }
 .yes-button:hover {
-  background-color: #E82C0C;
+  background-color: #26547C;
 }
 
 .no-button {
-  background-color: #2ECC40;
+  background-color: #5bb17c;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -79,7 +79,7 @@
 }
 
 .no-button:hover {
-  background-color: #29B635;
+    background-color: #26547C;
 }
 </style>
 Kuidas nup
