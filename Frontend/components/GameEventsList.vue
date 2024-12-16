@@ -461,7 +461,7 @@ h1 {
   position: absolute;
   top: -10px;
   right: 0;
-  background-color: #5bb17c;
+  background-color: #737b76;
   color: white;
   padding: 5px 10px;
   border-radius: 5px;
