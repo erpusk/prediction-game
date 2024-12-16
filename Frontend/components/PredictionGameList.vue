@@ -29,6 +29,9 @@
             <button @click="goToGameDetails(row)" class="btn-primary-small">
             Details
             </button>
+            <button @click="goToGameBonusQuestions(row)" class="btn-primary-small">
+            Bonus questions
+            </button>
             <button 
         v-if="isParticipant(row)"
         @click="confirmLeaveGame(row)"
@@ -209,6 +212,11 @@ const isGameCreator = (game: PredictionGame) => {
     const predictionGameId = game.id;
   router.push(`/predictiongame-details/${predictionGameId}`);
   };
+
+  const goToGameBonusQuestions = (game: PredictionGame) => {
+    const predictionGameId = game.id;
+    router.push(`/bonusquestions/${predictionGameId}`);
+  }
   
   </script>  
 

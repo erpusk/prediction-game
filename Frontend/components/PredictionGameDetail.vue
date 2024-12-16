@@ -33,6 +33,17 @@
           </div>
 
           <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm md:col-span-2 dark:bg-gray-700 dark:border-gray-500">
+            <h3 class="text-lg font-medium text-gray-700 text-center mb-4 dark:text-white">
+              <strong>Bonus Questions:</strong>
+            </h3>
+            <ul class="space-y-2">
+              <li v-for="(question, index) in game.bonusQuestions" :key="index" class="p-2 bg-gray-100 rounded-lg dark:bg-gray-600">
+                <span class="font-semibold dark:text-white">{{ question.question }}</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm md:col-span-2 dark:bg-gray-700 dark:border-gray-500">
           <p class="text-lg font-medium text-gray-700 text-center dark:text-white" >
             <strong>Joined players:</strong>
           </p>
@@ -99,11 +110,12 @@ import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { usePredictionGameStore } from '@/stores/stores';
 import { parse } from 'date-fns';
+import type { BonusQuestion } from '~/types/bonusQuestion';
 
   const props = defineProps<{
     id: string | string[];
   }>();
-
+  const bonusQuestionsStore = useBonusQuestionsStore();
   const predictionGameStore = usePredictionGameStore();
   const showModal = ref(false);
   const selectedParticipant = ref<[string, string, number] | null>(null);
@@ -129,7 +141,9 @@ import { parse } from 'date-fns';
     gameCreator: '',
     userEarnedPoints: '',
     leaderBoard: [] as { username: string, points: number }[],
+    bonusQuestions: [] as BonusQuestion[]
   });
+
 
 onMounted(async () => {
   const predictionGame = await predictionGameStore.loadPredictionGame(parseInt(props.id.toString()));
@@ -163,6 +177,8 @@ onMounted(async () => {
     }));
     console.log("Updated leaderBoard in game:", game.value.leaderBoard);
   }
+  
+  game.value.bonusQuestions = await bonusQuestionsStore.getPredictionGameBonusQuestions(parseInt(props.id.toString()))
 });
 
 function decodeProfilePicture(picString: any){

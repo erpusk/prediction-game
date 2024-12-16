@@ -444,6 +444,7 @@ h1 {
 .minimize-button,
 .close-button {
   position: absolute;
+  right: 20px;
   top: 1px;
   background: none;
   border: none;

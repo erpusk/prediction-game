@@ -37,7 +37,6 @@ namespace BackEnd.Mappers
                 {
                     Id = chat.Id,
                     GameId = chat.GameId,
-                    SenderId = chat.SenderId,
                     SenderName = chat.Sender != null ? chat.Sender!.UserName : "Unknown User",
                     Message = chat.Message,
                     Timestamp = chat.Timestamp

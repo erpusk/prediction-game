@@ -3,11 +3,54 @@ import type { GameEvent } from "~/types/gameEvent";
 import type { Prediction } from "~/types/prediction";
 import type { PredictionGame } from "~/types/predictionGame";
 import { useUserStore } from '@/stores/userStore';
+import type { ChatMessage } from "~/types/chatMessage";
+import type { BonusQuestion } from "~/types/bonusQuestion";
+import type { Answer } from "~/types/answer";
 
 export const usePredictionGameStore = defineStore("predictionGame", () => {
   const api = useApi();
   const predictionGames = ref<PredictionGame[]>([]);
   const userStore = useUserStore();
+  const messages = ref<ChatMessage[]>([]);
+
+  const loadChatMessages = async (gameId: number) => {
+    try {
+      const messagesFromServer: ChatMessage[] = await api.customFetch(`PredictionGames/${gameId}/Chat`, {
+        headers: {
+          Authorization: `Bearer ${userStore.token}`,
+        },
+      });
+      messages.value = messagesFromServer.map((msg) => ({
+        ...msg,
+        senderName: msg.senderName || "Unknown User",
+      }));
+    } catch (error) {
+      console.error("Error loading chat messages:", error);
+    }
+  };
+  
+  const sendChatMessage = async (gameId: number, messageDto: ChatMessage) => {
+    try {
+      const response: ChatMessage = await api.customFetch(`PredictionGames/${gameId}/Chat`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${userStore.token}`,
+          "Content-Type": "application/json",
+        },
+        body: messageDto,
+      });
+      const savedMessage = response;
+  
+      messages.value = messages.value.map((msg) =>
+        msg.id === messageDto.id 
+        ? { ...savedMessage, senderName: msg.senderName || "Unknown User" } 
+        : msg
+      );
+    } catch (error) {
+      console.error("Error sending message:", error);
+      messages.value.pop();
+    }
+  };
 
   const leavePredictionGame = async (uniqueCode: string | null) => {
     if (!uniqueCode) {
@@ -23,8 +66,6 @@ export const usePredictionGameStore = defineStore("predictionGame", () => {
         },
         body: JSON.stringify({ UserId: userStore.user!.id }),
       });
-
-      // After leaving, reload the prediction games list to reflect changes
       await loadPredictionGames();
     } catch (error) {
       console.error("Error leaving the game:", error);
@@ -112,6 +153,7 @@ export const usePredictionGameStore = defineStore("predictionGame", () => {
     return predictionGame || null;
   };
 
+  
 
   return {
     predictionGames,
@@ -123,7 +165,10 @@ export const usePredictionGameStore = defineStore("predictionGame", () => {
     leavePredictionGame,
     loadUserPoints,
     getLeaderboard,
-    joinPredictionGame
+    joinPredictionGame,
+    loadChatMessages,
+    sendChatMessage,
+    messages,
   };
 });
 
@@ -251,5 +296,55 @@ export const usePredictionsStore = defineStore("prediction", () => {
     loadUserPrediction, 
     loadUserPredictionHistory,
     userPredictionHistory
+  }
+})
+
+export const useBonusQuestionsStore = defineStore("bonusQuestions", () => {
+  const api = useApi();
+  const userAnswersMap = ref<Record<number, Answer | null>>({});
+  const userAnswer = ref<Answer>();
+  const answers = ref<Answer[]>([]);
+
+  const getPredictionGameBonusQuestions = async (predictionGameId: number) => {
+    const questions = await api.customFetch<BonusQuestion[]>(`BonusQuestion/predictionGame/${predictionGameId}`);
+    return questions
+  }
+
+  const addPredictionGameBonusQuestion = async (bonusQuestion: BonusQuestion) => {
+    const res = await api.customFetch("BonusQuestion", {
+      method: "POST",
+      body: bonusQuestion,
+    });
+  };
+
+  const addAnswer = async (answer: Answer) => {
+    const res = await api.customFetch("BonusQuestionAnswer",{
+      method: "POST",
+      body: answer,
+    })
+  }
+
+  const loadUserAnswer = async (questionId: number) => {
+    const answer = await api.customFetch<Answer>(`BonusQuestionAnswer/user/question/${questionId}`)
+    userAnswer.value = answer;
+    if (answer) {
+      userAnswersMap.value[questionId] = answer;
+    }
+  }
+
+  const loadAnswers = async (questionId: number) => {
+    const url = questionId ? `BonusQuestionAnswer?questionId=${questionId}` : 'BonusQuestionAnswer';
+      answers.value = await api.customFetch<Answer[]>(url);
+  };
+
+  return {
+    answers,
+    getPredictionGameBonusQuestions,
+    addPredictionGameBonusQuestion,
+    addAnswer,
+    loadUserAnswer,
+    userAnswer,
+    userAnswersMap,
+    loadAnswers
   }
 })

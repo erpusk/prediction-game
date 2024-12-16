@@ -19,6 +19,8 @@ public class DataContext : IdentityDbContext<ApplicationUser, IdentityRole<int>,
     public DbSet<ChatMessages> ChatMessages { get; set; }
     public DbSet<DailyPollMatch> DailyPollMatches { get; set; }
     public DbSet<PollVote> PollVotes { get; set; }
+    public DbSet<BonusQuestion> BonusQuestions { get; set; }
+    public DbSet<BonusQuestionAnswer> Answers { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
