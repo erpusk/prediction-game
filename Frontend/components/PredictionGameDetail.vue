@@ -115,7 +115,7 @@ import type { BonusQuestion } from '~/types/bonusQuestion';
   const props = defineProps<{
     id: string | string[];
   }>();
-
+  const bonusQuestionsStore = useBonusQuestionsStore();
   const predictionGameStore = usePredictionGameStore();
   const showModal = ref(false);
   const selectedParticipant = ref<[string, string, number] | null>(null);
@@ -178,7 +178,7 @@ onMounted(async () => {
     console.log("Updated leaderBoard in game:", game.value.leaderBoard);
   }
   
-  game.value.bonusQuestions = await predictionGameStore.getPredictionGameBonusQuestions(parseInt(props.id.toString()))
+  game.value.bonusQuestions = await bonusQuestionsStore.getPredictionGameBonusQuestions(parseInt(props.id.toString()))
 });
 
 function decodeProfilePicture(picString: any){
