@@ -64,7 +64,7 @@ builder.Services.AddDbContext<DataContext>(options =>
     .AddScoped<GameParticipantRepo>()
     .AddScoped<DailyPollRepo>()
     .AddScoped<BonusQuestionRepo>()
-    .AddScoped<AnswerRepo>();
+    .AddScoped<BonusQuestionAnswerRepo>();
 
 builder.Services.AddHttpClient<DailyPollMatchFetcherService>();
 builder.Services.AddHostedService<DailyPollMatchFetcherService>();

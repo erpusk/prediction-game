@@ -38,7 +38,7 @@
   import type { FormError, FormErrorEvent } from "#ui/types";
 import type { Answer } from '~/types/answer';
   
-  const { addAnswer } = useBonusStore();
+  const { addAnswer } = useBonusQuestionsStore();
   const emit = defineEmits(['close', 'refresh']);
   
   const props = defineProps<{ questionId: number }>();

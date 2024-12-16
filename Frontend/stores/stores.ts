@@ -257,7 +257,7 @@ export const usePredictionsStore = defineStore("prediction", () => {
   }
 })
 
-export const useBonusStore = defineStore("bonus", () => {
+export const useBonusQuestionsStore = defineStore("bonusQuestions", () => {
   const api = useApi();
   const userAnswersMap = ref<Record<number, Answer | null>>({});
   const userAnswer = ref<Answer>();
@@ -276,14 +276,14 @@ export const useBonusStore = defineStore("bonus", () => {
   };
 
   const addAnswer = async (answer: Answer) => {
-    const res = await api.customFetch("Answer",{
+    const res = await api.customFetch("BonusQuestionAnswer",{
       method: "POST",
       body: answer,
     })
   }
 
   const loadUserAnswer = async (questionId: number) => {
-    const answer = await api.customFetch<Answer>(`Answer/user/question/${questionId}`)
+    const answer = await api.customFetch<Answer>(`BonusQuestionAnswer/user/question/${questionId}`)
     userAnswer.value = answer;
     if (answer) {
       userAnswersMap.value[questionId] = answer;
@@ -291,11 +291,8 @@ export const useBonusStore = defineStore("bonus", () => {
   }
 
   const loadAnswers = async (questionId: number) => {
-    const url = questionId ? `Answer?questionId=${questionId}` : 'Answer';
+    const url = questionId ? `BonusQuestionAnswer?questionId=${questionId}` : 'BonusQuestionAnswer';
       answers.value = await api.customFetch<Answer[]>(url);
-    answers.value.forEach(answer => {
-      console.log(answer.answerMakerId)
-    });
   };
 
   return {

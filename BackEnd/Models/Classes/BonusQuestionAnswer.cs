@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BackEnd.Models.Classes
 {
-    public class Answer
+    public class BonusQuestionAnswer
     {
         public int Id { get; set; }
         public string? AnswerText { get; set; }

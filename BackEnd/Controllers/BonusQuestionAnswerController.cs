@@ -13,11 +13,11 @@ namespace BackEnd.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
-    public class AnswerController: ControllerBase
+    public class BonusQuestionAnswerController: ControllerBase
     {
-        private readonly AnswerRepo _repo;
+        private readonly BonusQuestionAnswerRepo _repo;
 
-        public AnswerController(AnswerRepo repo){
+        public BonusQuestionAnswerController(BonusQuestionAnswerRepo repo){
             _repo = repo;
         }
 
@@ -37,7 +37,7 @@ namespace BackEnd.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostAnswer([FromBody]Answer answerModel){
+        public async Task<IActionResult> PostAnswer([FromBody]BonusQuestionAnswer answerModel){
             var answerExists = await _repo.GetAnswer(answerModel.Id);
             if (answerExists != null){
                 return BadRequest("Answer already exists");

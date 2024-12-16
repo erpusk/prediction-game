@@ -39,7 +39,7 @@
   import type { BonusQuestion } from "~/types/bonusQuestion";
   import { usePredictionGameStore } from '@/stores/stores';
   
-  const { addPredictionGameBonusQuestion } = useBonusStore();
+  const { addPredictionGameBonusQuestion } = useBonusQuestionsStore();
   const emit = defineEmits(['close', 'refresh']);
   
   const props = defineProps<{ predictionGameId: number }>();

@@ -49,15 +49,14 @@
   
   <script setup lang="ts">
   import { ref, onMounted } from 'vue';
-  import { usePredictionGameStore } from '@/stores/stores';
+  import { useBonusQuestionsStore, usePredictionGameStore } from '@/stores/stores';
   import type { BonusQuestion } from '~/types/bonusQuestion';
-import { routerViewLocationKey } from 'vue-router';
-import type { Answer } from '~/types/answer';
+  import type { Answer } from '~/types/answer';
 
   const isGameCreator = ref(false);
   const userStore = useUserStore();
   const predictionGameStore = usePredictionGameStore();
-  const bonusStore = useBonusStore();
+  const bonusQuestionStore = useBonusQuestionsStore();
   const userId = userStore.user?.id;
   const predictionGameCreatorId = ref<number | null>(null);
   const showModal = ref(false);
@@ -81,7 +80,7 @@ import type { Answer } from '~/types/answer';
 
   async function fetchData() {
     const gameId = props.predictionGameId;
-    bonusQuestions.value = await bonusStore.getPredictionGameBonusQuestions(gameId);
+    bonusQuestions.value = await bonusQuestionStore.getPredictionGameBonusQuestions(gameId);
 
     const predictionGame = await predictionGameStore.getPredictionGameById(props.predictionGameId);
     if (predictionGame) {
@@ -92,14 +91,13 @@ import type { Answer } from '~/types/answer';
     if (userId) {
     const answersMap: { [key: number]: Answer | null } = {};
     await Promise.all(bonusQuestions.value.map(async (question) => {
-      await bonusStore.loadUserAnswer(question.id);
-      answersMap[question.id] = bonusStore.userAnswer ? 
-        { ...(bonusStore.userAnswer as Answer) } : null;
+      await bonusQuestionStore.loadUserAnswer(question.id);
+      answersMap[question.id] = bonusQuestionStore.userAnswer ? 
+        { ...(bonusQuestionStore.userAnswer as Answer) } : null;
     }));
     for (const question of bonusQuestions.value) {
       const hasMadeAnswer = await userHasMadeAnswer(question, userId);
       hasAnsweredMap.value[question.id] = hasMadeAnswer;
-      console.log(hasAnsweredMap.value[question.id])
     }
   }
   }
@@ -113,9 +111,8 @@ import type { Answer } from '~/types/answer';
   
 
   async function userHasMadeAnswer(question: BonusQuestion, userId: number): Promise<boolean> {
-  console.log(userId)
-  await bonusStore.loadAnswers(question.id);
-  return bonusStore.answers.some(element => element.answerMakerId === userId);
+  await bonusQuestionStore.loadAnswers(question.id);
+  return bonusQuestionStore.answers.some(element => element.answerMakerId === userId);
 }
 
   </script>
