@@ -56,30 +56,30 @@
 }
 
 .yes-button {
-  background-color: #FF4136; /* Red color, change to any color you prefer */
+  background-color: #FF4136;
   color: white;
   border: none;
   padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s; /* Optional: for a smooth color transition */
+  transition: background-color 0.3s;
 }
 .yes-button:hover {
-  background-color: #E82C0C; /* Darker shade of red for hover effect */
+  background-color: #E82C0C;
 }
 
 .no-button {
-  background-color: #2ECC40; /* Green color, change to any color you prefer */
+  background-color: #2ECC40;
   color: white;
   border: none;
   padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s; /* Optional: for a smooth color transition */
+  transition: background-color 0.3s;
 }
 
 .no-button:hover {
-  background-color: #29B635; /* Darker shade of green for hover effect */
+  background-color: #29B635;
 }
 </style>
 Kuidas nup
