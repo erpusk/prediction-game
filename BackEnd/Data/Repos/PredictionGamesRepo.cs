@@ -164,44 +164,41 @@
             {
                 var participant = await GetParticipantByUserIdAndGameId(userId, gameId);
 
-                return participant?.EarnedPoints;
-            }
-            public async Task<List<ChatMessageDto>> GetChatMessagesAsync(int gameId)
-            {
-                return await context.ChatMessages
-                    .Where(m => m.GameId == gameId)
-                    .OrderBy(m => m.Timestamp)
-                    .Include(m => m.Sender)
-                    .Select(m => new ChatMessageDto
-                    {
-                        Id = m.Id,
-                        GameId = m.GameId,
-                        SenderId = m.SenderId,
-                        SenderName = m.Sender != null ? m.Sender.UserName : "Unknown User",
-                        Message = m.Message,
-                        Timestamp = m.Timestamp
-                    })
-                    .ToListAsync();
-                    
-            }
-
-            public async Task<bool> AddChatMessageAsync(int gameId, ChatMessageDto messageDto)
-            {
-                var chatMessage = new ChatMessages
+            return participant?.EarnedPoints;
+        }
+        public async Task<List<ChatMessageDto>> GetChatMessagesAsync(int gameId)
+        {
+            return await context.ChatMessages
+                .Where(m => m.GameId == gameId)
+                .OrderBy(m => m.Timestamp)
+                .Include(m => m.Sender)
+                .Select(m => new ChatMessageDto
                 {
-                    GameId = gameId,
-                    SenderId = messageDto.SenderId,
-                    Message = messageDto.Message,
-                    Timestamp = DateTime.UtcNow,
-                    SenderName = context.ApplicationUsers
-                        .Where(u => u.Id == messageDto.SenderId)
-                        .Select(u => u.UserName)
-                        .FirstOrDefault() ?? "Unknown User",
-                };
+                    Id = m.Id,
+                    GameId = m.GameId,
+                    SenderName = m.Sender != null ? m.Sender.UserName : "Unknown User",
+                    Message = m.Message,
+                    Timestamp = m.Timestamp
+                })
+                .ToListAsync();
+        }
+
+        public async Task<bool> AddChatMessageAsync(int gameId, ChatMessageDto messageDto, int userId)
+        {
+            var chatMessage = new ChatMessages
+            {
+                GameId = gameId,
+                SenderId = userId,
+                Message = messageDto.Message,
+                Timestamp = DateTime.UtcNow,
+                SenderName = context.ApplicationUsers
+                    .Where(u => u.Id == userId)
+                    .Select(u => u.UserName)
+                    .FirstOrDefault() ?? "Unknown User",
+            };
 
                 await context.ChatMessages.AddAsync(chatMessage);
                 await context.SaveChangesAsync();
-
                 return true;
             }
             public async Task<PredictionGame?> GetPredictionGameWithChatsAsync(int gameId)
@@ -229,7 +226,5 @@
 
                 return leaderboard;
             }
-
-
         }
     }

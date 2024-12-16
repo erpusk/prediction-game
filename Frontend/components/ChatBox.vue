@@ -2,11 +2,9 @@
     <div>
       <div class="chat-box">
         <div v-for="message in messages" :key="message.id" class="message">
-  <strong>{{ getSenderName(message.senderId) }}</strong>: {{ message.message }}
-  <small>{{ new Date(message.timestamp).toLocaleString() }}</small>
-</div>
-
-
+          <strong>{{ message.senderName }}</strong>: {{ message.message }}
+          <small>{{ new Date(message.timestamp).toLocaleString() }}</small>
+        </div>
       </div>
   
       <form @submit.prevent="sendMessage" class="chat-input-container">
@@ -26,6 +24,8 @@
   
   <script setup>
   import { ref, onMounted, nextTick } from "vue";
+  const predictionGameStore = usePredictionGameStore();
+  const userStore = useUserStore();
   
   const props = defineProps({
     gameId: {
@@ -37,57 +37,16 @@
       required: true,
     },
   });
-  onMounted(() => {
-  loadMessages();
-});
-  const messages = ref([]);
+  const messages = computed(() => predictionGameStore.messages);
   const newMessage = ref("");
-  const users = ref({});
-  const backendBaseUrl = "http://localhost:5160";
-  const currentUserName = ref(localStorage.getItem("userName") || "Current User");
+  const currentUserName = ref("");
 
-  const loadMessages = async () => {
-  try {
-    const response = await fetch(`${backendBaseUrl}/api/PredictionGames/${props.gameId}/Chat`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) throw new Error(await response.text());
-
-    const messagesFromServer = await response.json();
-
-    const userMap = {};
-    messagesFromServer.forEach((msg) => {
-      if (msg.senderId && msg.senderName) {
-        userMap[msg.senderId] = msg.senderName;
-      }
-    });
-    users.value = userMap;
-
-    messages.value = messagesFromServer.map((msg) => ({
-      ...msg,
-      senderName: users.value[msg.senderId] || "Unknown User",
-    }));
-
-    console.log("Messages after processing:", messages.value);
+  onMounted(async() => {
+    await userStore.getUserById(props.currentUserId);
+    currentUserName.value = userStore.user.userName;
+    await predictionGameStore.loadChatMessages(props.gameId);
     scrollToBottom();
-  } catch (error) {
-    console.error("Error loading messages:", error);
-  }
-};
-  
-const getSenderName = (userId) => {
-
-  if (userId === props.currentUserId) {
-    return props.currentUserName || "Me";
-  }
-
-  const senderName = users.value[userId] || "Unknown User";
-  return senderName;
-};
+  });
   
 const sendMessage = async () => {
   if (!newMessage.value.trim()) return;
@@ -95,44 +54,23 @@ const sendMessage = async () => {
   const tempMessage = {
     id: Date.now(),
     senderId: props.currentUserId,
+    senderName: currentUserName.value,
     message: newMessage.value,
     timestamp: new Date().toISOString(),
   };
-
   messages.value.push(tempMessage);
 
   try {
-    const response = await fetch(`${backendBaseUrl}/api/PredictionGames/${props.gameId}/Chat`, {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${localStorage.getItem("token")}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        senderId: props.currentUserId,
-        message: newMessage.value,
-      }),
+    await predictionGameStore.sendChatMessage(props.gameId, {
+      senderId: props.currentUserId,
+      message: newMessage.value,
     });
-
-    if (response.ok) {
-      const savedMessage = await response.json();
-
-      messages.value = messages.value.map((msg) =>
-        msg.id === tempMessage.id ? { ...savedMessage, senderName: users.value[savedMessage.senderId] || "Unknown User" } : msg
-      );
-
-      console.log("Saved message received:", savedMessage);
-    } else {
-      console.error("Error sending message:", await response.text());
-      messages.value.pop();
-    }
   } catch (error) {
-    console.error("Error sending message:", error);
-    messages.value.pop();
+  console.error("Failed to send message:", error);
+  } finally {
+    newMessage.value = "";
+    scrollToBottom();
   }
-
-  newMessage.value = "";
-  scrollToBottom();
 };
 
 
@@ -143,7 +81,6 @@ const scrollToBottom = () => {
       chatBox.scrollTop = chatBox.scrollHeight;
     }
   });
-  console.log(messages.value);
 };
   </script>
   
