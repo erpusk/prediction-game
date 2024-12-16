@@ -17,5 +17,6 @@ namespace itb2203_2024_predictiongame.Backend.Models.Classes
         public string? UniqueCode { get; set; } // = RandomString.GetString(Types.ALPHABET_LOWERCASE, 6);
         public ICollection<PredictionGameParticipant> Participants { get; set; } = new List<PredictionGameParticipant>();
         public ICollection<ChatMessages> ChatMessages { get; set; } = new List<ChatMessages>();
+        public ICollection<BonusQuestion> BonusQuestions { get; set;} = new List<BonusQuestion>();
     }
 }

@@ -4,6 +4,8 @@ import type { Prediction } from "~/types/prediction";
 import type { PredictionGame } from "~/types/predictionGame";
 import { useUserStore } from '@/stores/userStore';
 import type { ChatMessage } from "~/types/chatMessage";
+import type { BonusQuestion } from "~/types/bonusQuestion";
+import type { Answer } from "~/types/answer";
 
 export const usePredictionGameStore = defineStore("predictionGame", () => {
   const api = useApi();
@@ -151,6 +153,7 @@ export const usePredictionGameStore = defineStore("predictionGame", () => {
     return predictionGame || null;
   };
 
+  
 
   return {
     predictionGames,
@@ -165,7 +168,7 @@ export const usePredictionGameStore = defineStore("predictionGame", () => {
     joinPredictionGame,
     loadChatMessages,
     sendChatMessage,
-    messages
+    messages,
   };
 });
 
@@ -293,5 +296,55 @@ export const usePredictionsStore = defineStore("prediction", () => {
     loadUserPrediction, 
     loadUserPredictionHistory,
     userPredictionHistory
+  }
+})
+
+export const useBonusQuestionsStore = defineStore("bonusQuestions", () => {
+  const api = useApi();
+  const userAnswersMap = ref<Record<number, Answer | null>>({});
+  const userAnswer = ref<Answer>();
+  const answers = ref<Answer[]>([]);
+
+  const getPredictionGameBonusQuestions = async (predictionGameId: number) => {
+    const questions = await api.customFetch<BonusQuestion[]>(`BonusQuestion/predictionGame/${predictionGameId}`);
+    return questions
+  }
+
+  const addPredictionGameBonusQuestion = async (bonusQuestion: BonusQuestion) => {
+    const res = await api.customFetch("BonusQuestion", {
+      method: "POST",
+      body: bonusQuestion,
+    });
+  };
+
+  const addAnswer = async (answer: Answer) => {
+    const res = await api.customFetch("BonusQuestionAnswer",{
+      method: "POST",
+      body: answer,
+    })
+  }
+
+  const loadUserAnswer = async (questionId: number) => {
+    const answer = await api.customFetch<Answer>(`BonusQuestionAnswer/user/question/${questionId}`)
+    userAnswer.value = answer;
+    if (answer) {
+      userAnswersMap.value[questionId] = answer;
+    }
+  }
+
+  const loadAnswers = async (questionId: number) => {
+    const url = questionId ? `BonusQuestionAnswer?questionId=${questionId}` : 'BonusQuestionAnswer';
+      answers.value = await api.customFetch<Answer[]>(url);
+  };
+
+  return {
+    answers,
+    getPredictionGameBonusQuestions,
+    addPredictionGameBonusQuestion,
+    addAnswer,
+    loadUserAnswer,
+    userAnswer,
+    userAnswersMap,
+    loadAnswers
   }
 })
