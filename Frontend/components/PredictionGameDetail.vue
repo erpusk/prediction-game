@@ -113,7 +113,7 @@ import { parse } from 'date-fns';
 import type { BonusQuestion } from '~/types/bonusQuestion';
 
   const props = defineProps<{
-    id: string | string[];
+    predictionGameId: number;
   }>();
   const bonusQuestionsStore = useBonusQuestionsStore();
   const predictionGameStore = usePredictionGameStore();
@@ -131,7 +131,7 @@ import type { BonusQuestion } from '~/types/bonusQuestion';
   };
 
   const game = ref({
-    id: parseInt(props.id.toString(), 10),
+    id: parseInt(props.predictionGameId.toString(), 10),
     startDate: '',
     endDate: '',
     creationDate: '',
@@ -146,7 +146,7 @@ import type { BonusQuestion } from '~/types/bonusQuestion';
 
 
 onMounted(async () => {
-  const predictionGame = await predictionGameStore.loadPredictionGame(parseInt(props.id.toString()));
+  const predictionGame = await predictionGameStore.loadPredictionGame(props.predictionGameId);
   //creationdate, startdate, enddate, privacy, predictiongametitle 
   game.value.startDate = predictionGame.startDate ? new Date(predictionGame.startDate).toLocaleDateString() : '';
   game.value.endDate = predictionGame.endDate ? new Date(predictionGame.endDate).toLocaleDateString() : '';
@@ -164,10 +164,10 @@ onMounted(async () => {
     
     game.value.participants = participants
 
-  const userPoints = await predictionGameStore.loadUserPoints(parseInt(props.id.toString()));
+  const userPoints = await predictionGameStore.loadUserPoints(props.predictionGameId);
   game.value.userEarnedPoints = userPoints !== null ? `${userPoints} points` : 'No points available';
 
-  const leaderBoard = await predictionGameStore.getLeaderboard(parseInt(props.id.toString()));
+  const leaderBoard = await predictionGameStore.getLeaderboard(props.predictionGameId);
   console.log("API Response:", leaderBoard);
 
   if (leaderBoard) {
@@ -178,7 +178,7 @@ onMounted(async () => {
     console.log("Updated leaderBoard in game:", game.value.leaderBoard);
   }
   
-  game.value.bonusQuestions = await bonusQuestionsStore.getPredictionGameBonusQuestions(parseInt(props.id.toString()))
+  game.value.bonusQuestions = await bonusQuestionsStore.getPredictionGameBonusQuestions(props.predictionGameId)
 });
 
 function decodeProfilePicture(picString: any){

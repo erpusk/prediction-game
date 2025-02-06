@@ -46,19 +46,19 @@
   import { useGameEventsStore } from '~/stores/stores'; 
 
   const props = defineProps<{
-    id: string | string[];
-    predictionGameId: string | string[];
+    eventId: number;
+    predictionGameId: number;
   }>();
   
   const gameEventStore = useGameEventsStore();
   const predictionStore = usePredictionsStore();
 
   const event = ref({
-    id: parseInt(props.id.toString(), 10),
+    id: props.eventId,
     teamA: '',
     teamB: '',
     eventDate: '',
-    predictionGameId: parseInt(props.predictionGameId.toString(), 10),
+    predictionGameId: props.predictionGameId,
     teamAScore: 0,
     teamBScore: 0,
     isCompleted: false
@@ -69,7 +69,7 @@
   })
   
   onMounted(async () => {
-    const gameEvent = await gameEventStore.loadSingleEvent(Number(props.id));
+    const gameEvent = await gameEventStore.loadSingleEvent(Number(props.eventId));
     event.value.teamA = gameEvent.teamA;
     event.value.teamB = gameEvent.teamB;
     event.value.eventDate = gameEvent.eventDate ? new Date(gameEvent.eventDate).toLocaleDateString() : '';
@@ -77,7 +77,7 @@
     event.value.teamBScore = gameEvent.teamBScore;
     event.value.isCompleted = gameEvent.isCompleted;
 
-    await predictionStore.loadUserPrediction(parseInt(props.id.toString(), 10));
+    await predictionStore.loadUserPrediction(props.eventId);
     const prediction = predictionStore.userPrediction;
     if (!prediction){
       yourPrediction.value.yourprediction = 'You have not made a prediction' 

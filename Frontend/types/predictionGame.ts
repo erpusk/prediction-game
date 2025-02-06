@@ -8,13 +8,6 @@ export interface PredictionGame {
     privacy: string;
     uniqueCode: string;
     participants: Array<{ id: number; userId: number; userName: string; profilePicture: string}>;
-    chatMessages?: Array<{
-      id: number;
-      gameId: number;
-      senderId: number;
-      senderName?: string;
-      message: string;
-      timestamp: string | Date;
-  }>;
+    chatMessages?: Array<{ id: number; gameId: number; senderId: number; senderName?: string; message: string; timestamp: string | Date; }>;
   }
   

@@ -23,15 +23,11 @@
         <UTable :rows="formattedPredictionGames" :columns="columns">
           <template #actions-data="{ row }">
             <div class="flex items-center space-x-4">
-            <button @click="showEvents(row)" class="btn-primary-small">
-              Show events
-            </button>
-            <button @click="goToGameDetails(row)" class="btn-primary-small">
-            Details
-            </button>
-            <button @click="goToGameBonusQuestions(row)" class="btn-primary-small">
-            Bonus questions
-            </button>
+              <button 
+                @click="viewGameDetails(row)" 
+                class="btn-primary-small" >
+                View Details
+              </button>
             <button 
         v-if="isParticipant(row)"
         @click="confirmLeaveGame(row)"
@@ -204,20 +200,10 @@ const isGameCreator = (game: PredictionGame) => {
   }
 };
 
-  const showEvents = (game: PredictionGame) => {
+  const viewGameDetails = (game: PredictionGame) => {
     const predictionGameId = game.id;
-    router.push(`/gameevents/${predictionGameId}`);
-  }
-  const goToGameDetails = (game: PredictionGame) => {
-    const predictionGameId = game.id;
-  router.push(`/predictiongame-details/${predictionGameId}`);
+    router.push(`/predictiongame-details/${predictionGameId}`);
   };
-
-  const goToGameBonusQuestions = (game: PredictionGame) => {
-    const predictionGameId = game.id;
-    router.push(`/bonusquestions/${predictionGameId}`);
-  }
-  
   </script>  
 
 <style scoped>
