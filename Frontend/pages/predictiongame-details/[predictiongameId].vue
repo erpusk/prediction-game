@@ -1,10 +1,10 @@
 <template>
-    <PredictionGameDetail :id="predictionGameId"/>
+    <PredictionGameInfo :predictionGameId="predictionGameId"/>
 </template>
 
 <script setup lang="ts">
     import { useRoute } from 'vue-router';
 
-const route = useRoute();
-const predictionGameId = route.params.predictiongameId
+    const route = useRoute();
+    const predictionGameId = Number(route.params.predictiongameId);
 </script>

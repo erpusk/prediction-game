@@ -24,7 +24,7 @@
           </div>
         </div>
         <div class="mt-8">
-          <h1 class="text-3xl font-bold text-center mb-6 text-black dark:text-white">{{ title }}</h1>
+          <h1 class="text-3xl font-bold text-center mb-6 text-black dark:text-white">{{ predictionGame?.predictionGameTitle }}</h1>
           <UTable class="w-full"
           :rows="formattedGameEvents" :columns="columns">
 
@@ -189,9 +189,10 @@ const copyToClipboard = async () => {
 };
 
 const props = defineProps<{
-  title: string;
   predictionGameId: number;
 }>();
+
+const predictionGame : PredictionGame | null = await predictionGameStore.getPredictionGameById(props.predictionGameId);
 
 const columns = [
   {

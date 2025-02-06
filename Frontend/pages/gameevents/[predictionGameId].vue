@@ -1,5 +1,5 @@
 <template>
-    <GameEventsList :title="'Events in the Prediction Game'" :prediction-game-id="predictionGameId" />
+    <GameEventsList :predictionGameTitle="'Events in the Prediction Game'" :prediction-game-id="predictionGameId" />
   </template>
   
   <script setup lang="ts">
