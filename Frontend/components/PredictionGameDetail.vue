@@ -5,12 +5,17 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm dark:bg-gray-700 dark:border-gray-500">
-            <p class="text-lg font-medium text-gray-700 text-center dark:text-white"><strong>Privacy:</strong> {{
-              game.privacy }}</p>
+            <p class="text-lg font-medium text-gray-700 text-center dark:text-white"><strong>Game Creator:</strong> {{
+              game.gameCreator }}</p>
           </div>
 
           <div
             class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm dark:bg-gray-700 dark:border-gray-500 ">
+            <p class="text-lg font-medium text-gray-700 text-center dark:text-white"><strong>Created at:</strong> {{
+              game.creationDate }}</p>
+          </div>
+
+          <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm dark:bg-gray-700 dark:border-gray-500">
             <p class="text-lg font-medium text-gray-700 text-center dark:text-white"><strong>Start date:</strong> {{
               game.startDate }}</p>
           </div>
@@ -20,27 +25,11 @@
               game.endDate }}</p>
           </div>
 
-          <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm dark:bg-gray-700 dark:border-gray-500">
-            <p class="text-lg font-medium text-gray-700 text-center dark:text-white"><strong>Creation date:</strong> {{
-              game.creationDate }}</p>
-          </div>
-
           <div
             class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm md:col-span-2 dark:bg-gray-700 dark:border-gray-500">
             <p class="text-lg font-medium text-gray-700 text-center dark:text-white" style="white-space: pre-line;">
-              <strong>Game creator:</strong> {{ game.gameCreator }}
+              <strong>Game privacy:</strong> {{ game.privacy }}
             </p>
-          </div>
-
-          <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm md:col-span-2 dark:bg-gray-700 dark:border-gray-500">
-            <h3 class="text-lg font-medium text-gray-700 text-center mb-4 dark:text-white">
-              <strong>Bonus Questions:</strong>
-            </h3>
-            <ul class="space-y-2">
-              <li v-for="(question, index) in game.bonusQuestions" :key="index" class="p-2 bg-gray-100 rounded-lg dark:bg-gray-600">
-                <span class="font-semibold dark:text-white">{{ question.question }}</span>
-              </li>
-            </ul>
           </div>
 
           <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 shadow-sm md:col-span-2 dark:bg-gray-700 dark:border-gray-500">
@@ -66,7 +55,7 @@
               alt="Profile Picture" 
               class="w-7 h-7 rounded-full object-cover">
               <div v-else class="w-7 h-7 rounded-full bg-gray-400 flex items-center justify-center text-white text-lg">
-                <span>{{ participant[0][0] }}</span> <!-- Display first letter of username -->
+                <span>{{ participant[0][0] }}</span>
               </div>
             </div>
           </div>
@@ -109,7 +98,7 @@
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { usePredictionGameStore } from '@/stores/stores';
-import { parse } from 'date-fns';
+import { parse, format } from 'date-fns';
 import type { BonusQuestion } from '~/types/bonusQuestion';
 
   const props = defineProps<{
@@ -147,10 +136,9 @@ import type { BonusQuestion } from '~/types/bonusQuestion';
 
 onMounted(async () => {
   const predictionGame = await predictionGameStore.loadPredictionGame(props.predictionGameId);
-  //creationdate, startdate, enddate, privacy, predictiongametitle 
-  game.value.startDate = predictionGame.startDate ? new Date(predictionGame.startDate).toLocaleDateString() : '';
-  game.value.endDate = predictionGame.endDate ? new Date(predictionGame.endDate).toLocaleDateString() : '';
-  game.value.creationDate = predictionGame.creationDate ? new Date(predictionGame.creationDate).toLocaleDateString() : '';
+  game.value.startDate = predictionGame.startDate ? format(new Date(predictionGame.startDate), 'dd.MM.yyyy') : '';
+  game.value.endDate = predictionGame.endDate ? format(new Date(predictionGame.endDate), 'dd.MM.yyyy') : '';
+  game.value.creationDate = predictionGame.creationDate ? format(new Date(predictionGame.creationDate), 'dd.MM.yyyy') : '';
   game.value.privacy = predictionGame.privacy;
   game.value.title = predictionGame.predictionGameTitle
 

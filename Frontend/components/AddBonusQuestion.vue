@@ -14,12 +14,32 @@
           @submit="onSubmit"
           @error="onError"
         >
+        <div>
           <h2 class="text-2xl font-semibold text-center mb-4 text-black dark:text-white">Add a Bonus Question</h2>
-  
-          <UFormGroup label="Question" name="question">
-            <UInput v-model="state.question" class="border rounded-md p-2" placeholder="Enter your question here"/>
-          </UFormGroup>
-  
+          
+          <label class="title-text mb-2 block">Choose the question type you want:</label>
+          <USelect
+            v-model="state.questionType"
+            :options="questionTypeOptions"
+            class="border rounded-md p-2 mb-4 w-full">
+          </USelect>
+
+          <label class="title-text mb-2 block">Question</label>
+          <UInput v-model="state.question" class="border rounded-md p-2 mb-4 w-full" placeholder="Enter your question here" :error="false"/>
+
+          <div v-if="state.questionType === 'MultipleChoice'" class="mb-4">
+            <label class="title-text mb-2 block">Options</label>
+            <div class="options-scroll">
+              <div v-for="(option, idx) in options" :key="idx" class="flex items-center mb-2">
+                <UInput v-model="options[idx]" class="flex-1 mr-2" placeholder="Enter your option" />
+                <div v-if="options.length > 2" class="flex items-center">
+                  <button type="button" @click="removeOption(idx)" class="text-red-500 hover:underline">Remove</button>
+                </div>
+              </div>
+            </div>
+            <button type="button" @click="addOption" class="text-blue-600 hover:underline mt-0">Add Option</button>
+          </div>
+
           <div class="flex justify-between mt-6">
             <UButton @click="$emit('close')" class="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-md transition duration-300">
               Close
@@ -28,13 +48,14 @@
               Add
             </UButton>
           </div>
-        </UForm>
-      </div>
+        </div>
+      </UForm>
     </div>
-  </template>
+  </div>
+</template>
   
   <script setup lang="ts">
-  import { reactive } from 'vue';
+  import { reactive, ref, watch } from 'vue';
   import type { FormError, FormErrorEvent } from "#ui/types";
   import type { BonusQuestion } from "~/types/bonusQuestion";
   import { usePredictionGameStore } from '@/stores/stores';
@@ -43,30 +64,51 @@
   const emit = defineEmits(['close', 'refresh']);
   
   const props = defineProps<{ predictionGameId: number }>();
+  const options = ref<string[]>([]);
+  const questionTypeOptions = [
+  { label: 'Text', value: 'String' },
+  { label: 'Number', value: 'Number' },
+  { label: 'Multiple Choice', value: 'MultipleChoice' }
+];
   
   const state = reactive<BonusQuestion>({
     id: 0,
     predictionGameId: 0,
-    question: ""
+    question: "",
+    questionType: "String",
+    optionsJson: "",
   });
   
+  const showErrors = ref(false);
+
   const validate = (state: any): FormError[] => {
     const errors = [];
-    if (!state.question.trim()) errors.push({ path: "question", message: "Question cannot be empty" });
+    if (showErrors.value && !state.question.trim()) {
+      errors.push({ path: "question", message: "Question cannot be empty" });
+    }
     return errors;
   };
   
   async function onSubmit() {
+    showErrors.value = true;
+    const result = validate(state);
+    if (result.length > 0) return;
+
     const payload = {
       id: state.id,
       question: state.question,
       predictionGameId: props.predictionGameId,
+      questionType: state.questionType,
+      optionsJson: (state.questionType === "MultipleChoice")
+        ? JSON.stringify(options.value.filter(opt => opt.trim() !== ''))
+        : ""
     };
   
     try {
       await addPredictionGameBonusQuestion(payload);
       emit('refresh');
       emit('close');
+      window.location.reload();
     } catch (error) {
       console.error("Error adding bonus question:", error);
     }
@@ -79,9 +121,38 @@
     element?.focus();
     element?.scrollIntoView({ behavior: "smooth", block: "center" });
   }
+
+  watch(() => state.questionType, (newType) => {
+  if (newType === 'MultipleChoice') {
+    if (options.value.length === 0) options.value = ['', ''];
+  } else {
+    options.value = [];
+  }
+});
+
+function addOption() {
+  options.value.push('');
+}
+function removeOption(idx: number) {
+  options.value.splice(idx, 1);
+}
+
   </script>
   
   <style>
+  .title-text {
+    font-size: 14px;
+    font-weight: bold;
+    color: #505050;
+    padding-top: 10px;
+  }
+
+  .options-scroll {
+  max-height: 200px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
   .add-button {
     background-color: #5bb17c;
   }
@@ -89,7 +160,6 @@
     background-color: #26547C;
   }
   
-  /* Adjust label colors for dark mode */
   div :deep(label) {
     color: black !important;
   }

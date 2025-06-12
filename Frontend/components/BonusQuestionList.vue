@@ -18,8 +18,11 @@
         <h2 class="text-4xl font-semibold text-center mb-8 text-gray-800 dark:text-white">
           Bonus questions
         </h2>
-  
-          <ul class="space-y-2">
+
+        <div v-if="bonusQuestions.length === 0" class="text-center text-gray-500 dark:text-gray-400">
+          No bonus questions added for this game
+        </div>
+          <ul v-else class="space-y-2">
             <li v-for="(question) in bonusQuestions" :key="question.id" class="p-2 bg-gray-100 rounded-lg dark:bg-gray-600 flex justify-between items-center ">
               <span class="font-semibold dark:text-white">{{ question.question }}</span>
               <div v-if="hasAnsweredMap[question.id] === true">
@@ -51,7 +54,7 @@
   import { ref, onMounted } from 'vue';
   import { useBonusQuestionsStore, usePredictionGameStore } from '@/stores/stores';
   import type { BonusQuestion } from '~/types/bonusQuestion';
-  import type { Answer } from '~/types/answer';
+  import type { BonusQuestionAnswer } from '~/types/bonusQuestionAnswer';
 
   const isGameCreator = ref(false);
   const userStore = useUserStore();
@@ -89,11 +92,11 @@
     }
 
     if (userId) {
-    const answersMap: { [key: number]: Answer | null } = {};
+    const answersMap: { [key: number]: BonusQuestionAnswer | null } = {};
     await Promise.all(bonusQuestions.value.map(async (question) => {
       await bonusQuestionStore.loadUserAnswer(question.id);
       answersMap[question.id] = bonusQuestionStore.userAnswer ? 
-        { ...(bonusQuestionStore.userAnswer as Answer) } : null;
+        { ...(bonusQuestionStore.userAnswer as BonusQuestionAnswer) } : null;
     }));
     for (const question of bonusQuestions.value) {
       const hasMadeAnswer = await userHasMadeAnswer(question, userId);
@@ -158,7 +161,7 @@
   font-size: 14px;
   font-weight: bold;
   color: #fff;
-  background-color: #4a90e2;
+  background-color: #5bb17c;
   border-radius: 5px;
   border: none;
   cursor: pointer;

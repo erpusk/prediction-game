@@ -5,7 +5,7 @@ import type { PredictionGame } from "~/types/predictionGame";
 import { useUserStore } from '@/stores/userStore';
 import type { ChatMessage } from "~/types/chatMessage";
 import type { BonusQuestion } from "~/types/bonusQuestion";
-import type { Answer } from "~/types/answer";
+import type { BonusQuestionAnswer } from "~/types/bonusQuestionAnswer";
 
 export const usePredictionGameStore = defineStore("predictionGame", () => {
   const api = useApi();
@@ -301,9 +301,9 @@ export const usePredictionsStore = defineStore("prediction", () => {
 
 export const useBonusQuestionsStore = defineStore("bonusQuestions", () => {
   const api = useApi();
-  const userAnswersMap = ref<Record<number, Answer | null>>({});
-  const userAnswer = ref<Answer>();
-  const answers = ref<Answer[]>([]);
+  const userAnswersMap = ref<Record<number, BonusQuestionAnswer | null>>({});
+  const userAnswer = ref<BonusQuestionAnswer>();
+  const answers = ref<BonusQuestionAnswer[]>([]);
 
   const getPredictionGameBonusQuestions = async (predictionGameId: number) => {
     const questions = await api.customFetch<BonusQuestion[]>(`BonusQuestion/predictionGame/${predictionGameId}`);
@@ -317,7 +317,7 @@ export const useBonusQuestionsStore = defineStore("bonusQuestions", () => {
     });
   };
 
-  const addAnswer = async (answer: Answer) => {
+  const addAnswer = async (answer: BonusQuestionAnswer) => {
     const res = await api.customFetch("BonusQuestionAnswer",{
       method: "POST",
       body: answer,
@@ -325,7 +325,7 @@ export const useBonusQuestionsStore = defineStore("bonusQuestions", () => {
   }
 
   const loadUserAnswer = async (questionId: number) => {
-    const answer = await api.customFetch<Answer>(`BonusQuestionAnswer/user/question/${questionId}`)
+    const answer = await api.customFetch<BonusQuestionAnswer>(`BonusQuestionAnswer/user/question/${questionId}`)
     userAnswer.value = answer;
     if (answer) {
       userAnswersMap.value[questionId] = answer;
@@ -334,7 +334,7 @@ export const useBonusQuestionsStore = defineStore("bonusQuestions", () => {
 
   const loadAnswers = async (questionId: number) => {
     const url = questionId ? `BonusQuestionAnswer?questionId=${questionId}` : 'BonusQuestionAnswer';
-      answers.value = await api.customFetch<Answer[]>(url);
+      answers.value = await api.customFetch<BonusQuestionAnswer[]>(url);
   };
 
   return {

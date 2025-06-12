@@ -1,4 +1,4 @@
-export interface Answer{
+export interface BonusQuestionAnswer{
     id: number,
     questionId: number,
     answerText: string,

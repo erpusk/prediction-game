@@ -36,14 +36,14 @@
   <script setup lang="ts">
   import { reactive } from 'vue';
   import type { FormError, FormErrorEvent } from "#ui/types";
-import type { Answer } from '~/types/answer';
+import type { BonusQuestionAnswer } from '~/types/bonusQuestionAnswer';
   
   const { addAnswer } = useBonusQuestionsStore();
   const emit = defineEmits(['close', 'refresh']);
   
   const props = defineProps<{ questionId: number }>();
   
-  const state = reactive<Answer>({
+  const state = reactive<BonusQuestionAnswer>({
     id: 0,
     questionId: 0,
     answerText: "",

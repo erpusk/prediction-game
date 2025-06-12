@@ -1,0 +1,44 @@
+prediction games rakendus tasklist/ülesanded:
+
+*** show events + details + bonus questions võiks kõik panna ühele leheküljele, nupu nimeks mingi "See more" vms, see korda disainida, n-ö ühine koht kõigeks nendeks kolmeks
+
+TEHTUD
+
+*** bonus questions võiks olla konkreetse vastuse sisestuse variandiga valik, mille creator paika paneb. Nt numbriline vastus, string vastus, creator annab kindlad valikud ette mille valima peab vms. Parim väravakütt küsimuse juures peab andma kõik mängijate nimed ette, mille hulgast kõik vastajad valima peavad
+
+*** public predictions games list ja db eraldi, mida võiks igale mängijale näidata ja millega saavad kõik joinida
+
+*** peab olema paremini responsive, väikeste ja suurte ekraanidega. Peamiselt nupud, tekst, aga ka main page'l pilt veider
+
+** predictionite vaatamine peaks olema peidetud, kui kasutaja pole veel oma predictionit teinud. Samuti võiks predictionite nägemine olla event details all
+
+* kohe create a new prediction game juures võiks olla võimalus sinna evente ka lisada
+
+* join a prediction game võiks olla pop-up leht
+
+* prediction game loomisel peavad eventsid jääma start ja end date vahele
+
+* prediction game details võiks pop'up olla
+
+* prediction game kustutamisel võiks ühtsem stiil olla confirmationi küsimisel, samuti NO vasakul pool, hallilt (praegu roheline) ja YES paremal punasega
+
+* bonus questioneid peab saama kustutada
+
+* Leave Game nupu asemel see icon uksest välja astumisega
+
+* prediction game'd võiksid olla sorted nii, et aktiivsed on (aktiivsed võiksid olla sorted nii, et kõige varasem start date on esimene) ja peale aktiivseid näitab lõppenuid prediction game'e
+
+* events võiks olla sorted kuupäeva ja kellaaja järgi
+
+* add prediction avalehel on veider hall kast ümber pop-up'i
+
+* view predictions võiks pop-up olla
+
+* chat'i sulgemise button praegu keskel, võiks olla paremas nurgas
+
+* home page'l, kui upcoming või history on tühi, siis see tabel võiks tühjem olla
+
+* sisse logimisel ja registreerimisel arusaadav error message'd, et mis viga on
+
+* invite friends nupp võiks olla, kus meili peale tuleb invite nt. Kõik võivad invite'da, aga ainult game creator saab kinnitada või tagasi lükata
+
