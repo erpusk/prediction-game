@@ -6,6 +6,15 @@
 # dotenv files
 .env
 
+# Ignore ApiTests folder
+ApiTests/
+
+# Ignore VS Code settings folder
+.vscode/
+
+# Ignore GitLab CI configuration file
+.gitlab-ci.yml
+
 # User-specific files
 *.rsuser
 *.suo
