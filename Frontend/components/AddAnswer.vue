@@ -14,13 +14,48 @@
           @submit="onSubmit"
           @error="onError"
         >
-          <h2 class="text-2xl font-semibold text-center mb-4 text-black dark:text-white">Answer</h2>
+          <h2 class="text-2xl font-semibold text-center mb-4 text-black dark:text-white question-text">
+            {{ question?.question || 'Loading...' }}
+          </h2>
   
-          <UFormGroup label="Answer" name="answer">
+          <div v-if="question?.questionType === 'MultipleChoiceQuestion'">
+            <UFormGroup label="Choose an option" name="answer">
+              <div v-for="(option, idx) in question.options" :key="idx" class="mb-2">
+                <label class="flex items-center">
+                  <input
+                    type="radio"
+                    :value="option"
+                    v-model="state.answerText"
+                    class="mr-2"
+                  />
+                  {{ option }}
+                </label>
+              </div>
+            </UFormGroup>
+          </div>
+
+          <UFormGroup
+            v-else-if="question?.questionType === 'NumberQuestion'"
+            label="Enter a number:"
+            name="answer"
+          >
+            <UInput
+              v-model="state.answerText"
+              type="number"
+              class="border rounded-md p-2"
+              placeholder="Enter a number"
+            />
+          </UFormGroup>
+
+          <UFormGroup
+            v-else
+            label="Your answer"
+            name="answer"
+          >
             <UInput v-model="state.answerText" class="border rounded-md p-2" placeholder="Enter your answer here"/>
           </UFormGroup>
   
-          <div class="flex justify-between mt-6">
+          <div class="flex justify-between mt-6 space-x-8">
             <UButton @click="$emit('close')" class="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-md transition duration-300">
               Close
             </UButton>
@@ -36,12 +71,13 @@
   <script setup lang="ts">
   import { reactive } from 'vue';
   import type { FormError, FormErrorEvent } from "#ui/types";
-import type { BonusQuestionAnswer } from '~/types/bonusQuestionAnswer';
+  import type { BonusQuestionAnswer } from '~/types/bonusQuestionAnswer';
   
   const { addAnswer } = useBonusQuestionsStore();
   const emit = defineEmits(['close', 'refresh']);
   
-  const props = defineProps<{ questionId: number }>();
+  const props = defineProps<{ question: BonusQuestion }>();
+  const question = computed(() => props.question);
   
   const state = reactive<BonusQuestionAnswer>({
     id: 0,
@@ -52,15 +88,22 @@ import type { BonusQuestionAnswer } from '~/types/bonusQuestionAnswer';
   
   const validate = (state: any): FormError[] => {
     const errors = [];
-    if (!state.answerText.trim()) errors.push({ path: "answerText", message: "Answer cannot be empty" });
+    const questionType = question.value?.questionType;
+    const answerAsString = String(state.answerText);
+
+    if (!answerAsString.trim()) {
+      errors.push({ path: "answerText", message: "Answer cannot be empty" });
+    } else if (questionType === "NumberQuestion" && isNaN(Number(state.answerText))) {
+      errors.push({ path: "answerText", message: "Answer must be a valid number" });
+    }
     return errors;
   };
   
   async function onSubmit() {
     const payload = {
       id: state.id,
-      answerText: state.answerText,
-      questionId: props.questionId,
+      answerText: String(state.answerText),
+      questionId: props.question.id,
       answerMakerId: state.answerMakerId
     };
   
@@ -90,7 +133,6 @@ import type { BonusQuestionAnswer } from '~/types/bonusQuestionAnswer';
     background-color: #26547C;
   }
   
-  /* Adjust label colors for dark mode */
   div :deep(label) {
     color: black !important;
   }
@@ -99,4 +141,11 @@ import type { BonusQuestionAnswer } from '~/types/bonusQuestionAnswer';
       color: #ffffff !important;
     }
   }
+
+  .question-text {
+  word-break: break-word;
+  white-space: normal;
+  display: block;
+  max-width: 100%;
+}
   </style>

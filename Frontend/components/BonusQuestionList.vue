@@ -24,10 +24,10 @@
         </div>
           <ul v-else class="space-y-2">
             <li v-for="(question) in bonusQuestions" :key="question.id" class="p-2 bg-gray-100 rounded-lg dark:bg-gray-600 flex justify-between items-center ">
-              <span class="font-semibold dark:text-white">{{ question.question }}</span>
+              <span class="font-semibold dark:text-white question-text">{{ question.question }}</span>
               <div v-if="hasAnsweredMap[question.id] === true">
                     <button class="bg-gray-500 text-white rounded-[80px] px-4 py-1.5">
-                      Already answered
+                      Answered
                     </button>
               </div>
               <div v-else>
@@ -38,7 +38,7 @@
               </button>
               <AddAnswer
                 v-if="showModalAddAnswer[question.id]" 
-                :questionId="question.id"
+                :question="question"
                 @close="closeModalAddAnswer(question.id)"
                 @refresh="fetchData"/>
               </div>
@@ -105,13 +105,9 @@
   }
   }
 
-  
   onMounted(async () => {
     fetchData()
-    
   });
-
-  
 
   async function userHasMadeAnswer(question: BonusQuestion, userId: number): Promise<boolean> {
   await bonusQuestionStore.loadAnswers(question.id);
@@ -176,6 +172,13 @@
 .btn-secondary:active {
   background-color: #26547C;
   transform: scale(1);
+}
+
+.question-text {
+  word-break: break-word;
+  white-space: normal;
+  display: block;
+  max-width: 100%;
 }
 
 </style>

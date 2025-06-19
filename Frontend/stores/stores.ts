@@ -305,6 +305,15 @@ export const useBonusQuestionsStore = defineStore("bonusQuestions", () => {
   const userAnswer = ref<BonusQuestionAnswer>();
   const answers = ref<BonusQuestionAnswer[]>([]);
 
+  const getBonusQuestionById = async (bonusQuestionId: number): Promise<BonusQuestion | null> => {
+    const result = await api.customFetch<BonusQuestion>(`BonusQuestion/${bonusQuestionId}`);
+    if ('error' in result) {
+      console.error(`Error fetching bonus question with ID ${bonusQuestionId}:`, result.error);
+      return null;
+    }
+    return result;
+  };
+
   const getPredictionGameBonusQuestions = async (predictionGameId: number) => {
     const questions = await api.customFetch<BonusQuestion[]>(`BonusQuestion/predictionGame/${predictionGameId}`);
     return questions
@@ -338,6 +347,7 @@ export const useBonusQuestionsStore = defineStore("bonusQuestions", () => {
   };
 
   return {
+    getBonusQuestionById,
     answers,
     getPredictionGameBonusQuestions,
     addPredictionGameBonusQuestion,

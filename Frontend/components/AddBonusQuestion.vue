@@ -11,7 +11,7 @@
           :validate="validate"
           :state="state"
           class="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-lg w-full"
-          @submit="onSubmit"
+          @submit.prevent="onSubmit"
           @error="onError"
         >
         <div>
@@ -24,20 +24,39 @@
             class="border rounded-md p-2 mb-4 w-full">
           </USelect>
 
-          <label class="title-text mb-2 block">Question</label>
-          <UInput v-model="state.question" class="border rounded-md p-2 mb-4 w-full" placeholder="Enter your question here" :error="false"/>
+          <label class="title-text mb-2 block">Question:</label>
+          <!-- <UInput
+            v-model="state.question"
+            class="border rounded-md p-2 mb-4 w-full"
+            placeholder="Enter your question here"
+            :error="showErrors && !state.question.trim() ? 'Question cannot be empty' : ''"
+          /> -->
+          <UFormGroup
+            :error="showErrors && !state.question.trim() ? 'Question cannot be empty' : ''"
+          >
+            <UInput
+              v-model="state.question"
+              placeholder="Enter your question here"
+              class="border rounded-md p-2 mb-4 w-full"
+            />
+          </UFormGroup>
 
-          <div v-if="state.questionType === 'MultipleChoice'" class="mb-4">
-            <label class="title-text mb-2 block">Options</label>
+          <div v-if="state.questionType === 'MultipleChoiceQuestion'" class="mb-4">
+            <label class="title-text mb-2 block">Options:</label>
             <div class="options-scroll">
-              <div v-for="(option, idx) in options" :key="idx" class="flex items-center mb-2">
-                <UInput v-model="options[idx]" class="flex-1 mr-2" placeholder="Enter your option" />
-                <div v-if="options.length > 2" class="flex items-center">
+              <div v-for="(option, idx) in state.options" :key="idx" class="flex items-center mb-2">
+                <UInput v-model="state.options[idx]" class="flex-1 mr-2" placeholder="Enter your option" />
+                <div v-if="state.options.length > 2" class="flex items-center">
                   <button type="button" @click="removeOption(idx)" class="text-red-500 hover:underline">Remove</button>
                 </div>
-              </div>
+              </div>          
             </div>
-            <button type="button" @click="addOption" class="text-blue-600 hover:underline mt-0">Add Option</button>
+
+            <div v-if="showErrors && state.options.filter(opt => opt.trim() !== '').length < 2" class="text-red-500 text-sm mt-1">
+              Please enter at least 2 valid options.
+            </div>
+
+            <button type="button" @click="addOption" class="text-green-700 hover:underline mt-0">Add another option</button>
           </div>
 
           <div class="flex justify-between mt-6">
@@ -66,17 +85,17 @@
   const props = defineProps<{ predictionGameId: number }>();
   const options = ref<string[]>([]);
   const questionTypeOptions = [
-  { label: 'Text', value: 'String' },
-  { label: 'Number', value: 'Number' },
-  { label: 'Multiple Choice', value: 'MultipleChoice' }
+  { label: 'Text', value: 'StringQuestion' },
+  { label: 'Number', value: 'NumberQuestion' },
+  { label: 'Multiple Choice', value: 'MultipleChoiceQuestion' }
 ];
   
   const state = reactive<BonusQuestion>({
     id: 0,
     predictionGameId: 0,
     question: "",
-    questionType: "String",
-    optionsJson: "",
+    questionType: "StringQuestion",
+    options: [],
   });
   
   const showErrors = ref(false);
@@ -86,29 +105,43 @@
     if (showErrors.value && !state.question.trim()) {
       errors.push({ path: "question", message: "Question cannot be empty" });
     }
+
+    if (state.questionType === 'MultipleChoiceQuestion') {
+      const nonEmptyOptions = state.options.filter(opt => opt.trim() !== '');
+      if (nonEmptyOptions.length < 2) {
+        errors.push({
+          path: "options",
+          message: "Multiple choice questions must have at least 2 options"
+        });
+      }
+    }
     return errors;
   };
   
   async function onSubmit() {
     showErrors.value = true;
-    const result = validate(state);
-    if (result.length > 0) return;
+    if (!state.question.trim()) return;
+
+    if (
+      state.questionType === 'MultipleChoiceQuestion' &&
+      state.options.filter(opt => opt.trim() !== '').length < 2
+    ) return;
 
     const payload = {
       id: state.id,
       question: state.question,
       predictionGameId: props.predictionGameId,
       questionType: state.questionType,
-      optionsJson: (state.questionType === "MultipleChoice")
-        ? JSON.stringify(options.value.filter(opt => opt.trim() !== ''))
-        : ""
+      options: (state.questionType === "MultipleChoiceQuestion")
+        ? state.options?.filter(opt => opt.trim() !== '')
+        : []
     };
   
     try {
       await addPredictionGameBonusQuestion(payload);
-      emit('refresh');
+      // emit('refresh');
       emit('close');
-      window.location.reload();
+      // window.location.reload();
     } catch (error) {
       console.error("Error adding bonus question:", error);
     }
@@ -123,18 +156,18 @@
   }
 
   watch(() => state.questionType, (newType) => {
-  if (newType === 'MultipleChoice') {
-    if (options.value.length === 0) options.value = ['', ''];
+  if (newType === 'MultipleChoiceQuestion') {
+    if (state.options.length === 0) state.options = ['', ''];
   } else {
-    options.value = [];
+    state.options = [];
   }
 });
 
 function addOption() {
-  options.value.push('');
+  state.options.push('');
 }
 function removeOption(idx: number) {
-  options.value.splice(idx, 1);
+  state.options.splice(idx, 1);
 }
 
   </script>
