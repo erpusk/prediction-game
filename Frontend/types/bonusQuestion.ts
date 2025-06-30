@@ -5,5 +5,6 @@ export interface BonusQuestion{
     predictionGameId: number,
     question: string,
     questionType: BonusQuestionType,
+    correctAnswer: string,
     options: string[],
 }

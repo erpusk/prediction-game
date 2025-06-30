@@ -8,6 +8,7 @@ namespace BackEnd.Models.Classes
         public string? Question { get; set; }
         public int PredictionGameId { get; set; }
         public BonusQuestionType QuestionType { get; set; }
+        public string? CorrectAnswer { get; set; }
         public List<string>? Options { get; set; }
     }
 }

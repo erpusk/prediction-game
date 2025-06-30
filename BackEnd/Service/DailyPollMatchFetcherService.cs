@@ -37,7 +37,7 @@ namespace BackEnd.Service
                     {
                         try
                         {
-                            await FetchAndStoreMatchData(dailyPollRepo);
+                            await FetchAndStoreMatchData(dailyPollRepo, stoppingToken);
                         }
                         catch (Exception ex)
                         {
@@ -45,27 +45,29 @@ namespace BackEnd.Service
                         }
                     }
 
-                    await Task.Delay(TimeSpan.FromMinutes(10), stoppingToken);
+                    try {
+                        await Task.Delay(TimeSpan.FromMinutes(10), stoppingToken);
+                    } catch (TaskCanceledException) {}
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error during service execution: " + ex);
+                Console.WriteLine("Error during service execution: " + ex + "\nStack: " + ex.StackTrace);
             }
         }
 
-        private async Task<DailyPollMatch?> FetchAndStoreMatchData(DailyPollRepo dailyPollRepo) {
+        private async Task<DailyPollMatch?> FetchAndStoreMatchData(DailyPollRepo dailyPollRepo, CancellationToken stoppingToken) {
             var tomorrow = DateTime.UtcNow.AddDays(1).ToString("yyyy-MM-dd");
             var dayAfterTomorrow = DateTime.UtcNow.AddDays(2).ToString("yyyy-MM-dd");
             var twoDaysAfterTomorrow = DateTime.UtcNow.AddDays(3).ToString("yyyy-MM-dd");
 
-            var rawData = await GetDataFromApi("https://api.football-data.org/v4/matches");
+            var rawData = await GetDataFromApi("https://api.football-data.org/v4/matches", stoppingToken);
             if (rawData?.Matches == null || !rawData.Matches.Any())
             {
-                rawData = await GetDataFromApi($"https://api.football-data.org/v4/matches?dateFrom={tomorrow}&dateTo={dayAfterTomorrow}");
+                rawData = await GetDataFromApi($"https://api.football-data.org/v4/matches?dateFrom={tomorrow}&dateTo={dayAfterTomorrow}", stoppingToken);
                 if (rawData?.Matches == null || !rawData.Matches.Any())
                 {
-                    rawData = await GetDataFromApi($"https://api.football-data.org/v4/matches?dateFrom={dayAfterTomorrow}&dateTo={twoDaysAfterTomorrow}");
+                    rawData = await GetDataFromApi($"https://api.football-data.org/v4/matches?dateFrom={dayAfterTomorrow}&dateTo={twoDaysAfterTomorrow}", stoppingToken);
                     if (rawData == null || !rawData.Matches.Any())
                     {
                         Console.WriteLine("No matches found for the next three days.");
@@ -130,13 +132,13 @@ namespace BackEnd.Service
             return activeMatch;
         }
 
-        public async Task<RootDto> GetDataFromApi(string url)
+        public async Task<RootDto> GetDataFromApi(string url, CancellationToken cancellationToken)
         {
             var token = "7637b3a5b3064ec999ac2671b115d7a7";
             var request = new HttpRequestMessage(HttpMethod.Get, url);
             request.Headers.Add("X-Auth-Token", token);
 
-            var response = await _httpClient.SendAsync(request);
+            var response = await _httpClient.SendAsync(request, cancellationToken);
             response.EnsureSuccessStatusCode();
 
             var jsonString = await response.Content.ReadAsStringAsync();

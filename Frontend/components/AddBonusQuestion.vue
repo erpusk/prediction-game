@@ -78,6 +78,7 @@
   import type { FormError, FormErrorEvent } from "#ui/types";
   import type { BonusQuestion } from "~/types/bonusQuestion";
   import { usePredictionGameStore } from '@/stores/stores';
+import { createModuleResolutionCache } from 'typescript';
   
   const { addPredictionGameBonusQuestion } = useBonusQuestionsStore();
   const emit = defineEmits(['close', 'refresh']);
@@ -95,6 +96,7 @@
     predictionGameId: 0,
     question: "",
     questionType: "StringQuestion",
+    correctAnswer: "",
     options: [],
   });
   
@@ -132,6 +134,7 @@
       question: state.question,
       predictionGameId: props.predictionGameId,
       questionType: state.questionType,
+      correctAnswer: state.correctAnswer,
       options: (state.questionType === "MultipleChoiceQuestion")
         ? state.options?.filter(opt => opt.trim() !== '')
         : []
