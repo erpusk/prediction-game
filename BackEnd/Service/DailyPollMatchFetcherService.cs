@@ -134,7 +134,7 @@ namespace BackEnd.Service
 
         public async Task<RootDto> GetDataFromApi(string url, CancellationToken cancellationToken)
         {
-            var token = "7637b3a5b3064ec999ac2671b115d7a7";
+            var token = Environment.GetEnvironmentVariable("DAILY_POLL_TOKEN");
             var request = new HttpRequestMessage(HttpMethod.Get, url);
             request.Headers.Add("X-Auth-Token", token);
 
