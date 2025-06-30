@@ -14,8 +14,10 @@ export const useUserStore = defineStore('user', () => {
     const loadUser = async () => {
       const storedToken = localStorage.getItem('token');
 
-      if (!storedToken) {
+      if (!storedToken || storedToken === 'undefined' || storedToken.trim() === '') {
         user.value = null;
+        token.value = null;
+        localStorage.removeItem('token');
         return;
       }
       token.value = storedToken;
