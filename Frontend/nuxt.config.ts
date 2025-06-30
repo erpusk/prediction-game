@@ -5,7 +5,7 @@ export default defineNuxtConfig({
   modules: ["@pinia/nuxt", "@nuxt/ui"],
   imports: { dirs: ["types/*.ts"] },
   runtimeConfig: {
-    public: { predictionGamesApiUrl: "http://localhost:5160/api/" },
+    public: { predictionGamesApiUrl: process.env.PREDICTION_GAMES_API_URL || 'http://localhost:5160/api' },
   },
   app: {
     head: {
